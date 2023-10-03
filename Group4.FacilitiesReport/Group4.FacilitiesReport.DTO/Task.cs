@@ -9,8 +9,5 @@
         public DateTime? DateTime { get; set; }
         public string ImgConfirmationUrl { get; set; } = null!;
 
-        public virtual TblUser Employee { get; set; } = null!;
-        public virtual TblFeedback Feedback { get; set; } = null!;
-        public virtual TblUser Manager { get; set; } = null!;
     }
 }
