@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+      "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
       "projectName": "Group4.FacilitiesReport.DTO",
-      "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+      "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
       "packagesPath": "C:\\Users\\RLappc.com\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
+      "outputPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

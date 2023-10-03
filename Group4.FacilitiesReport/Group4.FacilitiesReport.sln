@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.DTO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.DAO", "Group4.FacilitiesReport.DAO\Group4.FacilitiesReport.DAO.csproj", "{B6A6D55A-AF81-473C-B29F-BEBA066207F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{153A8086-589E-41E3-AFAF-F1A875B944BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.Repositories", "Repositories\Group4.FacilitiesReport.Repositories.csproj", "{153A8086-589E-41E3-AFAF-F1A875B944BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
