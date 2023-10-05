@@ -2039,11 +2039,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
+      "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
       "projectName": "Group4.FacilitiesReport.Interface",
-      "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
+      "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\obj\\",
+      "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

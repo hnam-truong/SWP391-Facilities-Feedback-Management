@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj": {}
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {}
   },
   "projects": {
-    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj": {
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
-        "projectName": "Group4.FacilitiesReport.Interface",
-        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
+        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectName": "Group4.FacilitiesReport.DTO",
+        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\obj\\",
+        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -27,11 +27,7 @@
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
-            "projectReferences": {
-              "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
-                "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
-              }
-            }
+            "projectReferences": {}
           }
         },
         "warningProperties": {
@@ -85,14 +81,14 @@
         }
       }
     },
-    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
-        "projectName": "Group4.FacilitiesReport.DTO",
-        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
+        "projectName": "Group4.FacilitiesReport.Interface",
+        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
+        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -108,7 +104,11 @@
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+                "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
