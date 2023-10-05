@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {}
+    "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj": {}
   },
   "projects": {
-    "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {
+    "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
-        "projectName": "Group4.FacilitiesReport.DAO",
-        "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
+        "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
+        "projectName": "Group4.FacilitiesReport.Interface",
+        "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj",
         "packagesPath": "C:\\Users\\RLappc.com\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\obj\\",
         "projectStyle": "PackageReference",

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Group4.FacilitiesReport.DAO\Group4.FacilitiesReport.DAO.csproj" />
+    <ProjectReference Include="..\Group4.FacilitiesReport.DAO\Group4.FacilitiesReport.Interface.csproj" />
   </ItemGroup>
 
 </Project>

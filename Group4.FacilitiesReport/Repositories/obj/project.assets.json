@@ -738,21 +738,6 @@
           }
         }
       },
-      "Group4.FacilitiesReport.DAO/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
-        "dependencies": {
-          "Group4.FacilitiesReport.DTO": "1.0.0",
-          "Microsoft.EntityFrameworkCore": "6.0.21",
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
-        },
-        "compile": {
-          "bin/placeholder/Group4.FacilitiesReport.DAO.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Group4.FacilitiesReport.DAO.dll": {}
-        }
-      },
       "Group4.FacilitiesReport.DTO/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -761,6 +746,21 @@
         },
         "runtime": {
           "bin/placeholder/Group4.FacilitiesReport.DTO.dll": {}
+        }
+      },
+      "Group4.FacilitiesReport.Interface/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Group4.FacilitiesReport.DTO": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "6.0.21",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
+        },
+        "compile": {
+          "bin/placeholder/Group4.FacilitiesReport.Interface.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Group4.FacilitiesReport.Interface.dll": {}
         }
       }
     }
@@ -1928,36 +1928,41 @@
         "version.txt"
       ]
     },
-    "Group4.FacilitiesReport.DAO/1.0.0": {
-      "type": "project",
-      "path": "../Group4.FacilitiesReport.DAO/Group4.FacilitiesReport.DAO.csproj",
-      "msbuildProject": "../Group4.FacilitiesReport.DAO/Group4.FacilitiesReport.DAO.csproj"
-    },
     "Group4.FacilitiesReport.DTO/1.0.0": {
       "type": "project",
       "path": "../Group4.FacilitiesReport.DTO/Group4.FacilitiesReport.DTO.csproj",
       "msbuildProject": "../Group4.FacilitiesReport.DTO/Group4.FacilitiesReport.DTO.csproj"
+    },
+    "Group4.FacilitiesReport.Interface/1.0.0": {
+      "type": "project",
+      "path": "../Group4.FacilitiesReport.DAO/Group4.FacilitiesReport.Interface.csproj",
+      "msbuildProject": "../Group4.FacilitiesReport.DAO/Group4.FacilitiesReport.Interface.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Group4.FacilitiesReport.DAO >= 1.0.0"
+      "Group4.FacilitiesReport.Interface >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\RLappc.com\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
       "projectName": "Group4.FacilitiesReport.Repositories",
-      "projectPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\obj\\",
+      "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "packagesPath": "C:\\Users\\RLappc.com\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\RLappc.com\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1965,14 +1970,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {
-              "projectPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj"
+            "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj": {
+              "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.Interface.csproj"
             }
           }
         }
