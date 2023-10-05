@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {}
+    "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {
+    "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
         "projectName": "Group4.FacilitiesReport.DAO",
-        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
+        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\Group4.FacilitiesReport.DAO.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DAO\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
-                "projectPath": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+              "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+                "projectPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
               }
             }
           }
@@ -85,14 +85,14 @@
         }
       }
     },
-    "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+    "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "projectName": "Group4.FacilitiesReport.DTO",
-        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\hnam-truong\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
