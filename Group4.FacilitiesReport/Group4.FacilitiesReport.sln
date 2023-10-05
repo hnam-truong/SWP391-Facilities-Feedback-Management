@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.DTO", "Group4.FacilitiesReport.DTO\Group4.FacilitiesReport.DTO.csproj", "{8BD22A6C-2D8C-40B6-8E9F-C6CFF398A4E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.DAO", "Group4.FacilitiesReport.DAO\Group4.FacilitiesReport.DAO.csproj", "{B6A6D55A-AF81-473C-B29F-BEBA066207F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.Interface", "Group4.FacilitiesReport.DAO\Group4.FacilitiesReport.Interface.csproj", "{B6A6D55A-AF81-473C-B29F-BEBA066207F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Group4.FacilitiesReport.Repositories", "Repositories\Group4.FacilitiesReport.Repositories.csproj", "{153A8086-589E-41E3-AFAF-F1A875B944BF}"
 EndProject

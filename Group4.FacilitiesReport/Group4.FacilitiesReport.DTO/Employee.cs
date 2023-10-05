@@ -2,6 +2,6 @@
 {
     public class Employee : User
     {
-
+        public List<Category> Categories { get; set; }  
     }
 }
