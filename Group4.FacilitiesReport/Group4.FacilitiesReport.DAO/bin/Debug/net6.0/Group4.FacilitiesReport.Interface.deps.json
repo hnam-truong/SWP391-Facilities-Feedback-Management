@@ -6,15 +6,16 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "Group4.FacilitiesReport.DTO/1.0.0": {
+      "Group4.FacilitiesReport.Interface/1.0.0": {
         "dependencies": {
+          "Group4.FacilitiesReport.DTO": "1.0.0",
           "Microsoft.EntityFrameworkCore": "6.0.21",
           "Microsoft.EntityFrameworkCore.Design": "6.0.21",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.21"
         },
         "runtime": {
-          "Group4.FacilitiesReport.DTO.dll": {}
+          "Group4.FacilitiesReport.Interface.dll": {}
         }
       },
       "Humanizer.Core/2.8.26": {
@@ -489,11 +490,20 @@
             "fileVersion": "4.700.19.56404"
           }
         }
+      },
+      "Group4.FacilitiesReport.DTO/1.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "6.0.21",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
+        },
+        "runtime": {
+          "Group4.FacilitiesReport.DTO.dll": {}
+        }
       }
     }
   },
   "libraries": {
-    "Group4.FacilitiesReport.DTO/1.0.0": {
+    "Group4.FacilitiesReport.Interface/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -798,6 +808,11 @@
       "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
       "path": "system.windows.extensions/4.7.0",
       "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
+    },
+    "Group4.FacilitiesReport.DTO/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }
