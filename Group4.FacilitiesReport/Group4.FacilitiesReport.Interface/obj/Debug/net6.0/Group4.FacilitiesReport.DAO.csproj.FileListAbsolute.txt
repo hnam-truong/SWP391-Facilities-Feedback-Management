@@ -1,0 +1,17 @@
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DAO.deps.json
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DAO.runtimeconfig.json
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DAO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DAO.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.csproj.AssemblyReference.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.AssemblyInfoInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.AssemblyInfo.cs
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.csproj.CoreCompileInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.csproj.CopyComplete
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\refint\Group4.FacilitiesReport.DAO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\Group4.FacilitiesReport.DAO.genruntimeconfig.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DAO\obj\Debug\net6.0\ref\Group4.FacilitiesReport.DAO.dll
