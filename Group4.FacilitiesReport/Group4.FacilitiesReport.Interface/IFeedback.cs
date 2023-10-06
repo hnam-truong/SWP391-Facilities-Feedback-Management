@@ -12,9 +12,8 @@ namespace Group4.FacilitiesReport.Interface
         public IFeedback GetFeedbackByUserID(string UserID);
         public IFeedback GetAllFeedBack();
         public bool UpdateFeedback(DTO.Feedback feedback);
-        public bool NotifyFeedback(DTO.Feedback feedback);
+        public bool NotifyFeedback(string feedbackID);
         public bool UpdateFeedbackResponse(DTO.Feedback feedback);
-        public bool UpdateFeedbackStatus(DTO.Feedback feedback);
-        public bool CancelFeedback(DTO.Feedback feedback);
+        public bool UpdateFeedbackStatus(string feedbackID, int status);
     }
 }
