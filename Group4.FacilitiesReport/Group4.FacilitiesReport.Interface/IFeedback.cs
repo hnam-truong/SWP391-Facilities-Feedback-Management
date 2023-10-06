@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Interface
 {
-    internal interface IFeedback
+    public interface IFeedback
     {
-        public IFeedback GetFeedbackByUserID(string UserID);
-        public IFeedback GetAllFeedBack();
+        public Feedback GetFeedbackByUserID(string UserID);
+        public Feedback GetAllFeedBack();
         public bool UpdateFeedback(DTO.Feedback feedback);
         public bool NotifyFeedback(string feedbackID);
         public bool UpdateFeedbackResponse(DTO.Feedback feedback);
