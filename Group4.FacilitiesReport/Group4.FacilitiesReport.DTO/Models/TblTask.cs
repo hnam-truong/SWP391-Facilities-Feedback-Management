@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Group4.FacilitiesReport.DAO.Models
+namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblTask
     {
@@ -11,6 +11,9 @@ namespace Group4.FacilitiesReport.DAO.Models
         public string ManagerId { get; set; } = null!;
         public DateTime? DateTime { get; set; }
         public string ImgConfirmationUrl { get; set; } = null!;
+        public string? Note { get; set; }
+        public int? Status { get; set; }
+        public string? Responsed { get; set; }
 
         public virtual TblUser Employee { get; set; } = null!;
         public virtual TblFeedback Feedback { get; set; } = null!;

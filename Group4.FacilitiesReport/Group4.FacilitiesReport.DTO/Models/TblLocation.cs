@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Group4.FacilitiesReport.DAO.Models
+namespace Group4.FacilitiesReport.DTO.Models
 {
-    public partial class TblPosition
+    public partial class TblLocation
     {
-        public TblPosition()
+        public TblLocation()
         {
             TblFeedbacks = new HashSet<TblFeedback>();
         }

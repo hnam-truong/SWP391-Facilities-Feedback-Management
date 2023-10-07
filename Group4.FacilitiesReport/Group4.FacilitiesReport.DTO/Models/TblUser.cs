@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Group4.FacilitiesReport.DAO.Models
+namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblUser
     {
