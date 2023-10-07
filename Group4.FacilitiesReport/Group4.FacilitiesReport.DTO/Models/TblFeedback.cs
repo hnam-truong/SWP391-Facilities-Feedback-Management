@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Group4.FacilitiesReport.DAO.Models
+namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblFeedback
     {
@@ -24,7 +24,7 @@ namespace Group4.FacilitiesReport.DAO.Models
         public int? Notify { get; set; }
 
         public virtual TblCategoriesProblem Cate { get; set; } = null!;
-        public virtual TblPosition Position { get; set; } = null!;
+        public virtual TblLocation Position { get; set; } = null!;
         public virtual TblUser User { get; set; } = null!;
         public virtual ICollection<TblTask> TblTasks { get; set; }
     }
