@@ -19,12 +19,12 @@ namespace Group4.FacilitiesReport.DTO.Models
         public string? ImgUrl { get; set; }
         public string? Response { get; set; }
         public string CateId { get; set; } = null!;
-        public string PositionId { get; set; } = null!;
+        public string LocationId { get; set; } = null!;
         public int? Status { get; set; }
         public int? Notify { get; set; }
 
         public virtual TblCategoriesProblem Cate { get; set; } = null!;
-        public virtual TblLocation Position { get; set; } = null!;
+        public virtual TblLocation Location { get; set; } = null!;
         public virtual TblUser User { get; set; } = null!;
         public virtual ICollection<TblTask> TblTasks { get; set; }
     }

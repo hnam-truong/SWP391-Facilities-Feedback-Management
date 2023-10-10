@@ -10,7 +10,7 @@ namespace Group4.FacilitiesReport.DTO.Models
             TblFeedbacks = new HashSet<TblFeedback>();
         }
 
-        public string AreaId { get; set; } = null!;
+        public string LocationId { get; set; } = null!;
         public int? Disable { get; set; }
 
         public virtual ICollection<TblFeedback> TblFeedbacks { get; set; }
