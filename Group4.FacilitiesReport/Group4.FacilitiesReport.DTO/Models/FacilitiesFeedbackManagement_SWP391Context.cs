@@ -26,8 +26,7 @@ namespace Group4.FacilitiesReport.DTO.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
+                optionsBuilder.UseSqlServer("Server=ADMIN-PC\\SA; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
             }
         }
 
@@ -75,19 +74,11 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .IsUnicode(false)
                     .HasColumnName("ImgURL");
 
-<<<<<<< HEAD
-                entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.LocationID)
-                    .HasMaxLength(15)
-                    .HasColumnName("LocationID");
-=======
                 entity.Property(e => e.LocationId)
                     .HasMaxLength(15)
                     .HasColumnName("LocationID");
 
                 entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
->>>>>>> back3
 
                 entity.Property(e => e.Response).HasMaxLength(100);
 
@@ -113,11 +104,7 @@ namespace Group4.FacilitiesReport.DTO.Models
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.TblFeedbacks)
-<<<<<<< HEAD
-                    .HasForeignKey(d => d.LocationID)
-=======
                     .HasForeignKey(d => d.LocationId)
->>>>>>> back3
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__Posit__47DBAE45");
 
@@ -130,20 +117,12 @@ namespace Group4.FacilitiesReport.DTO.Models
 
             modelBuilder.Entity<TblLocation>(entity =>
             {
-<<<<<<< HEAD
-                entity.HasKey(e => e.LocationID)
-=======
                 entity.HasKey(e => e.LocationId)
->>>>>>> back3
                     .HasName("PK__tbl_Posi__70B8202851753999");
 
                 entity.ToTable("tbl_Location");
 
-<<<<<<< HEAD
-                entity.Property(e => e.LocationID)
-=======
                 entity.Property(e => e.LocationId)
->>>>>>> back3
                     .HasMaxLength(15)
                     .HasColumnName("LocationID");
 

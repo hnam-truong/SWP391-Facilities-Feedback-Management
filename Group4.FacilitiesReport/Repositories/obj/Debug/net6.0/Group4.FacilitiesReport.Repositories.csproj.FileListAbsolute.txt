@@ -1,0 +1,17 @@
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.AssemblyReference.cache
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.AssemblyInfoInputs.cache
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.AssemblyInfo.cs
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.CoreCompileInputs.cache
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.deps.json
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.dll
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.pdb
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.dll
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Interface.dll
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Interface.pdb
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.CopyComplete
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.dll
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\refint\Group4.FacilitiesReport.Repositories.dll
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.pdb
+D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\ref\Group4.FacilitiesReport.Repositories.dll
