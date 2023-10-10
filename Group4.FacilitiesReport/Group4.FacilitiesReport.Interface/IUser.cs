@@ -1,4 +1,5 @@
-﻿using Group4.FacilitiesReport.DAO.Models;
+﻿using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Interface
 {
-    internal interface IUser
+    public interface IUser
     {
-        public bool ChangePassword(DTO.User user);
-        public bool UpdateInfo( DTO.User user);
-
+        ICollection<TblUser> GetUsers();
+        User GetUserById(string userId);
+        User GetUserByFeedbackId(string feedbackId);
 
     }
 }

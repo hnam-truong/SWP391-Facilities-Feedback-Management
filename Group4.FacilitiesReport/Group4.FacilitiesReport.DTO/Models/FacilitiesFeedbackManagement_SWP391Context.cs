@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Group4.FacilitiesReport.DAO.Models
+namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class FacilitiesFeedbackManagement_SWP391Context : DbContext
     {
@@ -18,7 +18,7 @@ namespace Group4.FacilitiesReport.DAO.Models
 
         public virtual DbSet<TblCategoriesProblem> TblCategoriesProblems { get; set; } = null!;
         public virtual DbSet<TblFeedback> TblFeedbacks { get; set; } = null!;
-        public virtual DbSet<TblPosition> TblPositions { get; set; } = null!;
+        public virtual DbSet<TblLocation> TblLocations { get; set; } = null!;
         public virtual DbSet<TblTask> TblTasks { get; set; } = null!;
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
 
@@ -26,8 +26,7 @@ namespace Group4.FacilitiesReport.DAO.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
+                optionsBuilder.UseSqlServer("Server=ADMIN-PC\\SA; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
             }
         }
 
@@ -75,11 +74,11 @@ namespace Group4.FacilitiesReport.DAO.Models
                     .IsUnicode(false)
                     .HasColumnName("ImgURL");
 
-                entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.PositionId)
+                entity.Property(e => e.LocationId)
                     .HasMaxLength(15)
-                    .HasColumnName("PositionID");
+                    .HasColumnName("LocationID");
+
+                entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Response).HasMaxLength(100);
 
@@ -103,9 +102,9 @@ namespace Group4.FacilitiesReport.DAO.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__CateI__46E78A0C");
 
-                entity.HasOne(d => d.Position)
+                entity.HasOne(d => d.Location)
                     .WithMany(p => p.TblFeedbacks)
-                    .HasForeignKey(d => d.PositionId)
+                    .HasForeignKey(d => d.LocationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__Posit__47DBAE45");
 
@@ -116,16 +115,16 @@ namespace Group4.FacilitiesReport.DAO.Models
                     .HasConstraintName("FK__tbl_Feedb__UserI__4222D4EF");
             });
 
-            modelBuilder.Entity<TblPosition>(entity =>
+            modelBuilder.Entity<TblLocation>(entity =>
             {
-                entity.HasKey(e => e.AreaId)
+                entity.HasKey(e => e.LocationId)
                     .HasName("PK__tbl_Posi__70B8202851753999");
 
-                entity.ToTable("tbl_Position");
+                entity.ToTable("tbl_Location");
 
-                entity.Property(e => e.AreaId)
+                entity.Property(e => e.LocationId)
                     .HasMaxLength(15)
-                    .HasColumnName("AreaID");
+                    .HasColumnName("LocationID");
 
                 entity.Property(e => e.Disable).HasColumnName("DISABLE");
             });
@@ -158,23 +157,29 @@ namespace Group4.FacilitiesReport.DAO.Models
                     .IsUnicode(false)
                     .HasColumnName("ManagerID");
 
+                entity.Property(e => e.Note).HasMaxLength(300);
+
+                entity.Property(e => e.Responsed).HasMaxLength(300);
+
+                entity.Property(e => e.Status).HasDefaultValueSql("((0))");
+
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.TblTaskEmployees)
                     .HasForeignKey(d => d.EmployeeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__tbl_Task__Employ__4D94879B");
+                    .HasConstraintName("FK__tbl_Task__Employ__5DCAEF64");
 
                 entity.HasOne(d => d.Feedback)
                     .WithMany(p => p.TblTasks)
                     .HasForeignKey(d => d.FeedbackId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__tbl_Task__Feedba__4CA06362");
+                    .HasConstraintName("FK__tbl_Task__Feedba__5CD6CB2B");
 
                 entity.HasOne(d => d.Manager)
                     .WithMany(p => p.TblTaskManagers)
                     .HasForeignKey(d => d.ManagerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__tbl_Task__Manage__4E88ABD4");
+                    .HasConstraintName("FK__tbl_Task__Manage__5EBF139D");
             });
 
             modelBuilder.Entity<TblUser>(entity =>

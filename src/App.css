@@ -1,0 +1,280 @@
+:root {
+	--text-color: white;
+	--main-color: linear-gradient(0deg, #ff9d41, #ffcc7b);
+}
+
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(45deg, #ffc400, #ff6f00);
+	border-radius: 20px;
+}
+
+
+::-webkit-scrollbar-track {
+	/* background-color: rgb(255 255 255 / 10%); */
+	background-color: rgba(0, 0, 0, 0.678);
+
+}
+
+body {
+	font-family: 'DM Sans', sans-serif;
+}
+
+.App {
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	cursor: default;
+	background-image: url(https://daihoc.fpt.edu.vn/wp-content/uploads/2022/08/dai-hoc-fpt-tp-hcm-1.jpeg);
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+button,
+a {
+	cursor: pointer;
+}
+
+
+li {
+	list-style: none;
+	display: block;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+.header {
+	/* position: fixed; */
+	position: relative;
+	/* background-image: var(--main-color); */
+	height: 80px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	margin-bottom: 40px;
+}
+
+.header-logo {
+	/* margin-top: 20px; */
+	position: absolute;
+	width: 200px;
+	left: 20px;
+}
+
+li{
+	
+}
+
+.header-nav {
+	padding: 0px;
+	font-size: 16px;
+	flex: 1;
+	height: 100%;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+}
+
+
+.active {
+	background-color: #ff8c2d;
+}
+
+
+.header-nav-content {
+	/* font-family: "Lucida Console", Monaco, monospace; */
+	/* border: 1px solid #ff7300; */
+	margin: 0 30px;
+	color: #FFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	letter-spacing: 1px;
+	cursor: pointer;
+	box-shadow: inset 0 0 0 0 #ffc596;
+	border-radius: 6px;
+	width: 100px;
+	height: 50px;
+	-webkit-transition: ease-out 0.4s;
+	-moz-transition: ease-out 0.4s;
+	transition: ease-out 0.4s;
+}
+
+.header-nav-content:hover {
+	box-shadow: inset 0 0 0 50px #ffa861;
+}
+
+.active:hover {
+	box-shadow: inset 0 0 0 0px;
+	background-color: #ffa255;
+}
+
+.header-nav-login {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	right: 50px;
+	background-image: linear-gradient(150deg, #ffc400, #ff6f00);
+	width: 80px;
+	height: 30px;
+	border-radius: 20px;
+	font-weight: bold;
+}
+
+.header-nav-login:hover {
+	background-image: linear-gradient(45deg, #ffc400, #ff6f00);
+}
+
+.container-content {
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+
+.report {
+	background-color: #ff8929;
+	background-image: var(--main-color);
+	border-radius: 15px;
+	padding: 20px;
+	flex: 1;
+	min-width: 230px;
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	margin: 20px 20px 40px;
+}
+
+.report-box-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.report-box-header-user {
+	display: flex;
+	align-items: center;
+}
+
+.report-box-header-user-img {
+	height: 40px;
+	width: 40px;
+	object-fit: cover;
+	border-radius: 100%;
+}
+
+.report-box-header-user-name {
+	margin-left: 10px;
+	font-weight: bold;
+	color: var(--text-color);
+
+}
+
+.report-box-header-day {
+	display: flex;
+	font-size: 14px;
+	margin-left: 20px;
+	color: var(--text-color);
+	opacity: 0.8;
+	width: 100px;
+	justify-content: right;
+}
+
+.report-box-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.report-box-content-title {
+	margin-bottom: 0px;
+	font-weight: bold;
+	font-size: 18px;
+	color: var(--text-color);
+}
+
+.report-box-content-category {
+	margin-top: 8px;
+	margin-bottom: 0px;
+	font-size: 14px;
+	opacity: 0.8;
+	color: var(--text-color);
+}
+
+.report-box-content-status {
+	margin: 20px;
+	font-size: 16px;
+	align-items: center;
+	display: flex;
+	color: var(--text-color);
+}
+
+.report-box-content-btn {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	/* margin-top: 10px; */
+	margin-bottom: 10px;
+}
+
+.report-box-content-category-btn-more {
+	font-size: 14px;
+	font-weight: bold;
+	height: 30px;
+	width: 70px;
+	border-radius: 10px;
+	border: none;
+	background-color: #00cd55;
+	box-shadow: 0 5px #00a043;
+	color: white;
+}
+
+.report-box-content-category-btn-more:hover {
+	background-color: #00e45f;
+	box-shadow: 0 5px #00bc4f;
+}
+
+.report-box-content-category-btn-more:active {
+	transform: translateY(4px);
+	box-shadow: 0 3px #00bc4f;
+}
+
+.report-box-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 14px;
+}
+
+.report-box-footer-location {
+	font-weight: bold;
+	color: var(--text-color);
+}
+
+.report-box-footer-status-span {
+	margin-left: 5px;
+}
+
+.report-box-footer-time {
+	margin-left: 20px;
+	color: var(--text-color);
+}
+
+.outstading {
+	background-color: white;
+	padding: 4px 10px;
+	border-radius: 20px;
+	font-weight: bold;
+	color: orange;
+}

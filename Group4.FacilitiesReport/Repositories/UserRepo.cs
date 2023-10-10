@@ -1,10 +1,15 @@
-﻿using Group4.FacilitiesReport.DAO.Models;
+﻿using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
-using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Repositories
+namespace Group4.FacilitiesReport.Repositories
 {
-    public class UserRepo 
+    public class UserRepo : IUser
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
 
@@ -13,21 +18,20 @@ namespace Repositories
             _context = context;
         }
 
-        public bool Save()
+        public User GetUserByFeedbackId(string feedbackId)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            throw new NotImplementedException();
         }
-        public bool ChangePassword(Group4.FacilitiesReport.DTO.User user)
+
+        public User GetUserById(string userId)
         {
-            _context.Update(user.Password);
-            return Save();
+            throw new NotImplementedException();
         }
-        public bool UPdateInfo(Group4.FacilitiesReport.DTO.User user)
+
+        public ICollection<TblUser> GetUsers()
         {
-            _context.Update(user.Username);
-            _context.Update(user.Email);
-            return Save();
+            if (_context.TblUsers.ToList() == null) throw new Exception();
+            return _context.TblUsers.ToList();
         }
     }
 }
