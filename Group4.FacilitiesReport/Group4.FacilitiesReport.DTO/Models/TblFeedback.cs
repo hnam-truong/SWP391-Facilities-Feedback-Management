@@ -19,7 +19,7 @@ namespace Group4.FacilitiesReport.DTO.Models
         public string? ImgUrl { get; set; }
         public string? Response { get; set; }
         public string CateId { get; set; } = null!;
-        public string PositionId { get; set; } = null!;
+        public string LocationID { get; set; } = null!;
         public int? Status { get; set; }
         public int? Notify { get; set; }
 

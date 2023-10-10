@@ -77,9 +77,9 @@ namespace Group4.FacilitiesReport.DTO.Models
 
                 entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
 
-                entity.Property(e => e.PositionId)
+                entity.Property(e => e.LocationID)
                     .HasMaxLength(15)
-                    .HasColumnName("PositionID");
+                    .HasColumnName("LocationID");
 
                 entity.Property(e => e.Response).HasMaxLength(100);
 
@@ -105,7 +105,7 @@ namespace Group4.FacilitiesReport.DTO.Models
 
                 entity.HasOne(d => d.Position)
                     .WithMany(p => p.TblFeedbacks)
-                    .HasForeignKey(d => d.PositionId)
+                    .HasForeignKey(d => d.LocationID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__Posit__47DBAE45");
 
@@ -118,14 +118,14 @@ namespace Group4.FacilitiesReport.DTO.Models
 
             modelBuilder.Entity<TblLocation>(entity =>
             {
-                entity.HasKey(e => e.AreaId)
+                entity.HasKey(e => e.LocationID)
                     .HasName("PK__tbl_Posi__70B8202851753999");
 
                 entity.ToTable("tbl_Location");
 
-                entity.Property(e => e.AreaId)
+                entity.Property(e => e.LocationID)
                     .HasMaxLength(15)
-                    .HasColumnName("AreaID");
+                    .HasColumnName("LocationID");
 
                 entity.Property(e => e.Disable).HasColumnName("DISABLE");
             });
