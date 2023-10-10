@@ -75,11 +75,19 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .IsUnicode(false)
                     .HasColumnName("ImgURL");
 
+<<<<<<< HEAD
                 entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.LocationID)
                     .HasMaxLength(15)
                     .HasColumnName("LocationID");
+=======
+                entity.Property(e => e.LocationId)
+                    .HasMaxLength(15)
+                    .HasColumnName("LocationID");
+
+                entity.Property(e => e.Notify).HasDefaultValueSql("((0))");
+>>>>>>> back3
 
                 entity.Property(e => e.Response).HasMaxLength(100);
 
@@ -103,9 +111,13 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__CateI__46E78A0C");
 
-                entity.HasOne(d => d.Position)
+                entity.HasOne(d => d.Location)
                     .WithMany(p => p.TblFeedbacks)
+<<<<<<< HEAD
                     .HasForeignKey(d => d.LocationID)
+=======
+                    .HasForeignKey(d => d.LocationId)
+>>>>>>> back3
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Feedb__Posit__47DBAE45");
 
@@ -118,12 +130,20 @@ namespace Group4.FacilitiesReport.DTO.Models
 
             modelBuilder.Entity<TblLocation>(entity =>
             {
+<<<<<<< HEAD
                 entity.HasKey(e => e.LocationID)
+=======
+                entity.HasKey(e => e.LocationId)
+>>>>>>> back3
                     .HasName("PK__tbl_Posi__70B8202851753999");
 
                 entity.ToTable("tbl_Location");
 
+<<<<<<< HEAD
                 entity.Property(e => e.LocationID)
+=======
+                entity.Property(e => e.LocationId)
+>>>>>>> back3
                     .HasMaxLength(15)
                     .HasColumnName("LocationID");
 
