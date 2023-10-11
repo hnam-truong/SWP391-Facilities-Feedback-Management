@@ -1,4 +1,5 @@
 ﻿using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,13 +12,38 @@ namespace Group4.FacilitiesReport.Repositories
 {
     internal class FeedbackRepo : IFeedback
     {
-        public DbContext Context { get;  } = 
-        public Feedback GetAllFeedBack()
+        private readonly FacilitiesFeedbackManagement_SWP391Context _context;
+        public FeedbackRepo(FacilitiesFeedbackManagement_SWP391Context context)
         {
-            Context.
+            _context = context;
         }
 
-        public Feedback GetFeedbackByUserID(string UserID)
+        public ICollection<TblFeedback> GetAllFeedBack() => _context.TblFeedbacks.OrderByDescending(feedback => feedback.Notify).ThenBy(feedback => feedback.DateTime).ToList();
+
+        public ICollection<TblFeedback> GetFeedbackByCateId(string cateId) => _context.TblFeedbacks.Where(feedback => feedback.CateId.Equals(cateId)).ToList();
+        
+        public ICollection<TblFeedback> GetFeedbackByDate(DateTime date) => _context.TblFeedbacks.Where(feedback => feedback.d)
+        public ICollection<TblFeedback> GetFeedbackByLocationId(string locationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<TblFeedback> GetFeedbackByNotified()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<TblFeedback> GetFeedbackByStatus(int status)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<TblFeedback> GetFeedbackByUserId(string UserID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<TblFeedback> GetFeedbackByUserRole(int roleId)
         {
             throw new NotImplementedException();
         }
@@ -42,4 +68,3 @@ namespace Group4.FacilitiesReport.Repositories
             throw new NotImplementedException();
         }
     }
-}
