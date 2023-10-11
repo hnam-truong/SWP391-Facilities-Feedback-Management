@@ -1,11 +1,6 @@
-﻿using Group4.FacilitiesReport.DTO;
-using Group4.FacilitiesReport.DTO.Models;
+﻿using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -18,14 +13,16 @@ namespace Group4.FacilitiesReport.Repositories
             _context = context;
         }
 
-        public User GetUserByFeedbackId(string feedbackId)
+
+        public bool Save()
         {
-            throw new NotImplementedException();
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
-        public User GetUserById(string userId)
+        public TblUser GetUserById(string userId)
         {
-            throw new NotImplementedException();
+            return _context.TblUsers.Where(p => p.UserId == userId).FirstOrDefault();
         }
 
         public ICollection<TblUser> GetUsers()
@@ -33,5 +30,18 @@ namespace Group4.FacilitiesReport.Repositories
             if (_context.TblUsers.ToList() == null) throw new Exception();
             return _context.TblUsers.ToList();
         }
+
+        public bool ModifyInfo(string userId, TblUser user)
+        {
+            _context.Update(user);
+            return Save();
+        }
+
+        public bool UserExists(string userId)
+        {
+            return _context.TblUsers.Any(p => p.UserId == userId);
+        }
+
+       
     }
 }

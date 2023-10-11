@@ -26,3 +26,17 @@ D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesRep
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.genruntimeconfig.cache
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\ref\Group4.FacilitiesReport.DTO.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.csproj.AssemblyReference.cache
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.GeneratedMSBuildEditorConfig.editorconfig
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.AssemblyInfoInputs.cache
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.AssemblyInfo.cs
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.csproj.CoreCompileInputs.cache
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\refint\Group4.FacilitiesReport.DTO.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.deps.json
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.runtimeconfig.json
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\Group4.FacilitiesReport.DTO.genruntimeconfig.cache
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net6.0\ref\Group4.FacilitiesReport.DTO.dll

@@ -32,5 +32,48 @@ namespace API.Controllers
 
             return Ok(users);
         }
+        [HttpGet("{userId}")]
+        [ProducesResponseType(200, Type = typeof(TblUser))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserById(string userId)
+        {
+            if (!_iUser.UserExists(userId))
+                return NotFound();
+
+            var user = _mapper.Map<User>(_iUser.GetUserById(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(user);
+        }
+        [HttpPut("{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult ModifyInfo(string userId,TblUser user) 
+        {
+            if (ModifyInfo == null)
+                return BadRequest(ModelState);
+
+            if (userId != user.UserId)
+                return BadRequest(ModelState);
+
+            if (!_iUser.UserExists(userId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var pokemonMap = _mapper.Map<TblUser>(user);
+
+            if (!_iUser.ModifyInfo(userId, pokemonMap))
+            {
+                ModelState.AddModelError("", "Something went wrong updating owner");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

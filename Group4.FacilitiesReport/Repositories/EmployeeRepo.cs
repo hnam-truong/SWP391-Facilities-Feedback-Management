@@ -1,7 +1,8 @@
-﻿using Group4.FacilitiesReport.DAO.Models;
+﻿
 using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
-using Microsoft.AspNet.Identity;
+
 
 namespace Repositories
 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Group4.FacilitiesReport.DTO.Models;
+using System;
 using System.Collections.Generic;
 
 namespace Group4.FacilitiesReport.DAO.Models

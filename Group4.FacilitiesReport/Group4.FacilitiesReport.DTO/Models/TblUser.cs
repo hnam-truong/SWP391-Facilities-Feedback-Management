@@ -23,7 +23,6 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual ICollection<TblFeedback> TblFeedbacks { get; set; }
         public virtual ICollection<TblTask> TblTaskEmployees { get; set; }
         public virtual ICollection<TblTask> TblTaskManagers { get; set; }
-
         public virtual ICollection<TblCategoriesProblem> Cates { get; set; }
     }
 }

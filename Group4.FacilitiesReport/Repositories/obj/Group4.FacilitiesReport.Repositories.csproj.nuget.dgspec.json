@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {}
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {}
   },
   "projects": {
-    "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "projectName": "Group4.FacilitiesReport.DTO",
-        "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
+        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -81,14 +81,14 @@
         }
       }
     },
-    "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
+        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
         "projectName": "Group4.FacilitiesReport.Interface",
-        "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
+        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\obj\\",
+        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -105,8 +105,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
-                "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+              "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+                "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
               }
             }
           }
@@ -140,14 +140,14 @@
         }
       }
     },
-    "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
+    "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+        "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
         "projectName": "Group4.FacilitiesReport.Repositories",
-        "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+        "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\obj\\",
+        "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -164,8 +164,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
-                "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+              "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+                "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
               }
             }
           }
