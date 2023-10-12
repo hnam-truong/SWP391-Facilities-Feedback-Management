@@ -46,7 +46,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<TblUser> Login(string username, string password)
         {
             var userEntity = await _context.TblUsers.SingleOrDefaultAsync(u => u.Email == username && u.Password == password);
-            return _mapper.Map<TblUser>(userEntity);
+            return _mapper.Map<TblUser>(userEntity); 
         }
 
 
