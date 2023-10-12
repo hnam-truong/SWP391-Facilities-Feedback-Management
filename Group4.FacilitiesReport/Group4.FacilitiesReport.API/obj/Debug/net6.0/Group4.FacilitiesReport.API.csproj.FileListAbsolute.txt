@@ -146,3 +146,12 @@ D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net6.0\Group4.FacilitiesReport.API.csproj.CopyComplete
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net6.0\Group4.FacilitiesReport.API.genruntimeconfig.cache
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net6.0\ref\Group4.FacilitiesReport.API.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.AspNet.Identity.Core.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.AspNet.Identity.Owin.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.Security.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.Security.Cookies.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.Security.OAuth.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Newtonsoft.Json.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Owin.dll

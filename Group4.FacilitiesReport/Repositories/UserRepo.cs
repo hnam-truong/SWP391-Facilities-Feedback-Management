@@ -1,16 +1,22 @@
-﻿using Group4.FacilitiesReport.DTO.Models;
+﻿using AutoMapper;
+using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
-
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Group4.FacilitiesReport.Repositories
 {
     public class UserRepo : IUser
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
+        private readonly IMapper _mapper;
 
-        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context)
+        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -37,11 +43,18 @@ namespace Group4.FacilitiesReport.Repositories
             return Save();
         }
 
+        public async Task<TblUser> Login(string username, string password)
+        {
+            var userEntity = await _context.TblUsers.SingleOrDefaultAsync(u => u.Email == username && u.Password == password);
+            return _mapper.Map<TblUser>(userEntity);
+        }
+
+
         public bool UserExists(string userId)
         {
             return _context.TblUsers.Any(p => p.UserId == userId);
         }
 
-       
+      
     }
 }

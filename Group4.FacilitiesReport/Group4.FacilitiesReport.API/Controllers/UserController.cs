@@ -5,6 +5,13 @@ using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Microsoft.Data.SqlClient;
 
 namespace API.Controllers
 {
@@ -15,10 +22,13 @@ namespace API.Controllers
         private readonly IUser _iUser;
         private readonly IMapper _mapper;
 
-        public UserController(IUser IUser, IMapper mapper)
+        private readonly IConfiguration _configuration;
+
+        public UserController(IUser IUser, IMapper mapper,  IConfiguration configuration)
         {
             _iUser = IUser;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpGet("list")]
@@ -47,16 +57,30 @@ namespace API.Controllers
 
             return Ok(user);
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(string username, string password)
+        {
+            var user = await _iUser.Login(username, password);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Generate and return a token, or set a cookie, etc.
+            return Ok();
+        }
+
         [HttpPut("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult ModifyInfo(string userId,TblUser user) 
+        public IActionResult ModifyInfo(string userId,[FromBody]User user) 
         {
             if (ModifyInfo == null)
                 return BadRequest(ModelState);
 
-            if (userId != user.UserId)
+            if (userId != user.UserID)
                 return BadRequest(ModelState);
 
             if (!_iUser.UserExists(userId))
@@ -65,9 +89,9 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var pokemonMap = _mapper.Map<TblUser>(user);
+            var userMap = _mapper.Map<TblUser>(user);
 
-            if (!_iUser.ModifyInfo(userId, pokemonMap))
+            if (!_iUser.ModifyInfo(userId, userMap))
             {
                 ModelState.AddModelError("", "Something went wrong updating owner");
                 return StatusCode(500, ModelState);
@@ -75,5 +99,6 @@ namespace API.Controllers
 
             return NoContent();
         }
+       
     }
 }

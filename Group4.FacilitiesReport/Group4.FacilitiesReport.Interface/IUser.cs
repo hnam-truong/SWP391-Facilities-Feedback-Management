@@ -13,6 +13,7 @@ namespace Group4.FacilitiesReport.Interface
         bool UserExists(string userId);
         ICollection<TblUser> GetUsers();
         TblUser GetUserById(string userId);
+        Task<TblUser> Login(string username, string password);
         bool ModifyInfo(string userId, TblUser user);
         bool Save();
 
