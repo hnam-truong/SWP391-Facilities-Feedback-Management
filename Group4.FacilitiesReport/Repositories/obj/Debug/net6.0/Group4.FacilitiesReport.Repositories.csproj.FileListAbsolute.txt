@@ -15,3 +15,20 @@ D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Deb
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\refint\Group4.FacilitiesReport.Repositories.dll
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.pdb
 D:\submit\New folder\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\ref\Group4.FacilitiesReport.Repositories.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.deps.json
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Repositories.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Interface.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.Interface.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\bin\Debug\net6.0\Group4.FacilitiesReport.DTO.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.AssemblyReference.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.AssemblyInfoInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.AssemblyInfo.cs
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.CoreCompileInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.csproj.CopyComplete
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\refint\Group4.FacilitiesReport.Repositories.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\Group4.FacilitiesReport.Repositories.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Repositories\obj\Debug\net6.0\ref\Group4.FacilitiesReport.Repositories.dll
