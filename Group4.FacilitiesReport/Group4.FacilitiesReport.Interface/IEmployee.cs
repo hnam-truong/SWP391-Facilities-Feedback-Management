@@ -9,7 +9,7 @@ namespace Group4.FacilitiesReport.Interface
 {
     internal interface IEmployee  : IUser
     {
-        public bool ModifyCateId(List<Category> categories);
+        bool ModifyCateId(List<Category> categories);
 
     }
 }

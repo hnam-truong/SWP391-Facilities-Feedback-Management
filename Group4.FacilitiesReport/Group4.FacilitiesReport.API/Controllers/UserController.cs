@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 
 namespace API.Controllers
 {
@@ -64,40 +65,29 @@ namespace API.Controllers
             var user = await _iUser.Login(username, password);
             if (user == null)
             {
-                return Unauthorized();
+                return Unauthorized("Wrong user or password");
             }
 
-            // Generate and return a token, or set a cookie, etc.
-            return Ok();
+            return Ok(user);
         }
 
         [HttpPut("{userId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult ModifyInfo(string userId,[FromBody]User user) 
+        public IActionResult ModifyInfo([FromRoute] string userId, [FromQuery] string userName, [FromQuery] string email, [FromQuery] string password) 
         {
-            if (ModifyInfo == null)
-                return BadRequest(ModelState);
-
-            if (userId != user.UserID)
-                return BadRequest(ModelState);
-
-            if (!_iUser.UserExists(userId))
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            var userMap = _mapper.Map<TblUser>(user);
-
-            if (!_iUser.ModifyInfo(userId, userMap))
+            var userExist = _iUser.GetUserById(userId);
+            if(userExist == null)
             {
-                ModelState.AddModelError("", "Something went wrong updating owner");
-                return StatusCode(500, ModelState);
+                return NotFound();
             }
 
-            return NoContent();
+            userExist.Username = userName;
+            userExist.Email = email;
+            userExist.Password = password;
+            _iUser.ModifyInfo(userExist);
+            return Ok("Update Successful!!!");
         }
        
     }

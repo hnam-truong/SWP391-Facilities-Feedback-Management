@@ -37,7 +37,7 @@ namespace Group4.FacilitiesReport.Repositories
             return _context.TblUsers.ToList();
         }
 
-        public bool ModifyInfo(string userId, TblUser user)
+        public bool ModifyInfo(TblUser user)
         {
             _context.Update(user);
             return Save();

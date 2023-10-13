@@ -14,7 +14,7 @@ namespace Group4.FacilitiesReport.Interface
         ICollection<TblUser> GetUsers();
         TblUser GetUserById(string userId);
         Task<TblUser> Login(string username, string password);
-        bool ModifyInfo(string userId, TblUser user);
+        bool ModifyInfo(TblUser user);
         bool Save();
 
     }
