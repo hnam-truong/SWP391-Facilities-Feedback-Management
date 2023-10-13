@@ -13,6 +13,7 @@ namespace Group4.FacilitiesReport.Interface
         bool UserExists(string userId);
         IEnumerable<TblUser> GetUsersByStatus(int status);
         int CountUsersByStatus(int status);
+        IEnumerable<TblUser> GetUsersByRole(int role);
         IEnumerable<TblUser> GetUsersWhoProvidedFeedback();
         int CountUsersWhoProvidedFeedback();
         ICollection<TblUser> GetUsers();

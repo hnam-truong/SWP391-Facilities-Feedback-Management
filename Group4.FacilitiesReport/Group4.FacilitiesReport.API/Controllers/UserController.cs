@@ -66,6 +66,14 @@ namespace API.Controllers
 
             return Ok(userDtos);
         }
+        [HttpGet("role/{role}")]
+        public ActionResult<IEnumerable<User>> GetUsersByRole(int role)
+        {
+            var users = _iUser.GetUsersByRole(role);
+            var userDtos = _mapper.Map<IEnumerable<User>>(users);
+
+            return Ok(userDtos);
+        }
 
         [HttpGet("feedback")]
         public ActionResult<IEnumerable<User>> GetUsersWhoProvidedFeedback()

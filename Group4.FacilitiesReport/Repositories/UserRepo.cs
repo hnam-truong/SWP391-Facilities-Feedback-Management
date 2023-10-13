@@ -73,5 +73,10 @@ namespace Group4.FacilitiesReport.Repositories
         {
             return _context.TblUsers.Count(u => u.TblFeedbacks.Any());
         }
+
+        public IEnumerable<TblUser> GetUsersByRole(int role)
+        {
+            return _context.TblUsers.Where(u => u.Role == role).ToList();
+        }
     }
 }
