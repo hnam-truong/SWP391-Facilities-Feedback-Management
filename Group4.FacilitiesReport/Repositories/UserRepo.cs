@@ -37,6 +37,11 @@ namespace Group4.FacilitiesReport.Repositories
             return _context.TblUsers.ToList();
         }
 
+        public int CountUsersByStatus(int status)
+        {
+            return _context.TblUsers.Count(u => u.Status == status);
+        }
+
         public bool ModifyInfo(TblUser user)
         {
             _context.Update(user);
@@ -55,6 +60,18 @@ namespace Group4.FacilitiesReport.Repositories
             return _context.TblUsers.Any(p => p.UserId == userId);
         }
 
-      
+        public IEnumerable<TblUser> GetUsersByStatus(int status)
+        {
+            return _context.TblUsers.Where(u => u.Status == status).ToList();
+        }
+
+        public IEnumerable<TblUser> GetUsersWhoProvidedFeedback()
+        {
+            return _context.TblUsers.Where(u => u.TblFeedbacks.Any()).ToList();
+        }
+        public int CountUsersWhoProvidedFeedback()
+        {
+            return _context.TblUsers.Count(u => u.TblFeedbacks.Any());
+        }
     }
 }

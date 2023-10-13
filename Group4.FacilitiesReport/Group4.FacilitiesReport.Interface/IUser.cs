@@ -11,6 +11,10 @@ namespace Group4.FacilitiesReport.Interface
     public interface IUser
     {
         bool UserExists(string userId);
+        IEnumerable<TblUser> GetUsersByStatus(int status);
+        int CountUsersByStatus(int status);
+        IEnumerable<TblUser> GetUsersWhoProvidedFeedback();
+        int CountUsersWhoProvidedFeedback();
         ICollection<TblUser> GetUsers();
         TblUser GetUserById(string userId);
         Task<TblUser> Login(string username, string password);

@@ -155,3 +155,5 @@ D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.Security.OAuth.dll
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Owin.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Google.dll
+D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Owin.Security.Google.dll

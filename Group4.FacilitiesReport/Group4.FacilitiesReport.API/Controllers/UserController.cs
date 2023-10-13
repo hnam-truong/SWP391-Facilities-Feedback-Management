@@ -58,6 +58,30 @@ namespace API.Controllers
 
             return Ok(user);
         }
+        [HttpGet("status/{status}")]
+        public ActionResult<IEnumerable<User>> GetUsersByStatus(int status)
+        {
+            var users = _iUser.GetUsersByStatus(status);
+            var userDtos = _mapper.Map<IEnumerable<User>>(users);
+
+            return Ok(userDtos);
+        }
+
+        [HttpGet("feedback")]
+        public ActionResult<IEnumerable<User>> GetUsersWhoProvidedFeedback()
+        {
+            var users = _iUser.GetUsersWhoProvidedFeedback();
+
+            return Ok(users);
+        }
+
+        [HttpGet("feedback/count")]
+        public ActionResult<int> CountUsersWhoProvidedFeedback()
+        {
+            var count = _iUser.CountUsersWhoProvidedFeedback();
+
+            return Ok(count);
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(string username, string password)
@@ -69,6 +93,14 @@ namespace API.Controllers
             }
 
             return Ok(user);
+        }
+
+        [HttpGet("countStatus")]
+        public ActionResult<int> CountUsersByStatus(int status)
+        {
+            var count = _iUser.CountUsersByStatus(status);
+
+            return Ok(count);
         }
 
         [HttpPut("{userId}")]
@@ -89,6 +121,7 @@ namespace API.Controllers
             _iUser.ModifyInfo(userExist);
             return Ok("Update Successful!!!");
         }
+
        
     }
 }
