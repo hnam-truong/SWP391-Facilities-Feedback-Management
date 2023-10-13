@@ -102,6 +102,15 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
 
+        //[HttpGet("")]
+        //[ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
+        //public IActionResult GetNotifiedFeedback()
+        //{
+        //    var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByNotified());
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
+        //    return Ok(feedbacks);
+        //}
     }
 }
