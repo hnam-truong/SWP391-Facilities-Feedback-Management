@@ -12,7 +12,7 @@
         public string? Response { get; set; }
         public string CateId { get; set; } = null!;
         public string LocationId { get; set; } = null!;
-        public int? Status { get; set; }
-        public int? Notify { get; set; }
+        public int Status { get; set; }
+        public int Notify { get; set; }
     }
 }

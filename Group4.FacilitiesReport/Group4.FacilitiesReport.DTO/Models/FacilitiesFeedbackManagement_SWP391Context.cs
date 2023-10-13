@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Group4.FacilitiesReport.DTO.Models
 {
@@ -21,12 +18,14 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual DbSet<TblLocation> TblLocations { get; set; } = null!;
         public virtual DbSet<TblTask> TblTasks { get; set; } = null!;
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
+        public virtual DbSet<TblUserRole> TblUserRoles { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=ADMIN-PC\\SA; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
+
+                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
             }
         }
 
@@ -207,9 +206,16 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
                 entity.Property(e => e.Status).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Username).HasMaxLength(50);
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.TblUsers)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK_tblUser_RoleID");
 
                 entity.HasMany(d => d.Cates)
                     .WithMany(p => p.Users)
@@ -227,6 +233,22 @@ namespace Group4.FacilitiesReport.DTO.Models
 
                             j.IndexerProperty<string>("CateId").HasMaxLength(3).IsUnicode(false).HasColumnName("CateID").IsFixedLength();
                         });
+            });
+
+            modelBuilder.Entity<TblUserRole>(entity =>
+            {
+                entity.HasKey(e => e.RoleId)
+                    .HasName("PK__tbl_User__8AFACE3A11CCB16F");
+
+                entity.ToTable("tbl_UserRole");
+
+                entity.Property(e => e.RoleId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("RoleID");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

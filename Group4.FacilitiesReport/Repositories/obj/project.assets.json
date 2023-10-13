@@ -756,8 +756,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "Group4.FacilitiesReport.DTO": "1.0.0",
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
+          "Group4.FacilitiesReport.DTO": "1.0.0"
         },
         "compile": {
           "bin/placeholder/Group4.FacilitiesReport.Interface.dll": {}
@@ -1944,24 +1943,28 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Group4.FacilitiesReport.Interface >= 1.0.0",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.21"
+      "Group4.FacilitiesReport.Interface >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vieta\\.nuget\\packages\\": {}
+    "C:\\Users\\RLappc.com\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "projectUniqueName": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
       "projectName": "Group4.FacilitiesReport.Repositories",
-      "projectPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
-      "packagesPath": "C:\\Users\\vieta\\.nuget\\packages\\",
-      "outputPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Repositories\\obj\\",
+      "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "packagesPath": "C:\\Users\\RLappc.com\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\vieta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\RLappc.com\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1969,14 +1972,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
-              "projectPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+            "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+              "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
             }
           }
         }
@@ -1990,12 +1994,6 @@
     "frameworks": {
       "net6.0": {
         "targetAlias": "net6.0",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.SqlServer": {
-            "target": "Package",
-            "version": "[6.0.21, )"
-          }
-        },
         "imports": [
           "net461",
           "net462",

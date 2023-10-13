@@ -1,11 +1,8 @@
-using System.Text.Json.Serialization;
-using AutoMapper;
-using Group4.FacilitiesReport.API.Helper;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Group4.FacilitiesReport.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 namespace Group4.FacilitiesReport.API
 {
@@ -22,6 +19,7 @@ namespace Group4.FacilitiesReport.API
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IUser, UserRepo>();
+            builder.Services.AddScoped<IFeedback, FeedbackRepo>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -29,7 +27,7 @@ namespace Group4.FacilitiesReport.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-           
+
 
             var app = builder.Build();
 

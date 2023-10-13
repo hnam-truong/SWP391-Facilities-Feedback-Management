@@ -9,6 +9,7 @@ namespace Group4.FacilitiesReport.API.Helper
         public MappingProfiles()
         {
             CreateMap<User, TblUser>().ReverseMap();
+            CreateMap<Feedback, TblFeedback>().ReverseMap();
 
         }
     }
