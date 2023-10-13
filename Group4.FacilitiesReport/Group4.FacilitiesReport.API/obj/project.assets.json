@@ -872,7 +872,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "Group4.FacilitiesReport.DTO": "1.0.0"
+          "Group4.FacilitiesReport.DTO": "1.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
         },
         "compile": {
           "bin/placeholder/Group4.FacilitiesReport.Interface.dll": {}
@@ -885,7 +886,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "Group4.FacilitiesReport.Interface": "1.0.0"
+          "Group4.FacilitiesReport.Interface": "1.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
         },
         "compile": {
           "bin/placeholder/Group4.FacilitiesReport.Repositories.dll": {}
@@ -2449,23 +2451,24 @@
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 11.0.0",
       "Group4.FacilitiesReport.Interface >= 1.0.0",
       "Group4.FacilitiesReport.Repositories >= 1.0.0",
+      "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.21",
       "Swashbuckle.AspNetCore >= 6.5.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\vieta\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
+      "projectUniqueName": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
       "projectName": "Group4.FacilitiesReport.API",
-      "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\obj\\",
+      "projectPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
+      "packagesPath": "C:\\Users\\vieta\\.nuget\\packages\\",
+      "outputPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\vieta\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2479,11 +2482,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
-              "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+            "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+              "projectPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
             },
-            "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
-              "projectPath": "D:\\submit\\New folder\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj"
+            "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
+              "projectPath": "E:\\Material learning from school\\CN5\\SWP391\\SWP\\SWP391v3\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj"
             }
           }
         }
@@ -2505,6 +2508,10 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[11.0.0, )"
+          },
+          "Microsoft.EntityFrameworkCore.SqlServer": {
+            "target": "Package",
+            "version": "[6.0.21, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
