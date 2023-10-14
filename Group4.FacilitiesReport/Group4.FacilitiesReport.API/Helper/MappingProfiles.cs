@@ -10,7 +10,6 @@ namespace Group4.FacilitiesReport.API.Helper
         {
             CreateMap<User, TblUser>().ReverseMap();
             CreateMap<Feedback, TblFeedback>().ReverseMap();
-
         }
     }
 }

@@ -179,6 +179,9 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
+              "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+                "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+              },
               "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
                 "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
               }
@@ -194,6 +197,20 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.21, )"
+            },
+            "ef_includer": {
+              "target": "Package",
+              "version": "[1.0.15, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

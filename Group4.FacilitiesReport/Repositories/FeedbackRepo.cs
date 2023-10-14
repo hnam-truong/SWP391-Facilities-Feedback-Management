@@ -1,6 +1,6 @@
 ﻿using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 using System.Globalization;
 
 namespace Group4.FacilitiesReport.Repositories
@@ -13,7 +13,12 @@ namespace Group4.FacilitiesReport.Repositories
             _context = context;
         }
 
-        public ICollection<TblFeedback> GetAllFeedBack() => _context.TblFeedbacks.OrderByDescending(feedback => feedback.Notify).ThenBy(feedback => feedback.DateTime).ToList();
+        public ICollection<TblFeedback> GetAllFeedBack()
+        {
+            var list = _context.TblFeedbacks
+                .Include(f => f.User).ToList();
+            return list;
+        }
 
         public ICollection<TblFeedback> GetFeedbackByCateId(string cateId) => _context.TblFeedbacks.Where(feedback => feedback.CateId.Equals(cateId)).ToList();
 
@@ -32,7 +37,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public ICollection<TblFeedback> GetFeedbackByUserId(string UserID) => _context.TblFeedbacks.Where(feedback => feedback.UserId.Equals(UserID)).ToList();
 
-        public ICollection<TblFeedback> GetFeedbackByUserRole(int UserRole) => _context.TblFeedbacks.Include(feedback => feedback.User).Where(feedback => feedback.User.RoleId.Equals(UserRole)).ToList();
+        public ICollection<TblFeedback> GetFeedbackByUserRole(int UserRole) => _context.TblFeedbacks.Where(feedback => feedback.User.RoleId.Equals(UserRole)).ToList();
 
         public bool NotifyFeedback(string feedbackID)
         {

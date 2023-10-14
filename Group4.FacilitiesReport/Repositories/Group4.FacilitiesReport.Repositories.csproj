@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ef_includer" Version="1.0.15" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.21" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Group4.FacilitiesReport.DTO\Group4.FacilitiesReport.DTO.csproj" />
     <ProjectReference Include="..\Group4.FacilitiesReport.Interface\Group4.FacilitiesReport.Interface.csproj" />
   </ItemGroup>
 
