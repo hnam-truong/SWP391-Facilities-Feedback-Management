@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // react-github-btn
@@ -288,7 +273,7 @@ function Configurator() {
         <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}
-            href="https://www.creative-tim.com/learning-lab/react/quick-start/material-dashboard/"
+            href="https://www.facebook.com/fptboardgameclub"
             target="_blank"
             rel="noreferrer"
             color={darkMode ? "light" : "dark"}
@@ -300,7 +285,7 @@ function Configurator() {
         </MDBox>
         <MDBox display="flex" justifyContent="center">
           <GitHubButton
-            href="https://github.com/creativetimofficial/material-dashboard-react"
+            href="https://github.com/hnam-truong"
             data-icon="octicon-star"
             data-size="large"
             data-show-count="true"
@@ -318,7 +303,7 @@ function Configurator() {
             <MDBox mr={1.5}>
               <MDButton
                 component={Link}
-                href="//twitter.com/intent/tweet?text=Check%20Material%20Dashboard%20React%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23react%20%mui&url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fmaterial-dashboard-react"
+                href="https://www.facebook.com/fptboardgameclub"
                 target="_blank"
                 rel="noreferrer"
                 color="dark"
@@ -329,7 +314,7 @@ function Configurator() {
             </MDBox>
             <MDButton
               component={Link}
-              href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard-react"
+              href="https://www.facebook.com/fptboardgameclub"
               target="_blank"
               rel="noreferrer"
               color="dark"

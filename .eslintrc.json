@@ -13,12 +13,12 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "prettier/prettier": [
+    "prettier/prettier": 0/*[
       "error",
       {
         "endOfLine": "auto"
       }
-    ],
+    ]*/,
     "react/display-name": "off",
     "default-param-last": "off",
     "react/react-in-jsx-scope": "off",
