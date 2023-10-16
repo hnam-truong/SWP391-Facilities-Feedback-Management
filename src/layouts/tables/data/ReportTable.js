@@ -1,40 +1,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { Link } from "react-router-dom";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-// Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
-
 //MUI
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { createTheme } from "@mui/material/styles";
 import SwitchStar from "./SwitchStar";
 
 export default function data() {
@@ -81,16 +57,17 @@ export default function data() {
       </MDTypography>
     </MDBox>
   );
+  
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === 0 || feedback.status === 1) // Filter out data that doesn't meet the condition
+    .filter((feedback) => feedback.status === 0 || feedback.status === 1)
     .map((feedback) => ({
-      noti: (
+      star: (
         <Box sx={{ mr: -3, ml: 0 }}>
           <SwitchStar />
         </Box>
       ),
       author: <Author name={feedback.userId} user={feedback.userId} />,
-      title: <h4>{feedback.title}</h4>,
+      title: <Link><h4>{feedback.title}</h4></Link>,
       info: <Info category={feedback.cateId} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
@@ -135,7 +112,7 @@ export default function data() {
       //   align: "right",
       //   width: "0%",
       // },
-      { Header: "", accessor: "noti", align: "center", width: "0%" },
+      { Header: "", accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
       { Header: "cat/loc", accessor: "info", align: "left" },

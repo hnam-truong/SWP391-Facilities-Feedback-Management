@@ -1,14 +1,14 @@
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
+import ReportsTable from "layouts/tables";
+import ReportHistory from "layouts/history";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import { layouts } from "chart.js";
 
 const routes = [
   {
@@ -25,16 +25,16 @@ const routes = [
     key: "reports",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/reports",
-    component: <Tables />,
+    component: <ReportsTable />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   icon: <Icon fontSize="small">receipt_long</Icon>,
-  //   route: "/billing",
-  //   component: <Billing />,
-  // },
+  {
+    type: "collapse",
+    name: "History",
+    key: "history",
+    icon: <Icon fontSize="small">history</Icon>,
+    route: "/history",
+    component: <ReportHistory />,
+  },
   {
     type: "collapse",
     name: "Notifications",
@@ -51,21 +51,13 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
   // {
   //   type: "collapse",
-  //   name: "Sign Up",
-  //   key: "sign-up",
-  //   icon: <Icon fontSize="small">assignment</Icon>,
-  //   route: "/authentication/sign-up",
-  //   component: <SignUp />,
+  //   name: "Sign In",
+  //   key: "sign-in",
+  //   icon: <Icon fontSize="small">login</Icon>,
+  //   route: "/authentication/sign-in",
+  //   component: <SignIn />,
   // },
 ];
 

@@ -1,25 +1,16 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
 
 //MUI
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { createTheme } from "@mui/material/styles";
 import SwitchStar from "./SwitchStar";
 
 export default function data() {
@@ -64,9 +55,9 @@ export default function data() {
     </MDBox>
   );
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === 2 || feedback.status === -1 || feedback.status === -2 ) // Filter out data that doesn't meet the condition
+    .filter((feedback) => feedback.status === 2 || feedback.status === -1 || feedback.status === -2 )
     .map((feedback) => ({
-      noti: (
+      star: (
         <Box sx={{ mr: -3, ml: 0 }}>
           <SwitchStar />
         </Box>
@@ -114,7 +105,7 @@ export default function data() {
     // },
   return {
     columns: [
-      { Header: "", accessor: "noti", align: "center", width: "0%" },
+      { Header: "", accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
       { Header: "cat/loc", accessor: "info", align: "left" },
