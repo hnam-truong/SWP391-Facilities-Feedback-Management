@@ -21,6 +21,17 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddScoped<IUser, UserRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
+            {
+                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
+            //builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixed window", options =>
+            //{
+            //    options.Window = TimeSpan.FromSeconds(10);
+            //    options.PermitLimit = 1;
+            //    options.QueueLimit = 1;
+            //    options.QueueProcessingOrder. = System.Threading.RateLimiting.QueueProcessingOrder.OrderFirst;
+            //}));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<FacilitiesFeedbackManagement_SWP391Context>(options =>
@@ -38,7 +49,8 @@ namespace Group4.FacilitiesReport.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors();
+            app.
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

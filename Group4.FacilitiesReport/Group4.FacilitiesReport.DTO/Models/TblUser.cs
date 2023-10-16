@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Group4.FacilitiesReport.DTO.Models
+﻿namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblUser
     {
@@ -18,7 +15,7 @@ namespace Group4.FacilitiesReport.DTO.Models
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public int? RoleId { get; set; }
-        public int? Status { get; set; }
+        public int Status { get; set; }
 
         public virtual TblUserRole? Role { get; set; }
         public virtual ICollection<TblFeedback> TblFeedbacks { get; set; }

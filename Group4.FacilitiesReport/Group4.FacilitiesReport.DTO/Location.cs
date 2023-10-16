@@ -1,6 +1,6 @@
 ﻿namespace Group4.FacilitiesReport.DTO
 {
-    internal class Location
+    public class Location
     {
         public string LocationId { get; set; } = null!;
         public int? Disable { get; set; }
