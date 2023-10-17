@@ -59,10 +59,10 @@ function Footer({ light }) {
             by
             <Link href="https://www.creative-tim.com/" target="_blank">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;Creative Tim&nbsp;
+                123
               </MDTypography>
             </Link>
-            for a better web.
+          siu 
           </MDBox>
           <MDBox
             component="ul"
@@ -81,7 +81,7 @@ function Footer({ light }) {
               },
             })}
           >
-            <MDBox component="li" pr={2} lineHeight={1}>
+            {/* <MDBox component="li" pr={2} lineHeight={1}>
               <Link href="https://www.creative-tim.com/" target="_blank">
                 <MDTypography
                   variant="button"
@@ -122,9 +122,9 @@ function Footer({ light }) {
                   color={light ? "white" : "dark"}
                 >
                   License
-                </MDTypography>
-              </Link>
-            </MDBox>
+                </MDTypography> */}
+            {/* </Link> */}
+            {/* </MDBox> */}
           </MDBox>
         </MDBox>
       </Container>

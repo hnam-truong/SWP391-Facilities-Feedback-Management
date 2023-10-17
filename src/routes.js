@@ -11,6 +11,14 @@ import Icon from "@mui/material/Icon";
 import { layouts } from "chart.js";
 
 const routes = [
+   {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/",
+    component: <SignIn />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -51,14 +59,12 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Sign In",
-  //   key: "sign-in",
-  //   icon: <Icon fontSize="small">login</Icon>,
-  //   route: "/authentication/sign-in",
-  //   component: <SignIn />,
-  // },
+ 
 ];
+const isSignedIn = localStorage.getItem("token");
+// If the user is signed in, hide the "Sign In" link
+if (isSignedIn) {
+  routes.splice(0, 1);
+}
 
 export default routes;

@@ -32,14 +32,6 @@ import Footer from "layouts/authentication/components/Footer";
 function BasicLayout({ image, children }) {
   return (
     <PageLayout>
-      <DefaultNavbar
-        action={{
-          type: "external",
-          route: "https://creative-tim.com/product/material-dashboard-react",
-          label: "free download",
-          color: "dark",
-        }}
-      />
       <MDBox
         position="absolute"
         width="100%"
@@ -48,7 +40,7 @@ function BasicLayout({ image, children }) {
           backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
             image &&
             `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
+              rgba(gradients.dark.main, 0.1),
               rgba(gradients.dark.state, 0.6)
             )}, url(${image})`,
           backgroundSize: "cover",

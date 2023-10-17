@@ -59,6 +59,7 @@ export default function data() {
     .map((feedback) => ({
       star: (
         <Box sx={{ mr: -3, ml: 0 }}>
+          style={{color:'#ffff'}}
           <SwitchStar />
         </Box>
       ),
