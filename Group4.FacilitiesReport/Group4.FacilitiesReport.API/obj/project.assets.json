@@ -12211,8 +12211,8 @@
     },
     "Group4.FacilitiesReport.Repositories/1.0.0": {
       "type": "project",
-      "path": "../Repositories/Group4.FacilitiesReport.Repositories.csproj",
-      "msbuildProject": "../Repositories/Group4.FacilitiesReport.Repositories.csproj"
+      "path": "../Group4.FacilitiesReport.Repositories/Group4.FacilitiesReport.Repositories.csproj",
+      "msbuildProject": "../Group4.FacilitiesReport.Repositories/Group4.FacilitiesReport.Repositories.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -12269,6 +12269,9 @@
             },
             "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
               "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+            },
+            "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
+              "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj"
             },
             "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
               "projectPath": "C:\\Users\\RLappc.com\\Desktop\\SWP391-Project\\Group4.FacilitiesReport\\Repositories\\Group4.FacilitiesReport.Repositories.csproj"

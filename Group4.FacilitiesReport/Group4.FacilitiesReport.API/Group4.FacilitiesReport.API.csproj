@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Group4.FacilitiesReport.DTO\Group4.FacilitiesReport.DTO.csproj" />
     <ProjectReference Include="..\Group4.FacilitiesReport.Interface\Group4.FacilitiesReport.Interface.csproj" />
+    <ProjectReference Include="..\Group4.FacilitiesReport.Repositories\Group4.FacilitiesReport.Repositories.csproj" />
     <ProjectReference Include="..\Repositories\Group4.FacilitiesReport.Repositories.csproj" />
   </ItemGroup>
 

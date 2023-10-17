@@ -16,7 +16,7 @@ namespace Group4.FacilitiesReport.Repositories
                 .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).Include(f => f.Location).Include(f => f.Tasks);
         }
 
-        public Task<List<TblFeedback>> GetAllFeedBack() => AllFeedback.ToListAsync();
+        public List<TblFeedback> GetAllFeedBack() => AllFeedback.ToList();
         public Task<List<TblFeedback>> GetFeedbackByCateId(string cateId) => AllFeedback.Where(feedback => feedback.CateId.Equals(cateId)).ToListAsync();
 
         public Task<List<TblFeedback>> GetFeedbackByDate(string beginDate, string endDate)

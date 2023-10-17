@@ -370,3 +370,5 @@ C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.Facili
 C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Bot.Schema.dll
 C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Rest.ClientRuntime.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\AspNetCoreRateLimit.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
