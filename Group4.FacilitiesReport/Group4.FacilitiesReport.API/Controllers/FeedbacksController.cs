@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Group4.FacilitiesReport.DTO;
-using Group4.FacilitiesReport.DTO.Models;
+﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,63 +8,75 @@ namespace Group4.FacilitiesReport.API.Controllers
     [ApiController]
     public class FeedbacksController : ControllerBase
     {
-        private readonly IFeedback _iFeedback;
-        private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment environment;
+        private readonly IFeedback _ifeedback;
 
-        public FeedbacksController(IFeedback iFeedback, IMapper mapper, IWebHostEnvironment environment)
+        public FeedbacksController(IFeedback ifeedback)
         {
-            _iFeedback = iFeedback;
-            _mapper = mapper;
-            this.environment = environment;
+            _ifeedback = ifeedback;
         }
 
-        [HttpGet]
-
-
-        public IActionResult GetAllFeedback()
+        [HttpGet("AllFeedbacks")]
+        public async Task<IActionResult> GetAllFeedback()
         {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetAllFeedBack());
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            var feedbacks = await this._ifeedback.GetAllFeedBack();
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
             return Ok(feedbacks);
         }
         [HttpGet("User/{UserId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetFeedbackByUserId(string UserId)
+        public async Task<IActionResult> GetFeedbackByUserId(string UserId)
         {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByUserId(UserId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            var feedbacks = await this._ifeedback.GetFeedbackByUserId(UserId);
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
             return Ok(feedbacks);
         }
-        [HttpGet("Role/{RoleId}")]
 
-        [HttpGet("Date/{BeginDate}_{EndDate}")]
-        public IActionResult GetFeedbackByUserRole(string BeginDate, string EndDate)
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateFeedback(string userId, string title, string description, string cateId, string locatoinId)
         {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByDate(BeginDate, EndDate));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            return Ok(feedbacks);
+            var feedback = await this._ifeedback.CreateFeedback(new Feedback
+            {
+                FeedbackId = Guid.NewGuid(),
+                UserId = userId,
+                Title = title,
+                Description = description,
+                CateId = cateId,
+                LocationId = locatoinId,
+                Notify = 0,
+                DateTime = DateTime.Now
+            });
+            return Ok(feedback);
         }
-        [HttpGet("Notified")]
-        public IActionResult GetNotifiedFeedback()
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
         {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByNotified());
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            return Ok(feedbacks);
+            var feedback = await this._ifeedback.UpdateFeedback(new Feedback
+            {
+                FeedbackId = feedbackId,
+                UserId = userId,
+                Title = title,
+                Description = description,
+                CateId = cateId,
+                LocationId = locatoinId,
+            });
+            return Ok(feedback);
         }
-        [HttpPut("CancelProcessing")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult CancelProcessingFeedback(string feedbackId)
+
+        [HttpPut("UpdateStatus")]
+        public async Task<IActionResult> UpdateFeedbackStatus(string feedbackId, string status)
         {
-            return Ok(_iFeedback.UpdateFeedbackStatus(feedbackId, 0));
+            Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue);
+            var feedback = this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
+            return Ok(feedback);
         }
+
+
     }
 }

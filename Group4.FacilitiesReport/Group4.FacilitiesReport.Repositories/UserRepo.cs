@@ -6,6 +6,13 @@ namespace Group4.FacilitiesReport.Repositories
 {
     public class UserRepo : IUser
     {
+        private readonly FacilitiesFeedbackManagement_SWP391Context _context;
+
+        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context)
+        {
+            _context = context;
+        }
+
         public User GetUserByFeedbackId(string feedbackId)
         {
             throw new NotImplementedException();
@@ -18,7 +25,8 @@ namespace Group4.FacilitiesReport.Repositories
 
         public ICollection<TblUser> GetUsers()
         {
-            throw new NotImplementedException();
+            if (_context.TblUsers.ToList() == null) throw new Exception();
+            return _context.TblUsers.ToList();
         }
     }
 }

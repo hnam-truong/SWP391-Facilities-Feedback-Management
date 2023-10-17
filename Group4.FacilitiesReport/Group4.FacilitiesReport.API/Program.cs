@@ -1,6 +1,8 @@
+using Group4.FacilitiesReport.API.Helper;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Group4.FacilitiesReport.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -21,10 +23,10 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddScoped<IUser, UserRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            //builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
-            //{
-            //    build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
-            //}));
+            builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
+            {
+                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
             //builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixed window", options =>
             //{
             //    options.Window = TimeSpan.FromSeconds(10);
@@ -32,7 +34,7 @@ namespace Group4.FacilitiesReport.API
             //    options.QueueLimit = 1;
             //    options.QueueProcessingOrder. = System.Threading.RateLimiting.QueueProcessingOrder.OrderFirst;
             //}));
-            //builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<FacilitiesFeedbackManagement_SWP391Context>(options =>
@@ -50,11 +52,11 @@ namespace Group4.FacilitiesReport.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            //app.UseCors();
+            app.UseCors();
 
             app.UseHttpsRedirection();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 
             app.MapControllers();

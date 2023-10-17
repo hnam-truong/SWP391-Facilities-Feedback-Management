@@ -1,7 +1,7 @@
 ﻿using Group4.FacilitiesReport.DTO.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Data.Entity;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -21,7 +21,7 @@ namespace Group4.FacilitiesReport.API.Helper
 
         protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey("Authoriation"))
+            if (!Request.Headers.ContainsKey("Authorization"))
             {
                 return AuthenticateResult.Fail("No header found");
             }
