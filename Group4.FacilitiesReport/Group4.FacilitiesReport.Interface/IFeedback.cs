@@ -14,6 +14,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<List<TblFeedback>> GetFeedbackByUserRole(int UserRole);
         public Task<List<TblFeedback>> GetFeedbackByDate(string beginDate, string endDate);
         public Task<List<TblFeedback>> GetFeedbackByStatus(int status);
+        public TblFeedback GetFeedbackById(string feedbackId);
         public Task<List<TblFeedback>> GetFeedbackByNotified();
         public bool UpdateFeedbackResponse(string feedbackID, string response);
 

@@ -62,11 +62,11 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(feedbacks);
         }
-        //[HttpPut("CreateFeedback")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        //public IActionResult CreateFeedback(string userId, string title, string desctiption)
-        //{
-
-        //}
+        [HttpPut("CancelProcessing")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
+        public IActionResult CancelProcessingFeedback(string feedbackId)
+        {
+            return Ok(_iFeedback.UpdateFeedbackStatus(feedbackId, 0));
+        }
     }
 }

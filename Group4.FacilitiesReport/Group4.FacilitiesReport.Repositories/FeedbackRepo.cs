@@ -23,6 +23,11 @@ namespace Group4.FacilitiesReport.Repositories
 
             => AllFeedback.Where(feedback => feedback.DateTime > DateTime.ParseExact(beginDate, "dd-MM-yyyy", CultureInfo.InvariantCulture) && feedback.DateTime < DateTime.ParseExact(endDate, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToListAsync();
 
+        public TblFeedback GetFeedbackById(string feedbackId)
+        {
+            return AllFeedback.FirstOrDefault(f => f.FeedbackId.Equals(feedbackId));
+        }
+
         public Task<List<TblFeedback>> GetFeedbackByLocationId(string locationId) => AllFeedback.Where(feedback => feedback.LocationId.Equals(locationId)).ToListAsync();
 
 
