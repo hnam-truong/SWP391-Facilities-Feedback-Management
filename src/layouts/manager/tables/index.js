@@ -13,10 +13,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import ReportHistory from "layouts/history/data/ReportHistory";
+import ReportTable from "layouts/manager/tables/data/ReportTable";
 
-function ReportsHistory() {
-  const { columns, rows } = ReportHistory();
+function ReportsTable() {
+  const { columns, rows } = ReportTable();
 
   return (
     <DashboardLayout>
@@ -36,7 +36,7 @@ function ReportsHistory() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Reports History
+                  Reports Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -57,4 +57,4 @@ function ReportsHistory() {
   );
 }
 
-export default ReportsHistory;
+export default ReportsTable;

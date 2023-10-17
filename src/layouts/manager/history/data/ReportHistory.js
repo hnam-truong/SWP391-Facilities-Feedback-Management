@@ -18,7 +18,7 @@ export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(() => {
     // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks";
+    const apiUrl = "http://localhost:7157/api/Feedbacks";
 
     // Make a GET request to your API endpoint
     fetch(apiUrl)
@@ -55,7 +55,7 @@ export default function data() {
     </MDBox>
   );
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === 2 || feedback.status === -1 || feedback.status === -2 )
+    .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired" )
     .map((feedback) => ({
       star: (
         <Box sx={{ mr: -3, ml: 0 }}>
@@ -69,11 +69,11 @@ export default function data() {
         <MDBox ml={-1}>
           {(() => {
             switch (feedback.status) {
-              case 2:
+              case "Closed":
                 return (
                   <MDBadge badgeContent="closed" color="inherit" variant="gradient" size="sm" />
                 );
-              case -1:
+              case "Rejected":
                 return (
                   <MDBadge badgeContent="rejected" color="error" variant="gradient" size="sm" />
                 );

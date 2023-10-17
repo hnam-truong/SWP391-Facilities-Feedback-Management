@@ -1,8 +1,8 @@
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
-import ReportsTable from "layouts/tables";
-import ReportHistory from "layouts/history";
-import Notifications from "layouts/notifications";
+import Dashboard from "layouts/manager/dashboard";
+import ReportsTable from "layouts/manager/tables";
+import ReportHistory from "layouts/manager/history";
+import Notifications from "layouts/manager/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 

@@ -18,7 +18,7 @@ export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(() => {
     // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks";
+    const apiUrl = "http://localhost:7157/api/Feedbacks";
 
     // Make a GET request to your API endpoint
     fetch(apiUrl)
@@ -26,6 +26,81 @@ export default function data() {
       .then((data) => setFeedbacks(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  function handleCancelReport(feedbackId) {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Waiting" }),
+    };
+    fetch("http://localhost:7157/api/Feedbacks" + '/' + feedbackId, option)
+      .then((response) => {response.text()})
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Waiting" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+
+  }
+
+  function handleAcceptReport(feedbackId) {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Processing" }),
+    };
+    fetch("http://localhost:7157/api/Feedbacks" + '/' + feedbackId, option)
+      .then((response) => {response.text()})
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Processing" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+
+  }
+
+  function handleRejectReport(feedbackId) {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Rejected" }),
+    };
+    fetch("http://localhost:7157/api/Feedbacks" + '/' + feedbackId, option)
+      .then((response) => {response.text()})
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Rejected" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+
+  }
 
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -57,9 +132,9 @@ export default function data() {
       </MDTypography>
     </MDBox>
   );
-  
+
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === 0 || feedback.status === 1)
+    .filter((feedback) => feedback.status === "Waiting" || feedback.status === "Processing")
     .map((feedback) => ({
       star: (
         <Box sx={{ mr: -3, ml: 0 }}>
@@ -72,22 +147,22 @@ export default function data() {
       status: (
         <MDBox ml={-1}>
           <MDBadge
-            badgeContent={feedback.status === 0 ? "waiting" : "processing"}
-            color={feedback.status === 0 ? "light" : "warning"}
+            badgeContent={feedback.status}
+            color={feedback.status === "Waiting" ? "light" : "warning"}
             variant="gradient"
             size="sm"
           />
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} expire="48 hours" />,
-      action: feedback.status === 0 ? (
+      action: feedback.status === "Waiting" ? (
         <div>
-          <IconButton>
+          <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
             <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
               Accept
             </MDTypography>
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
             <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
               Reject
             </MDTypography>
@@ -95,7 +170,7 @@ export default function data() {
         </div>
       ) : (
         <div>
-          <IconButton>
+          <IconButton onClick={() => handleCancelReport(feedback.feedbackId)}>
             <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
               Cancel
             </MDTypography>
