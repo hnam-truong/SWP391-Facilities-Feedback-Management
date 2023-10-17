@@ -102,7 +102,7 @@ function Basic() {
                   <button
                     onClick={renderProps.onClick}
                     disabled={renderProps.disabled}
-                    style={{ marginTop: '10px', width: '100%', height: '40px', borderStyle:'solid',borderColor:'#6e6e79', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6e6e79', backgroundColor: '#ffff'}}
+                    style={{ marginTop: '10px', width: '100%', height: '41px', borderStyle:'solid',borderColor:'#6e6e79', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6e6e79', backgroundColor: '#ffff'}}
                   >
                     <img src={google} alt="google" style={{ width: '20px', height: 'auto', marginRight: '5px' }}></img>
                     <strong>SIGN IN WITH GOOGLE</strong>
