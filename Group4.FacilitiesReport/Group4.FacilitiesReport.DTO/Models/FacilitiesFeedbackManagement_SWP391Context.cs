@@ -20,14 +20,6 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
         public virtual DbSet<TblUserRole> TblUserRoles { get; set; } = null!;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-
-                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -169,7 +161,7 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasConstraintName("FK__tbl_Task__Employ__5DCAEF64");
 
                 entity.HasOne(d => d.Feedback)
-                    .WithMany(p => p.TblTasks)
+                    .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.FeedbackId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Task__Feedba__5CD6CB2B");
