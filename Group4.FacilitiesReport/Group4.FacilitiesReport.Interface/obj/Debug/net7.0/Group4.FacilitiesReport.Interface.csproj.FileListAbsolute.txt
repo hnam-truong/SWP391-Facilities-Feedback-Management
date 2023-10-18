@@ -1,0 +1,15 @@
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\bin\Debug\net7.0\Group4.FacilitiesReport.Interface.deps.json
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\bin\Debug\net7.0\Group4.FacilitiesReport.Interface.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\bin\Debug\net7.0\Group4.FacilitiesReport.Interface.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.csproj.AssemblyReference.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.AssemblyInfoInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.AssemblyInfo.cs
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.csproj.CoreCompileInputs.cache
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.csproj.CopyComplete
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\refint\Group4.FacilitiesReport.Interface.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\Group4.FacilitiesReport.Interface.pdb
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.Interface\obj\Debug\net7.0\ref\Group4.FacilitiesReport.Interface.dll

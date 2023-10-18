@@ -31,9 +31,9 @@ namespace Group4.FacilitiesReport.API.Helper
                 var bytes = Convert.FromBase64String(headvalue.Parameter);
                 string credentials = Encoding.UTF8.GetString(bytes);
                 string[] array = credentials.Split(":");
-                string username = array[0];
+                string email = array[0];
                 string password = array[1];
-                var user = await this.context.TblUsers.FirstOrDefaultAsync(item => item.Email.Equals(username) && item.Password.Equals(password));
+                var user = await this.context.TblUsers.FirstOrDefaultAsync(item => item.Email.Equals(email) && item.Password.Equals(password));
                 if (user != null)
                 {
                     var claim = new[] { new Claim(ClaimTypes.Name, user.Email) };

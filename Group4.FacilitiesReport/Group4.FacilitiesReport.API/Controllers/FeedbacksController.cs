@@ -37,7 +37,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         [HttpGet("Id/{feedbackId}")]
-        public async Task<IActionResult> GetFeedback(string feedbackId)
+        public async Task<IActionResult> GetFeedback(Guid feedbackId)
         {
             var feedbacks = await this._ifeedback.GetFeedback(feedbackId);
             if (feedbacks == null)
@@ -47,9 +47,13 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         [HttpGet("Count")]
-        public async Task<IActionResult> CountFeedback(DateTime beginDate, DateTime endDate)
+        public async Task<IActionResult> CountFeedback(string beginDate, string endDate)
         {
-            int count = await this._ifeedback.CountFeedbackByDate(beginDate, endDate);
+            int count = await this._ifeedback.CountFeedbackByDate(
+                DateTime.ParseExact(beginDate, "dd-MM-yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture),
+                DateTime.ParseExact(endDate, "dd-MM-yyyy",
+                                       System.Globalization.CultureInfo.InvariantCulture));
             return Ok(count);
         }
         [HttpPost("Create")]
@@ -84,14 +88,14 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
         [HttpPut("Notify")]
-        public async Task<IActionResult> NotifyFeedback(string feedbackId)
+        public async Task<IActionResult> NotifyFeedback(Guid feedbackId)
         {
             var feedback = await this._ifeedback.NotifyFeedback(feedbackId);
             return Ok(feedback);
         }
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateFeedbackStatus(string feedbackId, string status)
+        public async Task<IActionResult> UpdateFeedbackStatus(Guid feedbackId, string status)
         {
             Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue);
             var feedback = await this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
@@ -99,13 +103,13 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
         [HttpPut("ResponseFeedback")]
-        public async Task<IActionResult> ResponseFeedback(string feedbackId, string description)
+        public async Task<IActionResult> ResponseFeedback(Guid feedbackId, string description)
         {
             var feedback = await this._ifeedback.FeedbackResponse(feedbackId, description);
             return Ok(feedback);
         }
         [HttpDelete("RemoveFeedback/{feedbackId}")]
-        public async Task<IActionResult> RemoveFeedback(string feedbackId)
+        public async Task<IActionResult> RemoveFeedback(Guid feedbackId)
         {
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
         }

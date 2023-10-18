@@ -16,10 +16,10 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual DbSet<TblCategoriesProblem> TblCategoriesProblems { get; set; } = null!;
         public virtual DbSet<TblFeedback> TblFeedbacks { get; set; } = null!;
         public virtual DbSet<TblLocation> TblLocations { get; set; } = null!;
+        public virtual DbSet<TblRefreshToken> TblRefreshTokens { get; set; } = null!;
         public virtual DbSet<TblTask> TblTasks { get; set; } = null!;
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
         public virtual DbSet<TblUserRole> TblUserRoles { get; set; } = null!;
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -118,6 +118,24 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasColumnName("LocationID");
 
                 entity.Property(e => e.Disable).HasColumnName("DISABLE");
+            });
+
+            modelBuilder.Entity<TblRefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.UserId)
+                    .HasName("PK__Tbl_Refr__1788CC4C4CDA5083");
+
+                entity.ToTable("Tbl_RefreshToken");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(36)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RefreshToken).IsUnicode(false);
+
+                entity.Property(e => e.TokenId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TblTask>(entity =>
