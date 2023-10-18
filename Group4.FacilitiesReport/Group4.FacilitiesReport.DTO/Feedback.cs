@@ -12,7 +12,13 @@
         public string? Response { get; set; }
         public string CateId { get; set; } = null!;
         public string LocationId { get; set; } = null!;
-        public int Status { get; set; }
-        public int Notify { get; set; }
+        public string Status { get; set; }
+        public string Notify { get; set; }
+
+        public Category Cate { get; set; } = null;
+        public User User { get; set; } = null!;
+        public Location location { get; set; } = null!;
+        public ICollection<Task> Tasks { get; set; }
+
     }
 }

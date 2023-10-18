@@ -12,15 +12,17 @@ namespace Group4.FacilitiesReport.API.Controllers
     {
         private readonly IFeedback _iFeedback;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment environment;
 
-        public FeedbacksController(IFeedback iFeedback, IMapper mapper)
+        public FeedbacksController(IFeedback iFeedback, IMapper mapper, IWebHostEnvironment environment)
         {
             _iFeedback = iFeedback;
             _mapper = mapper;
+            this.environment = environment;
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
+
 
         public IActionResult GetAllFeedback()
         {
@@ -41,48 +43,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         [HttpGet("Role/{RoleId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetFeedbackByUserRole(int RoleId)
-        {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByUserRole(RoleId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            return Ok(feedbacks);
-        }
-        [HttpGet("Location/{LocationId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetFeedbackByLocation(string LocationId)
-        {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByLocationId(LocationId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(feedbacks);
-        }
-        [HttpGet("Category/{CateId}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetFeedbackByCategory(string CateId)
-        {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByCateId(CateId));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(feedbacks);
-        }
-        [HttpGet("Status/{Status}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetFeedbackByStatus(int Status)
-        {
-            var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByStatus(Status));
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(feedbacks);
-        }
         [HttpGet("Date/{BeginDate}_{EndDate}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
         public IActionResult GetFeedbackByUserRole(string BeginDate, string EndDate)
         {
             var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByDate(BeginDate, EndDate));
@@ -92,7 +54,6 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         [HttpGet("Notified")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
         public IActionResult GetNotifiedFeedback()
         {
             var feedbacks = _mapper.Map<List<Feedback>>(_iFeedback.GetFeedbackByNotified());
@@ -101,7 +62,11 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(feedbacks);
         }
-
-
+        [HttpPut("CancelProcessing")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
+        public IActionResult CancelProcessingFeedback(string feedbackId)
+        {
+            return Ok(_iFeedback.UpdateFeedbackStatus(feedbackId, 0));
+        }
     }
 }
