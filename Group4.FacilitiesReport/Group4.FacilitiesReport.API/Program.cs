@@ -55,7 +55,7 @@ namespace Group4.FacilitiesReport.API
             app.UseCors();
 
             app.UseHttpsRedirection();
-            //app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

@@ -1,22 +1,18 @@
-﻿using Group4.FacilitiesReport.DTO.Models;
+﻿using Group4.FacilitiesReport.DTO;
 
 namespace Group4.FacilitiesReport.Interface
 {
     public interface IFeedback
     {
-        public Task<List<TblFeedback>> GetFeedbackByUserId(string UserID);
-        public List<TblFeedback> GetAllFeedBack();
-        public bool UpdateFeedback(TblFeedback feedback);
-        public bool NotifyFeedback(string feedbackID);
-        public bool UpdateFeedbackStatus(string feedbackID, int status);
-        public Task<List<TblFeedback>> GetFeedbackByCateId(string cateId);
-        public Task<List<TblFeedback>> GetFeedbackByLocationId(string locationId);
-        public Task<List<TblFeedback>> GetFeedbackByUserRole(int UserRole);
-        public Task<List<TblFeedback>> GetFeedbackByDate(string beginDate, string endDate);
-        public Task<List<TblFeedback>> GetFeedbackByStatus(int status);
-        public TblFeedback GetFeedbackById(string feedbackId);
-        public Task<List<TblFeedback>> GetFeedbackByNotified();
-        public bool UpdateFeedbackResponse(string feedbackID, string response);
-
+        public Task<List<DTO.Feedback>> GetFeedbackByUserId(string UserId);
+        public Task<List<DTO.Feedback>> GetAllFeedBack();
+        public Task<APIResponse> UpdateFeedback(DTO.Feedback feedback);
+        public Task<APIResponse> NotifyFeedback(string feedbackID);
+        public Task<APIResponse> UpdateFeedbackStatus(string feedbackId, int status);
+        public Task<APIResponse> FeedbackResponse(string feedbackId, string response);
+        public Task<DTO.Feedback> GetFeedback(string feedbackId);
+        public Task<APIResponse> CreateFeedback(DTO.Feedback feedback);
+        public Task<APIResponse> RemoveFeedback(string feedbackId);
+        public Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate);
     }
 }

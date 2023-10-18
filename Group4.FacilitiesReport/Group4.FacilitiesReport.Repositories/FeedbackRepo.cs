@@ -1,101 +1,231 @@
-﻿using Group4.FacilitiesReport.DTO.Models;
+﻿using AutoMapper;
+using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace Group4.FacilitiesReport.Repositories
 {
     public class FeedbackRepo : IFeedback
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
-        private IQueryable<TblFeedback> AllFeedback;
-        public FeedbackRepo(FacilitiesFeedbackManagement_SWP391Context context)
+        private readonly IMapper _mapper;
+
+
+        public FeedbackRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper)
         {
             _context = context;
-            AllFeedback = _context.TblFeedbacks
-                .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).Include(f => f.Location).Include(f => f.Tasks);
+            _mapper = mapper;
+
+        }
+        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks)
+                    .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate);
+        public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
+        {
+            return await AllFeedback().Where(f => f.DateTime > beginDate && f.DateTime < endDate).CountAsync();
         }
 
-        public List<TblFeedback> GetAllFeedBack() => AllFeedback.ToList();
-        public Task<List<TblFeedback>> GetFeedbackByCateId(string cateId) => AllFeedback.Where(feedback => feedback.CateId.Equals(cateId)).ToListAsync();
-
-        public Task<List<TblFeedback>> GetFeedbackByDate(string beginDate, string endDate)
-
-            => AllFeedback.Where(feedback => feedback.DateTime > DateTime.ParseExact(beginDate, "dd-MM-yyyy", CultureInfo.InvariantCulture) && feedback.DateTime < DateTime.ParseExact(endDate, "dd-MM-yyyy", CultureInfo.InvariantCulture)).ToListAsync();
-
-        public TblFeedback GetFeedbackById(string feedbackId)
+        public async Task<APIResponse> CreateFeedback(Feedback feedback)
         {
-            return AllFeedback.FirstOrDefault(f => f.FeedbackId.Equals(feedbackId));
-        }
-
-        public Task<List<TblFeedback>> GetFeedbackByLocationId(string locationId) => AllFeedback.Where(feedback => feedback.LocationId.Equals(locationId)).ToListAsync();
-
-
-        public Task<List<TblFeedback>> GetFeedbackByNotified() => AllFeedback.Where(feedback => feedback.Notify == 1).ToListAsync();
-
-
-        public Task<List<TblFeedback>> GetFeedbackByStatus(int status) =>
-        AllFeedback.Where(feedback => feedback.Status.Equals(status)).ToListAsync();
-
-        public Task<List<TblFeedback>> GetFeedbackByUserId(string UserID) => AllFeedback.Where(feedback => feedback.UserId.Equals(UserID)).ToListAsync();
-
-        public Task<List<TblFeedback>> GetFeedbackByUserRole(int UserRole) => AllFeedback.Where(feedback => feedback.User.RoleId.Equals(UserRole)).ToListAsync();
-
-        public bool NotifyFeedback(string feedbackID)
-        {
-            var obj = _context.TblFeedbacks.SingleOrDefault(feedback => feedback.FeedbackId.Equals(feedbackID));
-            if (obj != null)
+            APIResponse _response = new APIResponse();
+            try
             {
-                if (obj.Notify == 0) obj.Notify = 1;
-                else obj.Notify = 0;
-                _context.SaveChanges();
-                return true;
+                TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
+                await this._context.TblFeedbacks.AddAsync(_feedback);
+                await this._context.SaveChangesAsync(); ;
+                _response.ResponseCode = 200;
+                _response.Result = _feedback.FeedbackId.ToString();
 
             }
-            return false;
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = ex.Message;
+            }
+            return _response;
         }
 
-        public bool UpdateFeedback(TblFeedback sendFeedback)
+        public async Task<APIResponse> FeedbackResponse(string feedbackId, string response)
         {
-            var obj = _context.TblFeedbacks.SingleOrDefault(feedback => feedback.FeedbackId.Equals(sendFeedback.FeedbackId));
-            if (obj != null)
+            APIResponse _response = new APIResponse();
+            try
             {
-                obj.CateId = sendFeedback.CateId;
-                obj.Status = sendFeedback.Status;
-                obj.Description = sendFeedback.Description;
-                obj.Location = sendFeedback.Location;
-                obj.ImgUrl = sendFeedback.ImgUrl;
-                obj.VideoUrl = sendFeedback.VideoUrl;
-                _context.SaveChanges();
-                return true;
+                TblFeedback? _feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
+                if (_feedback != null)
+                {
+                    _feedback.Response = response;
+                    await this._context.SaveChangesAsync(); ;
+                    _response.ResponseCode = 200;
+                    _response.Result = _feedback.FeedbackId.ToString();
+
+                }
+                else
+                {
+                    _response.ResponseCode = 404;
+                    _response.Result = "Data not found";
+                }
 
             }
-            return false;
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = ex.Message;
+            }
+            return _response;
         }
 
-        public bool UpdateFeedbackResponse(string feedbackID, string response)
+        public async Task<List<Feedback>> GetAllFeedBack()
         {
-            var obj = _context.TblFeedbacks.SingleOrDefault(feedback => feedback.FeedbackId.Equals(feedbackID));
-            if (obj != null)
+            List<Feedback> _response = new List<Feedback>();
+            var _data = await AllFeedback().ToListAsync();
+            if (_data != null)
             {
-                obj.Response = response;
-                _context.SaveChanges();
-                return true;
-
+                _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
             }
-            return false;
+            return _response;
         }
 
-        public bool UpdateFeedbackStatus(string feedbackID, int status)
+        public async Task<Feedback> GetFeedback(string feedbackId)
         {
-            var obj = _context.TblFeedbacks.SingleOrDefault(feedback => feedback.FeedbackId.Equals(feedbackID));
-            if (obj != null)
+            Feedback _response = new Feedback();
+            var _data = await AllFeedback().Where(f => f.FeedbackId.Equals(feedbackId)).FirstOrDefaultAsync();
+            if (_data != null)
             {
-                obj.Status = status;
-                _context.SaveChanges();
-                return true;
+                _response = _mapper.Map<TblFeedback, Feedback>(_data);
             }
-            return false;
+            return _response;
+        }
+
+        public async Task<List<Feedback>> GetFeedbackByUserId(string UserId)
+        {
+            List<Feedback> _response = new List<Feedback>();
+            var _data = await AllFeedback().Where(f => f.UserId.Equals(UserId)).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
+            }
+            return _response;
+        }
+
+        public async Task<APIResponse> NotifyFeedback(string feedbackId)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
+                if (feedback != null)
+                {
+                    if (feedback.Notify == 1) feedback.Notify = 0;
+                    else feedback.Notify = 1;
+                    await this._context.SaveChangesAsync();
+
+                    _response.ResponseCode = 200;
+                    _response.Result = feedbackId;
+                }
+                else
+                {
+                    _response.ResponseCode = 404;
+                    _response.Result = "Data not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.Result = ex.Message;
+
+            }
+            return _response;
+        }
+
+        public async Task<APIResponse> RemoveFeedback(string feedbackId)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
+                if (feedback != null && feedback.Status == 0)
+                {
+                    this._context.TblFeedbacks.Remove(feedback);
+                    await this._context.SaveChangesAsync();
+                    _response.ResponseCode = 200;
+                    _response.Result = feedbackId;
+                }
+                else
+                {
+                    _response.ResponseCode = 400;
+                    _response.Result = "Data not found!";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.Result = ex.Message;
+
+            }
+            return _response;
+
+        }
+
+        public async Task<APIResponse> UpdateFeedback(Feedback feedback)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblFeedback? _feedback = await AllFeedback().SingleOrDefaultAsync(f => f.FeedbackId.Equals(feedback.FeedbackId));
+                if (feedback != null)
+                {
+                    _feedback.CateId = feedback.CateId;
+                    _feedback.Response = feedback.Response;
+                    _feedback.Title = feedback.Title;
+                    _feedback.Description = feedback.Description;
+                    _feedback.LocationId = feedback.LocationId;
+
+                    _response.ResponseCode = 200;
+                    _response.Result = feedback.FeedbackId.ToString();
+                }
+                else
+                {
+                    _response.ResponseCode = 400;
+                    _response.Result = "Data not found!";
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = ex.Message;
+            }
+            return _response;
+        }
+
+        public async Task<APIResponse> UpdateFeedbackStatus(string feedbackId, int status)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
+                if (feedback != null)
+                {
+                    feedback.Status = status;
+                    _response.ResponseCode = 200;
+                    _response.Result = feedbackId;
+                }
+                else
+                {
+                    _response.ResponseCode = 400;
+                    _response.Result = "Data not found!";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.Result = ex.Message;
+
+            }
+            return _response;
 
         }
     }

@@ -13,12 +13,12 @@
         public string CateId { get; set; } = null!;
         public string LocationId { get; set; } = null!;
         public string Status { get; set; }
-        public string Notify { get; set; }
+        public int Notify { get; set; }
 
         public Category Cate { get; set; } = null;
         public User User { get; set; } = null!;
         public Location location { get; set; } = null!;
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<DTO.Task> Tasks { get; set; }
 
     }
 }
