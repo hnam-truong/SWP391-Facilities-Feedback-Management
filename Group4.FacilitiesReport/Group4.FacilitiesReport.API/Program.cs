@@ -21,6 +21,7 @@ namespace Group4.FacilitiesReport.API
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IUser, UserRepo>();
+            builder.Services.AddScoped<ITasks, TaskRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddCors(p => p.AddDefaultPolicy(build =>

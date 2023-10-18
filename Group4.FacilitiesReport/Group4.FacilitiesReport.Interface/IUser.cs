@@ -10,17 +10,16 @@ namespace Group4.FacilitiesReport.Interface
 {
     public interface IUser
     {
-        bool UserExists(string userId);
-        IEnumerable<TblUser> GetUsersByStatus(int status);
-        int CountUsersByStatus(int status);
-        IEnumerable<TblUser> GetUsersByRole(int role);
-        IEnumerable<TblUser> GetUsersWhoProvidedFeedback();
-        int CountUsersWhoProvidedFeedback();
-        ICollection<TblUser> GetUsers();
-        TblUser GetUserById(string userId);
-        Task<TblUser> Login(string username, string password);
-        bool ModifyInfo(TblUser user);
-        bool Save();
 
+        Task<List<User>> GetUsersByStatus(int status);
+        Task<User> GetUserById(string userId);
+        Task<int> CountUsersByStatus(int status);
+        Task<List<User>> GetUsersByRole(int role);
+        Task<List<User>> GetUsersWhoProvidedFeedback();
+        Task<int> CountUsersWhoProvidedFeedback();
+        Task<List<User>> GetUsers();
+
+        Task<APIResponse> UpdateStatusUser(string UserId, int Status);
+        Task<APIResponse> UpdateUser(User User);
     }
 }

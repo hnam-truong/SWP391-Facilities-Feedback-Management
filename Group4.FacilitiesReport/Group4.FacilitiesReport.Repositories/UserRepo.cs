@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -16,64 +18,133 @@ namespace Group4.FacilitiesReport.Repositories
             _mapper = mapper;
         }
 
-
-        public bool Save()
+        public async Task<int> CountUsersByStatus(int status)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return await AllUser().Where(f => f.Status.Equals(status)).CountAsync();
         }
 
-        public TblUser GetUserById(string userId)
+        public async Task<int> CountUsersWhoProvidedFeedback()
         {
-            return _context.TblUsers.Where(p => p.UserId == userId).FirstOrDefault();
+            return await AllUser().Where(f => f.TblFeedbacks.Any()).CountAsync();
         }
 
-        public ICollection<TblUser> GetUsers()
+        public async Task<User> GetUserById(string userId)
         {
-            if (_context.TblUsers.ToList() == null) throw new Exception();
-            return _context.TblUsers.ToList();
+            User _response = new User();
+            var _data = await AllUser().Where(f => f.UserId.Equals(userId)).FirstOrDefaultAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<TblUser, User>(_data);
+            }
+            return _response;
         }
 
-        public int CountUsersByStatus(int status)
+        public async Task<List<User>> GetUsers()
         {
-            return _context.TblUsers.Count(u => u.Status == status);
+            List<User> _response = new List<User>();
+            var _data = await AllUser().ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
         }
 
-        public bool ModifyInfo(TblUser user)
+        public async Task<List<User>> GetUsersByRole(int role)
         {
-            _context.Update(user);
-            return Save();
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Where(f => f.RoleId.Equals(role)).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
         }
 
-        public async Task<TblUser> Login(string username, string password)
+        public async Task<List<User>> GetUsersByStatus(int status)
         {
-            var userEntity = await _context.TblUsers.SingleOrDefaultAsync(u => u.Email == username && u.Password == password);
-            return _mapper.Map<TblUser>(userEntity);
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Where(f => f.Status.Equals(status)).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
         }
 
-
-        public bool UserExists(string userId)
+        public async Task<List<User>> GetUsersWhoProvidedFeedback()
         {
-            return _context.TblUsers.Any(p => p.UserId == userId);
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Where(f => f.TblFeedbacks.Any()).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
         }
 
-        public IEnumerable<TblUser> GetUsersByStatus(int status)
+        public async Task<APIResponse> UpdateStatusUser(string UserId, int Status)
         {
-            return _context.TblUsers.Where(u => u.Status == status).ToList();
+            APIResponse response = new APIResponse();
+            try
+            {
+                var _user = await _context.TblUsers.FindAsync(UserId);
+                if (_user != null)
+                {
+                    _user.Status = Status;
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = UserId;
+                }
+                else
+                {
+                    response.ResponseCode = 404;
+                    response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
         }
 
-        public IEnumerable<TblUser> GetUsersWhoProvidedFeedback()
+        public async Task<APIResponse> UpdateUser(User User)
         {
-            return _context.TblUsers.Where(u => u.TblFeedbacks.Any()).ToList();
-        }
-        public int CountUsersWhoProvidedFeedback()
-        {
-            return _context.TblUsers.Count(u => u.TblFeedbacks.Any());
+            APIResponse response = new APIResponse();
+            try
+            {
+                var _user = await _context.TblUsers.FindAsync(User.UserID);
+                if (_user != null)
+                {
+                    _user.Username = User.Username;
+                    _user.Email = User.Email;
+                    _user.Password = User.Password;
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = User.UserID;
+                }
+                else
+                {
+                    response.ResponseCode = 404;
+                    response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
         }
 
-        public IEnumerable<TblUser> GetUsersByRole(int role)
-        {
-            return _context.TblUsers.Where(u => u.RoleId == role).ToList();
-        }
+        private IQueryable<TblUser> AllUser() => _context.TblUsers;
+       
+        
+
+        
     }
 }
