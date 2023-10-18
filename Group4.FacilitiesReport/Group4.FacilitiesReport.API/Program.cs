@@ -1,9 +1,12 @@
 using Group4.FacilitiesReport.API.Helper;
+using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Group4.FacilitiesReport.Repositories;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Text.Json.Serialization;
 
 namespace Group4.FacilitiesReport.API
@@ -23,18 +26,38 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddScoped<IUser, UserRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            //              CORS
             builder.Services.AddCors(p => p.AddDefaultPolicy(build =>
             {
                 build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
             }));
-            //builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixed window", options =>
-            //{
-            //    options.Window = TimeSpan.FromSeconds(10);
-            //    options.PermitLimit = 1;
-            //    options.QueueLimit = 1;
-            //    options.QueueProcessingOrder. = System.Threading.RateLimiting.QueueProcessingOrder.OrderFirst;
-            //}));
+
+            //              SeriLog
+            string logpath = builder.Configuration.GetSection("Logging:LogPath").Value;
+            var _logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("miscrosoft", Serilog.Events.LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .WriteTo.File(logpath)
+                .CreateLogger();
+            builder.Logging.AddSerilog(_logger);
+
+            //              RateLimiter
+            builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName: "fixedwindow", options =>
+            {
+                options.Window = TimeSpan.FromSeconds(10);
+                options.PermitLimit = 1;
+                options.QueueLimit = 1;
+                options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+            }).RejectionStatusCode = 401);
+
+            //              Authenthication
             builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            //              JwtSetting
+            var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
+            builder.Services.Configure<JwtSettings>(_jwtSetting);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<FacilitiesFeedbackManagement_SWP391Context>(options =>
@@ -45,7 +68,7 @@ namespace Group4.FacilitiesReport.API
 
             var app = builder.Build();
 
-
+            app.UseRateLimiter();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
