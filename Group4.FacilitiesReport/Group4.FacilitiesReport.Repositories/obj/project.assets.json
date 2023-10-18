@@ -2053,8 +2053,7 @@
       "AutoMapper >= 12.0.1",
       "Group4.FacilitiesReport.DTO >= 1.0.0",
       "Group4.FacilitiesReport.Interface >= 1.0.0",
-      "Microsoft.EntityFrameworkCore >= 6.0.21",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.21"
+      "Microsoft.EntityFrameworkCore >= 6.0.21"
     ]
   },
   "packageFolders": {
@@ -2114,10 +2113,6 @@
             "version": "[12.0.1, )"
           },
           "Microsoft.EntityFrameworkCore": {
-            "target": "Package",
-            "version": "[6.0.21, )"
-          },
-          "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[6.0.21, )"
           }

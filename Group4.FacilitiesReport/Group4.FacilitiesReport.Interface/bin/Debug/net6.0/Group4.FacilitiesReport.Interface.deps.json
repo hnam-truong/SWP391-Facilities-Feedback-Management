@@ -8,10 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Group4.FacilitiesReport.Interface/1.0.0": {
         "dependencies": {
-          "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
-          "Group4.FacilitiesReport.DTO": "1.0.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.21",
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21"
+          "Group4.FacilitiesReport.DTO": "1.0.0"
         },
         "runtime": {
           "Group4.FacilitiesReport.Interface.dll": {}
