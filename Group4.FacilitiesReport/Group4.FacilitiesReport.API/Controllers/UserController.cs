@@ -1,18 +1,7 @@
 ﻿using AutoMapper;
-using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
-using Microsoft.Data.SqlClient;
-using System.Diagnostics.CodeAnalysis;
 
 namespace API.Controllers
 {
@@ -23,29 +12,13 @@ namespace API.Controllers
         private readonly IUser _iUser;
         private readonly IMapper _mapper;
 
-        private readonly IConfiguration _configuration;
-
-        public UserController(IUser IUser, IMapper mapper,  IConfiguration configuration)
+        public UserController(IUser IUser, IMapper mapper)
         {
             _iUser = IUser;
             _mapper = mapper;
-            _configuration = configuration;
         }
 
-        [HttpGet("list")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<TblUser>))]
-        public IActionResult GetUsers()
-        {
-            var users = _mapper.Map<List<User>>(_iUser.GetUsers());
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(users);
-        }
         [HttpGet("{userId}")]
-        [ProducesResponseType(200, Type = typeof(TblUser))]
-        [ProducesResponseType(400)]
         public IActionResult GetUserById(string userId)
         {
             if (!_iUser.UserExists(userId))
@@ -92,6 +65,9 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+
         public async Task<IActionResult> Login(string username, string password)
         {
             var user = await _iUser.Login(username, password);
@@ -104,6 +80,7 @@ namespace API.Controllers
         }
 
         [HttpGet("countStatus")]
+        [ProducesResponseType(200)]
         public ActionResult<int> CountUsersByStatus(int status)
         {
             var count = _iUser.CountUsersByStatus(status);
@@ -112,13 +89,13 @@ namespace API.Controllers
         }
 
         [HttpPut("{userId}")]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult ModifyInfo([FromRoute] string userId, [FromQuery] string userName, [FromQuery] string email, [FromQuery] string password) 
+        public IActionResult ModifyInfo([FromRoute] string userId, [FromQuery] string userName, [FromQuery] string email, [FromQuery] string password)
         {
             var userExist = _iUser.GetUserById(userId);
-            if(userExist == null)
+            if (userExist == null)
             {
                 return NotFound();
             }
@@ -130,6 +107,6 @@ namespace API.Controllers
             return Ok("Update Successful!!!");
         }
 
-       
+
     }
 }
