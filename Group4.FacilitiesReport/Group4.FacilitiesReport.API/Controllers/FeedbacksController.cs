@@ -6,6 +6,7 @@ namespace Group4.FacilitiesReport.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedback _ifeedback;
@@ -35,11 +36,25 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-
+        [HttpGet("Id/{feedbackId}")]
+        public async Task<IActionResult> GetFeedback(string feedbackId)
+        {
+            var feedbacks = await this._ifeedback.GetFeedback(feedbackId);
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+            return Ok(feedbacks);
+        }
+        [HttpGet("Count")]
+        public async Task<IActionResult> CountFeedback(DateTime beginDate, DateTime endDate)
+        {
+            int count = await this._ifeedback.CountFeedbackByDate(beginDate, endDate);
+            return Ok(count);
+        }
         [HttpPost("Create")]
         public async Task<IActionResult> CreateFeedback(string userId, string title, string description, string cateId, string locatoinId)
         {
-
             var feedback = await this._ifeedback.CreateFeedback(new Feedback
             {
                 FeedbackId = Guid.NewGuid(),
@@ -56,7 +71,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
         {
-
             var feedback = await this._ifeedback.UpdateFeedback(new Feedback
             {
                 FeedbackId = feedbackId,
@@ -69,14 +83,31 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedback);
         }
 
+        [HttpPut("Notify")]
+        public async Task<IActionResult> NotifyFeedback(string feedbackId)
+        {
+            var feedback = await this._ifeedback.NotifyFeedback(feedbackId);
+            return Ok(feedback);
+        }
+
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateFeedbackStatus(string feedbackId, string status)
         {
             Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue);
-            var feedback = this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
+            var feedback = await this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
             return Ok(feedback);
         }
 
-
+        [HttpPut("ResponseFeedback")]
+        public async Task<IActionResult> ResponseFeedback(string feedbackId, string description)
+        {
+            var feedback = await this._ifeedback.FeedbackResponse(feedbackId, description);
+            return Ok(feedback);
+        }
+        [HttpDelete("RemoveFeedback/{feedbackId}")]
+        public async Task<IActionResult> RemoveFeedback(string feedbackId)
+        {
+            return Ok(await _ifeedback.RemoveFeedback(feedbackId));
+        }
     }
 }

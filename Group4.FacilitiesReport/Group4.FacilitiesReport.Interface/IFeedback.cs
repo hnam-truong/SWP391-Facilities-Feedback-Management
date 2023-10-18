@@ -13,6 +13,6 @@ namespace Group4.FacilitiesReport.Interface
         public Task<DTO.Feedback> GetFeedback(string feedbackId);
         public Task<APIResponse> CreateFeedback(DTO.Feedback feedback);
         public Task<APIResponse> RemoveFeedback(string feedbackId);
-        public Task<int> CountFeedbackByDate(string beginDate, string endDate);
+        public Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate);
     }
 }
