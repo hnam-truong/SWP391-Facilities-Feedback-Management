@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Group4.FacilitiesReport.DTO;
+using Group4.FacilitiesReport.DTO.Enums;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -17,96 +19,100 @@ namespace API.Controllers
             _iUser = IUser;
             _mapper = mapper;
         }
-
-        [HttpGet("{userId}")]
-        public IActionResult GetUserById(string userId)
+        [HttpGet("CountUserStatus")]
+        public async Task<IActionResult> CountUserByStatus(string Status)
         {
-            if (!_iUser.UserExists(userId))
+            Enum.TryParse(Status, out Group4.FacilitiesReport.DTO.Enums.UserStatus enumValue);
+            int count = await _iUser.CountUsersByStatus((int)enumValue);
+            return Ok(count);
+        }
+        [HttpGet("CountUserProvideFb")]
+        public async Task<IActionResult> CountUserProvideFb()
+        {
+            int count = await _iUser.CountUsersWhoProvidedFeedback();
+            return Ok(count);
+        }
+        [HttpGet("AllUsers")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var users = await this._iUser.GetUsers();
+            if (users == null)
+            {
                 return NotFound();
-
-            var user = _mapper.Map<User>(_iUser.GetUserById(userId));
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            }
+            return Ok(users);
+        }
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetUserByUserId(string UserId)
+        {
+            var user = await _iUser.GetUserById(UserId);
+            if (user == null)
+            {
+                return NotFound();
+            }
             return Ok(user);
         }
-        [HttpGet("status/{status}")]
-        public ActionResult<IEnumerable<User>> GetUsersByStatus(int status)
+        [HttpGet("Employee")]
+        public async Task<IActionResult> GetEmployeeByCate(string CateId)
         {
-            var users = _iUser.GetUsersByStatus(status);
-            var userDtos = _mapper.Map<IEnumerable<User>>(users);
-
-            return Ok(userDtos);
-        }
-        [HttpGet("role/{role}")]
-        public ActionResult<IEnumerable<User>> GetUsersByRole(int role)
-        {
-            var users = _iUser.GetUsersByRole(role);
-            var userDtos = _mapper.Map<IEnumerable<User>>(users);
-
-            return Ok(userDtos);
-        }
-
-        [HttpGet("feedback")]
-        public ActionResult<IEnumerable<User>> GetUsersWhoProvidedFeedback()
-        {
-            var users = _iUser.GetUsersWhoProvidedFeedback();
-
+            var users = await _iUser.GetEmployeeByCate(CateId);
+            if (users == null)
+            {
+                return NotFound();
+            }
             return Ok(users);
         }
 
-        [HttpGet("feedback/count")]
-        public ActionResult<int> CountUsersWhoProvidedFeedback()
+       
+
+        [HttpGet("Login")]
+        public async Task<IActionResult> Login(string Email, string Password)
         {
-            var count = _iUser.CountUsersWhoProvidedFeedback();
-
-            return Ok(count);
-        }
-
-        [HttpPost("login")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
-
-        public async Task<IActionResult> Login(string username, string password)
-        {
-            var user = await _iUser.Login(username, password);
+            var user = await _iUser.Login(Email,Password);
             if (user == null)
             {
-                return Unauthorized("Wrong user or password");
+                return Unauthorized();
             }
-
+          
+            
             return Ok(user);
         }
 
-        [HttpGet("countStatus")]
-        [ProducesResponseType(200)]
-        public ActionResult<int> CountUsersByStatus(int status)
-        {
-            var count = _iUser.CountUsersByStatus(status);
 
-            return Ok(count);
-        }
-
-        [HttpPut("{userId}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public IActionResult ModifyInfo([FromRoute] string userId, [FromQuery] string userName, [FromQuery] string email, [FromQuery] string password)
+        [HttpGet("UserProvideFb")]
+        public async Task<IActionResult> GetUserProvideFeedbak()
         {
-            var userExist = _iUser.GetUserById(userId);
-            if (userExist == null)
+            var user = await _iUser.GetUsersWhoProvidedFeedback();
+            if (user == null)
             {
                 return NotFound();
             }
-
-            userExist.Username = userName;
-            userExist.Email = email;
-            userExist.Password = password;
-            _iUser.ModifyInfo(userExist);
-            return Ok("Update Successful!!!");
+            return Ok(user);
         }
 
+        [HttpPut("UpdateUser/{UserId}")]
+        public async Task<IActionResult> UpdateUser(string UserId, string UserName, string Email, string Password)
+        {
+            var user = await _iUser.UpdateUser(new User
+            {
+                UserID = UserId,
+                Username = UserName,
+                Email = Email,
+                Password = Password
+            });
+            return Ok(user);
+        }
 
+        [HttpPut("UpdateUserStatus/{UserId}")]
+        public async Task<IActionResult> UpdateUserStatus(string UserId, string Status)
+        {
+            Enum.TryParse(Status, out UserStatus enumValue);
+            var user = await _iUser.UpdateStatusUser(UserId, (int)enumValue);
+            return Ok(user);
+        }
+
+       
+
+        
     }
 }
