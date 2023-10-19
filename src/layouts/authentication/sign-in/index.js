@@ -36,7 +36,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 // import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import bgImage from "assets/images/HCM-scaled.jpeg";
-import logo from "assets/images/logo-no-background.png";
+import logo from "assets/images/logo-ct-blue.png";
 import google from "assets/images/google-icon-2048x2048-czn3g8x8.png"
 
 function Basic() {

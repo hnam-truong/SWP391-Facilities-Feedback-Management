@@ -35,7 +35,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Waiting" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Waiting", option)
+    fetch("https://localhost:7157/api/Feedbacks/AllFeedbacks" + '/' + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -60,7 +60,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Processing" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Processing", option)
+    fetch("https://localhost:7157/api/Feedbacks/AllFeedbacks" + '/' + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -85,7 +85,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Rejected" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Rejected", option)
+    fetch("https://localhost:7157/api/Feedbacks/AllFeedbacks" + '/' + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -155,28 +155,6 @@ export default function data() {
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
-      action: feedback.status === "Waiting" ? (
-        <div>
-          <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
-              Accept
-            </MDTypography>
-          </IconButton>
-          <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
-              Reject
-            </MDTypography>
-          </IconButton>
-        </div>
-      ) : (
-        <div>
-          <IconButton onClick={() => handleCancelReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-              Cancel
-            </MDTypography>
-          </IconButton>
-        </div>
-      ),
     }));
 
   return {
@@ -193,7 +171,6 @@ export default function data() {
       { Header: "cat/loc", accessor: "info", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "time/expire", accessor: "time", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
     ],
 
     rows: feedbackRows,

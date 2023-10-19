@@ -10,6 +10,7 @@ import MDBadge from "components/MDBadge";
 // Images
 
 //MUI
+import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import SwitchStar from "./SwitchStar";
 
@@ -18,7 +19,7 @@ export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(() => {
     // Define the URL of your API endpoint
-    const apiUrl = "http://localhost:7157/api/Feedbacks";
+    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
 
     // Make a GET request to your API endpoint
     fetch(apiUrl)
@@ -26,6 +27,31 @@ export default function data() {
       .then((data) => setFeedbacks(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
+  const handleUndoReport = (feedbackId) => {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Waiting" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Waiting", option)
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Waiting" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+
+  }
 
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -62,7 +88,7 @@ export default function data() {
           <SwitchStar />
         </Box>
       ),
-      author: <Author name={feedback.userId} user={feedback.userId} />,
+      author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <h4>{feedback.title}</h4>,
       info: <Info category={feedback.cateId} location={feedback.locationId} />,
       status: (
@@ -86,16 +112,16 @@ export default function data() {
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} />,
+      action: feedback.status === "Rejected" ? (
+        <div>
+          <IconButton onClick={() => handleUndoReport(feedback.feedbackId)}>
+            <MDTypography component="a" variant="caption" color="" fontWeight="medium">
+              Undo
+            </MDTypography>
+          </IconButton>
+        </div>
+      ) : (<MDTypography></MDTypography>),
     }));
-    // action: (
-    //   <div>
-    //     <IconButton>
-    //       <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
-    //         Remove
-    //       </MDTypography>
-    //     </IconButton>
-    //   </div>
-    // ),
 
     // {
     //   Header: "",
@@ -111,7 +137,7 @@ export default function data() {
       { Header: "cat/loc", accessor: "info", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "time", accessor: "time", align: "center" },
-      // { Header: "action", accessor: "action", align: "center" },
+      { Header: "action", accessor: "action", align: "center" },
     ],
 
     rows: feedbackRows,
