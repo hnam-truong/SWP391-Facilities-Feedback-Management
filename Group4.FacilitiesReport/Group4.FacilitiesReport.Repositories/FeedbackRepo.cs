@@ -85,7 +85,7 @@ namespace Group4.FacilitiesReport.Repositories
             return _response;
         }
 
-        public async Task<Feedback> GetFeedback(string feedbackId)
+        public async Task<Feedback> GetFeedback(Guid feedbackId)
         {
             Feedback _response = new Feedback();
             var _data = await AllFeedback().Where(f => f.FeedbackId.Equals(feedbackId)).FirstOrDefaultAsync();

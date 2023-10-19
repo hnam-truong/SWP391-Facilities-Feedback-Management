@@ -37,7 +37,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         [HttpGet("Id/{feedbackId}")]
-        public async Task<IActionResult> GetFeedback(string feedbackId)
+        public async Task<IActionResult> GetFeedback(Guid feedbackId)
         {
             var feedbacks = await this._ifeedback.GetFeedback(feedbackId);
             if (feedbacks == null)

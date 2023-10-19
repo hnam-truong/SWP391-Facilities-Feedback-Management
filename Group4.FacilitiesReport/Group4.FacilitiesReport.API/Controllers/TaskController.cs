@@ -75,14 +75,16 @@ namespace Group4.FacilitiesReport.API.Controllers
 
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(int Id, Guid feedbackId, string EmployeeId, string ManagerId)
+        public async Task<IActionResult> CreateTask(Guid FeedbackId, string EmployeeId, string ManagerId,string ImgUrl, string Note, string Response)
         {
             var task = await _tasks.CreateTask(new DTO.Task
             {
-                Id = Id,
-                FeedbackId = feedbackId,
+                FeedbackId = FeedbackId,
                 EmployeeId = EmployeeId,
-                ManagerId = ManagerId
+                ManagerId = ManagerId,
+                ImgConfirmationUrl = ImgUrl,
+                DateTime = DateTime.Now,
+                Note = Note,
             });
             return Ok(task);
         }
@@ -107,24 +109,26 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(task);
         }
 
+        [HttpPut("UpdateTaskNote")]
+        public async Task<IActionResult> UpdateTaskNote(int Id, string Note)
+        {
+            var task = await _tasks.UpdateTaskNote(Id, Note);
+            return Ok(task);
+        }
+        [HttpPut("UpdateTaskResponse")]
+        public async Task<IActionResult> UpdateTaskResponse(int Id, string Response)
+        {
+            var task = await _tasks.UpdateTaskResponse(Id, Response);
+            return Ok(task);
+        }
+
         [HttpDelete("Remove")]
         public async Task<IActionResult> Remove(int Id)
         {
             return Ok(await _tasks.DeleteTask(Id));
         }
 
-        //[HttpPost("Create")]
-        //public async Task<IActionResult> CreateTask(int Id,Guid FeedbackId, string EmployeeId, string ManagerId)
-        //{
-        //    var task = await _tasks.CreateTask(new DTO.Task
-        //    {
-        //        Id = Id,
-        //        FeedbackId = FeedbackId,
-        //        EmployeeId =EmployeeId,
-        //        ManagerId = ManagerId,
-        //    });
-        //    return Ok(task);
-        //}
+        
         
     }
 }

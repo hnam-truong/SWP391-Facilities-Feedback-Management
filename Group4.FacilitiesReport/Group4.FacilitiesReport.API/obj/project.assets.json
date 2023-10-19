@@ -2742,11 +2742,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
+      "projectUniqueName": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
       "projectName": "Group4.FacilitiesReport.API",
-      "projectPath": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
+      "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\Group4.FacilitiesReport.API.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\obj\\",
+      "outputPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2763,14 +2763,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
-              "projectPath": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+            "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+              "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
             },
-            "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
-              "projectPath": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+            "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+              "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
             },
-            "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
-              "projectPath": "C:\\Users\\Admin\\source\\repos\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj"
+            "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj": {
+              "projectPath": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj"
             }
           }
         }

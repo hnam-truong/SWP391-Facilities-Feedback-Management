@@ -203,6 +203,62 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return response;
         }
+
+        public async Task<APIResponse> UpdateTaskNote(int Id, string Note)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var _task = await _context.TblTasks.FindAsync(Id);
+                if (_task != null)
+                {
+                    _task.Note = Note;
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = Id.ToString();
+                }
+                else
+                {
+                    response.ResponseCode = 404;
+                    response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<APIResponse> UpdateTaskResponse(int Id, string response)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                var _task = await _context.TblTasks.FindAsync(Id);
+                if (_task != null)
+                {
+                    _task.Responsed = response;
+                    await _context.SaveChangesAsync();
+                    _response.ResponseCode = 200;
+                    _response.Result = Id.ToString();
+                }
+                else
+                {
+                    _response.ResponseCode = 404;
+                    _response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = ex.Message;
+            }
+            return _response;
+        }
     }
     }
 

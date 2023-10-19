@@ -13,6 +13,8 @@ namespace Group4.FacilitiesReport.Interface
         Task<List<DTO.Task>> GetTaskByFeedbackId(Guid FeebackId);
         Task<APIResponse> CreateTask(DTO.Task task);
         Task<APIResponse> UpdateTask(DTO.Task task);
+        Task<APIResponse> UpdateTaskNote(int Id, string Note);
+        Task<APIResponse> UpdateTaskResponse(int Id, string response);
         Task<APIResponse> UpdateTaskStatus(int Id, int Status);
         Task<APIResponse> DeleteTask(int Id);
 

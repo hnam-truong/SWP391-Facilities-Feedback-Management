@@ -10,7 +10,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<APIResponse> NotifyFeedback(string feedbackID);
         public Task<APIResponse> UpdateFeedbackStatus(string feedbackId, int status);
         public Task<APIResponse> FeedbackResponse(string feedbackId, string response);
-        public Task<DTO.Feedback> GetFeedback(string feedbackId);
+        public Task<DTO.Feedback> GetFeedback(Guid feedbackId);
         public Task<APIResponse> CreateFeedback(DTO.Feedback feedback);
         public Task<APIResponse> RemoveFeedback(string feedbackId);
         public Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate);

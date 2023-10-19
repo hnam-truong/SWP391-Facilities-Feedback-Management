@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Interface
 {
-    internal interface IEmployee  : IUser
+    public interface ICate  
     {
-        bool ModifyCateId(List<Category> categories);
+        Task<List<Category>> GetCategories();
+        Task<Category> GetCategoryById(string CategoryId);
+        Task<APIResponse> UpdateCategory(Category category);
+        Task<APIResponse> AddCate(Category category);
 
     }
 }
