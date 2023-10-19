@@ -1,12 +1,13 @@
-using Group4.FacilitiesReport.API.Helper;
 using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Group4.FacilitiesReport.Repositories;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Group4.FacilitiesReport.API
@@ -25,6 +26,7 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddScoped<IUser, UserRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
+            builder.Services.AddScoped<IRefreshHandler, RefresHandler>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             //              CORS
@@ -53,10 +55,33 @@ namespace Group4.FacilitiesReport.API
             }).RejectionStatusCode = 401);
 
             //              Authenthication
-            builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            //builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            var _authKey = builder.Configuration.GetValue<string>("JwtSettings:SecurityKey");
+            builder.Services.AddAuthentication(item =>
+            {
+                item.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                item.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(item =>
+            {
+                item.RequireHttpsMetadata = true;
+                item.SaveToken = true;
+                item.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
 
             //              JwtSetting
             var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
+
+
+
+
             builder.Services.Configure<JwtSettings>(_jwtSetting);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

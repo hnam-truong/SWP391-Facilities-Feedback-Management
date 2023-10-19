@@ -1,12 +1,13 @@
 ﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Group4.FacilitiesReport.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class FeedbacksController : ControllerBase
     {
         private readonly IFeedback _ifeedback;
