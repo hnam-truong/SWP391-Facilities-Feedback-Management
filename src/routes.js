@@ -5,6 +5,7 @@ import ReportHistory from "layouts/history";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
+import Create from 'layouts/create';
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -27,6 +28,14 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
+  {
+    type: "collapse",
+    name: "Create",
+    key: "create",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "/create",
+    component: <Create />, // Add Create component to the routes
+ },
   {
     type: "collapse",
     name: "Reports",
