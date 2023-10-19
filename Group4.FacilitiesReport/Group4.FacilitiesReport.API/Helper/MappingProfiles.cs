@@ -8,12 +8,17 @@ namespace Group4.FacilitiesReport.API.Helper
     {
         public MappingProfiles()
         {
-            CreateMap<User, TblUser>().ReverseMap().ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.UserStatus)item.Status).ToString()));
-            CreateMap<Feedback, TblFeedback>().ReverseMap().ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.FeedbackStatus)item.Status).ToString()));
+            CreateMap<User, TblUser>().ForMember(item => item.Status, otp => otp.MapFrom(item => (int)Enum.Parse(typeof(DTO.Enums.UserStatus), item.Status))).ReverseMap().ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.UserStatus)item.Status).ToString()));
+            
+            CreateMap<TblFeedback, Feedback>()
+            .ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.FeedbackStatus)item.Status).ToString()))
+            .ReverseMap()
+            .ForMember(item => item.Status, otp => otp.MapFrom(item => (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), item.Status)));
+
             CreateMap<TblUserRole, UserRole>().ReverseMap();
             CreateMap<TblCategoriesProblem, Category>().ReverseMap();
-            CreateMap<DTO.Task, TblTask>().ReverseMap().ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.TaskStatus)item.Status).ToString()));
-            CreateMap<TblLocation, Location>().ReverseMap().ForMember(item => item.Disable, otp => otp.MapFrom(item => ((DTO.Enums.LocationStatus)item.Disable).ToString()));
+            CreateMap<DTO.Task, TblTask>().ForMember(item => item.Status, otp => otp.MapFrom(item => (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), item.Status))).ReverseMap().ForMember(item => item.Status, otp => otp.MapFrom(item => ((DTO.Enums.TaskStatus)item.Status).ToString()));
+            CreateMap<Location, TblLocation>().ForMember(item => item.Disable, otp => otp.MapFrom(item => (int)Enum.Parse(typeof(DTO.Enums.LocationStatus), item.Disable))).ReverseMap().ForMember(item => item.Disable, otp => otp.MapFrom(item => ((DTO.Enums.LocationStatus)item.Disable).ToString()));
 
         }
     }

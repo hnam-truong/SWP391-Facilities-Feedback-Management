@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -15,65 +18,172 @@ namespace Group4.FacilitiesReport.Repositories
             _context = context;
             _mapper = mapper;
         }
+        private IQueryable<TblUser> AllUser() => _context.TblUsers;
+
+       
 
 
-        public bool Save()
+        public async Task<int> CountUsersByStatus(int status)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return await AllUser().Where(f => f.Status.Equals(status)).CountAsync();
         }
 
-        public TblUser GetUserById(string userId)
+        public async Task<int> CountUsersWhoProvidedFeedback()
         {
-            return _context.TblUsers.Where(p => p.UserId == userId).FirstOrDefault();
+            return await AllUser().Where(f => f.TblFeedbacks.Any()).CountAsync();
         }
 
-        public ICollection<TblUser> GetUsers()
+        public async Task<List<User>> GetEmployeeByCate(string CateId)
         {
-            if (_context.TblUsers.ToList() == null) throw new Exception();
-            return _context.TblUsers.ToList();
+            var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync();
+            var data = await _context.TblUsers.Include(u => u.Cates).Include(u => u.Role).Where(u => u.Role.Description=="Employee" && u.Cates.Contains(Cate)).ToListAsync();
+            return _mapper.Map<List<TblUser>, List<User>>(data);
         }
 
-        public int CountUsersByStatus(int status)
+        public async Task<User> GetUserById(string userId)
         {
-            return _context.TblUsers.Count(u => u.Status == status);
+            User _response = new User();
+            var _data = await AllUser().Where(f => f.UserId.Equals(userId)).FirstOrDefaultAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<TblUser, User>(_data);
+            }
+            return _response;
         }
 
-        public bool ModifyInfo(TblUser user)
+        public async Task<List<User>> GetUsers()
         {
-            _context.Update(user);
-            return Save();
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Include(u => u.Role).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
         }
 
-        public async Task<TblUser> Login(string username, string password)
+        public Task<List<User>> GetUsersByRole(int role)
         {
-            var userEntity = await _context.TblUsers.SingleOrDefaultAsync(u => u.Email == username && u.Password == password);
-            return _mapper.Map<TblUser>(userEntity);
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<User>> GetUsersByStatus(int status)
+        {
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Where(f => f.Status.Equals(status)).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
+        }
+
+        
+
+        public async Task<List<User>> GetUsersWhoProvidedFeedback()
+        {
+            List<User> _response = new List<User>();
+            var _data = await AllUser().Where(f => f.TblFeedbacks.Any()).ToListAsync();
+            if (_data != null)
+            {
+                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
+            }
+            return _response;
+        }
+
+        public async Task<User> Login(string Email, string Password)
+        {
+            
+            var _data = await AllUser().Include(u => u.Role).Where(f => f.Email.ToLower()==Email.ToLower() && f.Password.Equals(Password)).FirstOrDefaultAsync();
+            if (_data != null && _data.Status ==0)
+            {
+                 return  _mapper.Map<TblUser, User>(_data);
+            }
+            return null;
+        }
+
+        public async Task<APIResponse> AddUser(User user)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+
+                TblUser _user = _mapper.Map<User, TblUser>(user);
+                await _context.TblUsers.AddAsync(_user);
+                await _context.SaveChangesAsync();
+                response.ResponseCode = 200;
+                response.Result = user.UserID;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<APIResponse> UpdateStatusUser(string UserId, int Status)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var _user = await _context.TblUsers.FindAsync(UserId);
+                if (_user != null)
+                {
+                    _user.Status = Status;
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = UserId;
+                }
+                else
+                {
+                    response.ResponseCode = 404;
+                    response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<APIResponse> UpdateUser(User User)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                var _user = await _context.TblUsers.FindAsync(User.UserID);
+                if (_user != null)
+                {
+                    _user.Username = User.Username;
+                    _user.Email = User.Email;
+
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = User.UserID;
+                }
+                else
+                {
+                    response.ResponseCode = 404;
+                    response.ErrorMessage = "Data not found";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
         }
 
 
-        public bool UserExists(string userId)
-        {
-            return _context.TblUsers.Any(p => p.UserId == userId);
-        }
+       
+        
 
-        public IEnumerable<TblUser> GetUsersByStatus(int status)
-        {
-            return _context.TblUsers.Where(u => u.Status == status).ToList();
-        }
-
-        public IEnumerable<TblUser> GetUsersWhoProvidedFeedback()
-        {
-            return _context.TblUsers.Where(u => u.TblFeedbacks.Any()).ToList();
-        }
-        public int CountUsersWhoProvidedFeedback()
-        {
-            return _context.TblUsers.Count(u => u.TblFeedbacks.Any());
-        }
-
-        public IEnumerable<TblUser> GetUsersByRole(int role)
-        {
-            return _context.TblUsers.Where(u => u.RoleId == role).ToList();
-        }
+        
     }
 }
