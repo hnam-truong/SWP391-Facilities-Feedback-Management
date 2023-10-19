@@ -31,6 +31,7 @@ import createCache from "@emotion/cache";
 
 // Facilities' Feedback React routes
 import routes from "routes";
+import { BrowserRouter as Router, Switch,  } from 'react-router-dom';
 
 // Facilities' Feedback React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";

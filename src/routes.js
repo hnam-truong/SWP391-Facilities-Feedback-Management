@@ -6,7 +6,7 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import Create from 'layouts/create';
-
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 // @mui icons
 import Icon from "@mui/material/Icon";
 import { layouts } from "chart.js";

@@ -1,0 +1,42 @@
+{
+  "issues": [
+    {
+      "id": 1,
+      "Campus": "Campus A",
+      "Room": "Room 101",
+      "Category": "Category A",
+      "Title": "Issue Title",
+      "MoreDetails": "More details about the issue",
+      "file": "image.jpg",
+      "status": "Open",
+      "priority": "High",
+      "assignedTo": "John Doe",
+      "createdAt": "2021-10-01T10:00:00.000Z",
+      "updatedAt": "2021-10-01T10:00:00.000Z"
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "id": 4
+    },
+    {
+      "id": 5
+    },
+    {
+      "id": 6
+    },
+    {
+      "id": 7
+    },
+    {
+      "id": 8
+    },
+    {
+      "id": 9
+    }
+  ]
+}
