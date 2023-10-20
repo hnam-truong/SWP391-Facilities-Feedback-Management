@@ -104,7 +104,7 @@ namespace Group4.FacilitiesReport.API
                 app.UseSwaggerUI();
             }
             app.UseCors();
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
