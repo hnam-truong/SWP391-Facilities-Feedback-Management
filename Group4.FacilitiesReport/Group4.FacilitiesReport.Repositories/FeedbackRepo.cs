@@ -95,9 +95,9 @@ namespace Group4.FacilitiesReport.Repositories
             var _data = await AllFeedback().Where(f => f.FeedbackId.Equals(feedbackId)).FirstOrDefaultAsync();
             if (_data != null)
             {
-                _response = _mapper.Map<TblFeedback, Feedback>(_data);
+                return _mapper.Map<TblFeedback, Feedback>(_data);
             }
-            return _response;
+            return null;
         }
 
         public async Task<List<Feedback>> GetFeedbackByUserId(string UserId)
