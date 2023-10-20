@@ -1,6 +1,5 @@
 ﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
-//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Group4.FacilitiesReport.API.Controllers
@@ -60,7 +59,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(count);
         }
         [HttpGet("GetFile")]
-        public async Task<IActionResult> GetFile(string feedbackId)
+        public async Task<IActionResult> GetFile(Guid feedbackId)
         {
             List<string> fileUrl = new List<string>();
             string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
@@ -91,7 +90,7 @@ namespace Group4.FacilitiesReport.API.Controllers
 
 
         [HttpGet("download")]
-        public async Task<IActionResult> download(string feedbackId)
+        public async Task<IActionResult> download(Guid feedbackId)
         {
             List<string> fileUrl = new List<string>();
             string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
@@ -174,15 +173,10 @@ namespace Group4.FacilitiesReport.API.Controllers
             APIResponse response = new APIResponse();
             int passcount = 0;
             int errorcount = 0;
-            Guid feedbackId;
-            do
-            {
-                feedbackId = Guid.NewGuid();
-            }
-            while (_ifeedback.GetFeedback(feedbackId) != null);
+            Guid feedbackId = Guid.NewGuid();
             try
             {
-                string FilePath = GetFilePath(feedbackId.ToString());
+                string FilePath = GetFilePath(feedbackId);
                 if (!System.IO.File.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
@@ -190,9 +184,9 @@ namespace Group4.FacilitiesReport.API.Controllers
                 foreach (var file in fileCollection)
                 {
                     string fileDir = FilePath + "\\" + file.FileName;
-                    if (!System.IO.File.Exists(fileDir))
+                    if (System.IO.File.Exists(fileDir))
                     {
-                        System.IO.Directory.CreateDirectory(fileDir);
+                        System.IO.Directory.Delete(fileDir);
                     }
                     using (FileStream stream = System.IO.File.Create(fileDir))
                     {
@@ -267,9 +261,9 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
         }
         [NonAction]
-        private string GetFilePath(string feedbackId)
+        private string GetFilePath(Guid feedbackId)
         {
-            return this._webHostEnvironment.WebRootPath + "\\Uploading\\Feedback\\" + feedbackId;
+            return this._webHostEnvironment.WebRootPath + "\\Uploading\\Feedback\\" + feedbackId.ToString();
         }
     }
 }

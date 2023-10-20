@@ -174,3 +174,4 @@ C:\Users\Admin\source\repos\SWP391-Project\Group4.FacilitiesReport\Group4.Facili
 C:\Users\Admin\source\repos\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.csproj.CopyComplete
 C:\Users\Admin\source\repos\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.genruntimeconfig.cache
 C:\Users\Admin\source\repos\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\ref\Group4.FacilitiesReport.API.dll
+C:\Users\RLappc.com\Desktop\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\bin\Debug\net7.0\Group4.FacilitiesReport.API.staticwebassets.runtime.json
