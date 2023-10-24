@@ -12,8 +12,7 @@
         public DateTime? DateTime { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public string? VideoUrl { get; set; }
-        public string? ImgUrl { get; set; }
+        public string DataUrl { get; set; } = null!;
         public string? Response { get; set; }
         public string CateId { get; set; } = null!;
         public string LocationId { get; set; } = null!;
