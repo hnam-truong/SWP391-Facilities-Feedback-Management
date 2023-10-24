@@ -89,7 +89,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
 
-        [HttpGet("download")]
+        [HttpGet("Download")]
         public async Task<IActionResult> download(Guid feedbackId)
         {
             List<string> fileUrl = new List<string>();
