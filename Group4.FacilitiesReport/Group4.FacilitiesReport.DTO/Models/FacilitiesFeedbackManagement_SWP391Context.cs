@@ -21,6 +21,7 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
         public virtual DbSet<TblUserRole> TblUserRoles { get; set; } = null!;
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TblCategoriesProblem>(entity =>
@@ -53,17 +54,16 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasColumnName("CateID")
                     .IsFixedLength();
 
+                entity.Property(e => e.DataUrl)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.DateTime)
                     .HasColumnType("datetime")
                     .HasColumnName("Date_time")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Description).HasMaxLength(300);
-
-                entity.Property(e => e.ImgUrl)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("ImgURL");
 
                 entity.Property(e => e.LocationId)
                     .HasMaxLength(15)
@@ -81,11 +81,6 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasMaxLength(36)
                     .IsUnicode(false)
                     .HasColumnName("UserID");
-
-                entity.Property(e => e.VideoUrl)
-                    .HasMaxLength(150)
-                    .IsUnicode(false)
-                    .HasColumnName("VideoURL");
 
                 entity.HasOne(d => d.Cate)
                     .WithMany(p => p.TblFeedbacks)
@@ -123,7 +118,7 @@ namespace Group4.FacilitiesReport.DTO.Models
             modelBuilder.Entity<TblRefreshToken>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Tbl_Refr__1788CC4C4CDA5083");
+                    .HasName("PK__Tbl_Refr__1788CC4C0CC98109");
 
                 entity.ToTable("Tbl_RefreshToken");
 
@@ -142,7 +137,9 @@ namespace Group4.FacilitiesReport.DTO.Models
             {
                 entity.ToTable("tbl_Task");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.DateTime)
                     .HasColumnType("datetime")
@@ -248,7 +245,7 @@ namespace Group4.FacilitiesReport.DTO.Models
             modelBuilder.Entity<TblUserRole>(entity =>
             {
                 entity.HasKey(e => e.RoleId)
-                    .HasName("PK__tbl_User__8AFACE3A11CCB16F");
+                    .HasName("PK__tbl_User__8AFACE3A18C26795");
 
                 entity.ToTable("tbl_UserRole");
 

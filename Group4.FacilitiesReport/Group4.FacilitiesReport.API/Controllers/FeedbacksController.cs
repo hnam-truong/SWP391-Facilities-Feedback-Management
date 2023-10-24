@@ -92,7 +92,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpGet("Download")]
         public async Task<IActionResult> download(Guid feedbackId)
         {
-            List<string> fileUrl = new List<string>();
             string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
             try
             {
@@ -114,18 +113,9 @@ namespace Group4.FacilitiesReport.API.Controllers
                                 await fileStream.CopyToAsync(stream);
                             }
                             stream.Position = 0;
-                            try
-                            {
-                                // Determine content type from file extension
-                                var contentType = GetContentType(f.Extension);
-                                return File(stream, contentType);
-                            }
-                            catch (Exception ex)
-                            {
-                                return StatusCode(500);
-                            }
-
+                            return File(stream, "Multipart/FromForm");
                         }
+
                         else
                         {
                             return NotFound();
@@ -136,7 +126,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex);
             }
         }
         [NonAction]
@@ -209,6 +199,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 CateId = cateId,
                 LocationId = locatoinId,
                 Notify = 0,
+                ImgUrl = GetFilePath(feedbackId),
                 DateTime = DateTime.Now
             });
             response.ResponseCode = 200;
