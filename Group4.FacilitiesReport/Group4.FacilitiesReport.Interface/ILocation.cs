@@ -9,10 +9,13 @@ namespace Group4.FacilitiesReport.Interface
 {
     public interface ILocation
     {
-        Task<List<Location>> GetLocations();
-        Task<Location> GetLocationById(string LocationId);
-        Task<List<Location>> GetLocationsByDisable(int Disable);
-        Task<APIResponse> AddLocation(Location Loca);
-        Task<APIResponse> UpdateLocation(Location Loca);
+        public Task<List<Location>> GetLocations();
+        public Task<Location> GetLocationById(string LocationId);
+        public Task<List<Location>> GetLocationsDisable();
+        public Task<List<Location>> GetLocationsEnable();
+        public Task<APIResponse> AddLocation(Location Loca);
+        //fix update status 
+        public Task<APIResponse> StatusLocation(string LocationId, int Status);
+        public Task<APIResponse> DeleteLocation(string LocationId);
     }
 }

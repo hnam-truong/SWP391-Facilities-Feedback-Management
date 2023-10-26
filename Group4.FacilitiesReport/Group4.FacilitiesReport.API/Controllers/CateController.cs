@@ -43,6 +43,17 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(category);
         }
 
+        [HttpPost("Create")]
+        public async Task<IActionResult> CreateCate(string Id, string Des)
+        {
+            var cate = await _iCategory.AddCate(new Category
+            {
+                Id = Id,
+                Description = Des
+            });
+            return Ok(cate);
+        }
+
         [HttpPut("UpdateCate")]
         public async Task<IActionResult> UpdateCate(string CateId, string Des)
         {
@@ -53,15 +64,11 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateCate(string Id, string Des)
+        
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(string CateId)
         {
-            var cate = await _iCategory.AddCate(new Category
-            {
-                Id=Id,
-                Description=Des
-            });
-            return Ok(cate);
+            return Ok(await _iCategory.DeleteCate(CateId));
         }
     }
 }

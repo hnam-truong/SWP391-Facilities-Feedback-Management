@@ -9,10 +9,12 @@ namespace Group4.FacilitiesReport.Interface
 {
     public interface ICate  
     {
-        Task<List<Category>> GetCategories();
-        Task<Category> GetCategoryById(string CategoryId);
-        Task<APIResponse> UpdateCategory(Category category);
-        Task<APIResponse> AddCate(Category category);
+        public Task<List<Category>> GetCategories();
+        public Task<Category> GetCategoryById(string CategoryId);
+        public Task<APIResponse> AddCate(Category category);
+        public Task<APIResponse> UpdateCategory(Category category);
+        public Task<APIResponse> DeleteCate(string CateId);
+
 
     }
 }

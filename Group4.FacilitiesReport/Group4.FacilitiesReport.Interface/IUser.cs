@@ -10,16 +10,19 @@ namespace Group4.FacilitiesReport.Interface
 {
     public interface IUser
     {
+        public Task<List<User>> GetEmployeeByCate(string CateId);
+        public Task<List<User>> GetUsersWhoProvidedFeedback();
+        public Task<List<User>> GetUsers();
+        public Task<List<User>> GetUsersByStatus(int status);
+        public Task<User> GetUserById(string userId);
+        public Task<int> CountUsersActive();
+        public Task<int> CountUsersBanned();
+        public Task<int> CountUsersWhoProvidedFeedback();
+        public Task<List<EmployeeObject>> CountEmployeeTask(string CateId);
+        public Task<User?> Login(string Email, string Password);
+        public Task<APIResponse> UpdateStatus(string UserId, int Status);
+        public Task<APIResponse> UpdateUser(User User);
+        public Task<APIResponse> AddUser(User user);
 
-        Task<List<User>> GetUsersByStatus(int status);
-        Task<User> GetUserById(string userId);
-        Task<int> CountUsersByStatus(int status);
-        Task<List<User>> GetUsersByRole(int role);
-        Task<List<User>> GetUsersWhoProvidedFeedback();
-        Task<int> CountUsersWhoProvidedFeedback();
-        Task<List<User>> GetUsers();
-
-        Task<APIResponse> UpdateStatusUser(string UserId, int Status);
-        Task<APIResponse> UpdateUser(User User);
     }
 }

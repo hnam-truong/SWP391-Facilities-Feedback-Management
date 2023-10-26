@@ -22,25 +22,7 @@ namespace Group4.FacilitiesReport.Repositories
             _mapper = mapper;
         }
         private IQueryable<TblCategoriesProblem> AllCate() => _context.TblCategoriesProblems;
-        public async Task<APIResponse> AddCate(Category category)
-        {
-            APIResponse _response = new APIResponse();
-            try
-            {
-                TblCategoriesProblem _cate = _mapper.Map<Category, TblCategoriesProblem>(category);
-                await _context.TblCategoriesProblems.AddAsync(_cate);
-                await this._context.SaveChangesAsync(); ;
-                _response.ResponseCode = 200;
-                _response.Result = _cate.Id;
-
-            }
-            catch (Exception ex)
-            {
-                _response.ResponseCode = 400;
-                _response.ErrorMessage = ex.Message;
-            }
-            return _response;
-        }
+        
 
         public async Task<List<Category>> GetCategories()
         {
@@ -64,6 +46,25 @@ namespace Group4.FacilitiesReport.Repositories
             return _response;
         }
 
+        public async Task<APIResponse> AddCate(Category category)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblCategoriesProblem _cate = _mapper.Map<Category, TblCategoriesProblem>(category);
+                await _context.TblCategoriesProblems.AddAsync(_cate);
+                await this._context.SaveChangesAsync(); ;
+                _response.ResponseCode = 200;
+                _response.Result = _cate.Id;
+
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = ex.Message;
+            }
+            return _response;
+        }
         public async Task<APIResponse> UpdateCategory(Category category)
         {
             APIResponse response = new APIResponse();
@@ -92,5 +93,36 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return response;
         }
+
+        public async Task<APIResponse> DeleteCate(string CateId)
+        {
+            APIResponse _response = new APIResponse();
+            try
+            {
+                TblCategoriesProblem? cate = await _context.TblCategoriesProblems.FindAsync(CateId);
+                if (cate != null)
+                {
+                    _context.TblCategoriesProblems.Remove(cate);
+                    await _context.SaveChangesAsync();
+                    _response.ResponseCode = 200;
+                    _response.Result = CateId;
+                }
+                else
+                {
+                    _response.ResponseCode = 400;
+                    _response.Result = "Data not found!";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.ResponseCode = 400;
+                _response.Result = ex.Message;
+
+            }
+            return _response;
+        }
+
+        
     }
 }
