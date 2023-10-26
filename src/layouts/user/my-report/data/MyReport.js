@@ -1,18 +1,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
 
-// Images
-
 //MUI
 import IconButton from "@mui/material/IconButton";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import StarIcon from "@mui/icons-material/Star";
+import Box from "@mui/material/Box";
 
 export default function data() {
   const badgeContent = "waiting"; // Replace this with the actual badge content
@@ -28,55 +26,25 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const handleUndoReport = (feedbackId) => {
+  const handleRemoveReport = (feedbackId) => {
     var option = {
-      method: 'PUT',
+      method: 'DELETE',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status: "Waiting" }),
+      body: JSON.stringify(data),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Waiting", option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Waiting" }
-              : prevFeedback
-          )
-        );
+    fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error: " + error.message);
       });
   }
 
-  const handleNoti = (feedbackId) => {
-    fetch(
-      `https://localhost:7157/api/Feedbacks/Notify?feedbackId=` + feedbackId,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
-      .then((response) => response.text())
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, notify: prevFeedback.notify === 0 ? 1 : 0 }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-  };
 
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -98,74 +66,85 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day }) => (
+  const Time = ({ day, expire }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {day}
       </MDTypography>
+      <MDTypography variant="caption" color="error">
+        {expire}
+      </MDTypography>
     </MDBox>
   );
+
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired" )
+    .filter((feedback) => feedback.userId !== "") //Khi có phân quyền userID chỉnh code ở đây để chỉ map ra đúng feedback của Mỗi User 
     .map((feedback) => ({
-      star: feedback.notify === 0 ? (
-        <div>
-          <IconButton sx={{ mr: -3, ml: 0 }} onClick={() => handleNoti(feedback.feedbackId)}><StarBorderIcon /></IconButton>
-        </div>
-      ) : (
-        <div>
-          <IconButton sx={{ mr: -3, ml: 0 }} onClick={() => handleNoti(feedback.feedbackId)}><StarIcon color="star" sx={{ color: "#ffea00" }} /></IconButton>
-        </div>
-      ),
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <h4>{feedback.title}</h4>,
+      title: <Link><h4>{feedback.title}</h4></Link>,
       info: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
           {(() => {
             switch (feedback.status) {
+              case "Waiting":
+                return (
+                  <MDBadge badgeContent={feedback.status} color="light" variant="gradient" size="sm" />
+                );
+              case "Processing":
+                return (
+                  <MDBadge badgeContent={feedback.status} color="warning" variant="gradient" size="sm" />
+                );
               case "Closed":
                 return (
-                  <MDBadge badgeContent="closed" color="inherit" variant="gradient" size="sm" />
+                  <MDBadge badgeContent={feedback.status} color="inherit" variant="gradient" size="sm" />
                 );
               case "Rejected":
                 return (
-                  <MDBadge badgeContent="rejected" color="error" variant="gradient" size="sm" />
+                  <MDBadge badgeContent={feedback.status} color="error" variant="gradient" size="sm" />
                 );
               default:
                 return (
-                  <MDBadge badgeContent="expired" color="dark" variant="gradient" size="sm" />
+                  <MDBadge badgeContent={feedback.status} color="dark" variant="gradient" size="sm" />
                 );
             }
           })()}
         </MDBox>
       ),
-      time: <Time day={feedback.dateTime} />,
-      action: feedback.status === "Rejected" ? (
-        <div>
-          <IconButton onClick={() => handleUndoReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="" fontWeight="medium">
-              Undo
-            </MDTypography>
-          </IconButton>
-        </div>
-      ) : (<MDTypography></MDTypography>),
+      time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
+      action: (
+        <MDBox ml={-1}>
+          {(() => {
+            switch (feedback.status) {
+              case "Waiting":
+                return (
+                  <div>
+                    <IconButton onClick={() => handleUpdateReport(feedback.feedbackId)}>
+                      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+                        Edit
+                      </MDTypography>
+                    </IconButton>
+                    <IconButton onClick={() => handleRemoveReport(feedback.feedbackId)}>
+                      <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+                        Remove
+                      </MDTypography>
+                    </IconButton>
+                  </div>
+                );
+            }
+          })()}
+        </MDBox>
+      ),
     }));
 
-    // {
-    //   Header: "",
-    //   accessor: "checkBox",
-    //   align: "right",
-    //   width: "0%",
-    // },
   return {
     columns: [
-      { Header: "", accessor: "star", align: "center", width: "0%" },
+      { Header: "", accessor: "space", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
       { Header: "cat/loc", accessor: "info", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "time", accessor: "time", align: "center" },
+      { Header: "time/expire", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 

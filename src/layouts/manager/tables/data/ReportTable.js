@@ -10,8 +10,8 @@ import MDBadge from "components/MDBadge";
 
 //MUI
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
-import SwitchStar from "./SwitchStar";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
 
 export default function data() {
   const badgeContent = "waiting"; // Replace this with the actual badge content
@@ -35,7 +35,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Waiting" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Waiting", option)
+    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Waiting", option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -49,7 +49,6 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-
   }
 
   const handleAcceptReport = (feedbackId) => {
@@ -60,7 +59,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Processing" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Processing", option)
+    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Processing", option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -74,7 +73,6 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-
   }
 
   const handleRejectReport = (feedbackId) => {
@@ -85,7 +83,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Rejected" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Rejected", option)
+    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Rejected", option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -99,8 +97,34 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-
   }
+
+  const handleNoti = (feedbackId) => {
+    fetch(
+      `https://localhost:7157/api/Feedbacks/Notify?feedbackId=` + feedbackId,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    )
+      .then((response) => response.text())
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, notify: prevFeedback.notify === 0 ? 1 : 0 }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+  };
+
 
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -136,14 +160,19 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter((feedback) => feedback.status === "Waiting" || feedback.status === "Processing")
     .map((feedback) => ({
-      star: (
-        <Box sx={{ mr: -3, ml: 0 }}>
-          <SwitchStar />
-        </Box>
+      star: feedback.notify === 0 ? (
+        <div>
+          <IconButton sx={{ mr: -3, ml: 0 }} onClick={() => handleNoti(feedback.feedbackId)}><StarBorderIcon /></IconButton>
+        </div>
+      ) : (
+        <div>
+          <IconButton sx={{ mr: -3, ml: 0 }} onClick={() => handleNoti(feedback.feedbackId)}><StarIcon color="star" sx={{ color: "#ffea00" }} /></IconButton>
+        </div>
       ),
+
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <Link><h4>{feedback.title}</h4></Link>,
-      info: <Info category={feedback.cateId} location={feedback.locationId} />,
+      info: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
           <MDBadge
@@ -181,12 +210,6 @@ export default function data() {
 
   return {
     columns: [
-      // {
-      //   Header: "",
-      //   accessor: "checkBox",
-      //   align: "right",
-      //   width: "0%",
-      // },
       { Header: "", accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },

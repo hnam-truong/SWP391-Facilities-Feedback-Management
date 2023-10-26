@@ -4,8 +4,8 @@ import ReportsTable from "layouts/manager/tables";
 import ReportHistory from "layouts/manager/history";
 import Notifications from "layouts/manager/notifications";
 import Create from "layouts/create";
-import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
+import UserReport from "layouts/user/my-report";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -44,30 +44,31 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Profile",
-  //   key: "profile",
-  //   icon: <Icon fontSize="small">person</Icon>,
-  //   route: "/profile",
-  //   component: <Profile />,
-  // },
-    {
-      type: "collapse",
-      name: "Sign In",
-      key: "sign-in",
-      icon: <Icon fontSize="small">login</Icon>,
-      route: "/authentication/sign-in",
-      component: <SignIn />,
-    },
-    {
-      type: "collapse",
-      name: "Create",
-      key: "create",
-      icon: <Icon fontSize="small">add</Icon>,
-      route: "/create",
-      component: <Create />,
-   },
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    type: "collapse",
+    name: "My Reports",
+    key: "my-reports",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/my-reports",
+    component: <UserReport />,
+  },
+  {
+    type: "collapse",
+    name: "Create",
+    key: "create",
+    icon: <Icon fontSize="small">add</Icon>,
+    route: "/create",
+    component: <Create />,
+  },
+  
 ];
 
 export default routes;
