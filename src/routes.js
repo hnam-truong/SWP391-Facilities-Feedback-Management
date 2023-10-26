@@ -6,6 +6,7 @@ import Notifications from "layouts/manager/notifications";
 import Create from "layouts/create";
 import SignIn from "layouts/authentication/sign-in";
 import UserReport from "layouts/user/my-report";
+import EmployeeTask from "layouts/employee/my-task";;
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -68,7 +69,15 @@ const routes = [
     route: "/create",
     component: <Create />,
   },
-  
+  {
+    type: "collapse",
+    name: "My Tasks",
+    key: "my-tasks",
+    icon: <Icon fontSize="small">task</Icon>,
+    route: "/my-tasks",
+    component: <EmployeeTask />,
+  },
+
 ];
 
 export default routes;

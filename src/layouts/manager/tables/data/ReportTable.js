@@ -174,13 +174,20 @@ export default function data() {
       title: <Link><h4>{feedback.title}</h4></Link>,
       info: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
-        <MDBox ml={-1}>
+        <MDBox ml={-1} className="status-cell">
           <MDBadge
             badgeContent={feedback.status}
             color={feedback.status === "Waiting" ? "light" : "warning"}
             variant="gradient"
             size="sm"
           />
+          {feedback.status === "Processing" && (
+            <div className="hover-content">
+              {feedback.tasks.map((task) => (
+                <p key={task.id}>{task.employeeId}</p>
+              ))}
+            </div>
+          )}
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
