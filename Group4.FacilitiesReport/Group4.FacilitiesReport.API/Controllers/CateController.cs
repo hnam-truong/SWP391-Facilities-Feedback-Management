@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Group4.FacilitiesReport.API.Controllers
@@ -11,13 +10,11 @@ namespace Group4.FacilitiesReport.API.Controllers
     public class CateController : ControllerBase
     {
         private readonly ICate _iCategory;
-        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public CateController(ICate iCategory, IConfiguration configuration, IMapper mapper)
+        public CateController(ICate iCategory, IMapper mapper)
         {
             _iCategory = iCategory;
-            _configuration = configuration;
             _mapper = mapper;
         }
 
@@ -64,7 +61,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-        
+
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string CateId)
         {
