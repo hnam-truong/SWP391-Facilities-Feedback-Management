@@ -183,8 +183,10 @@ export default function data() {
           />
           {feedback.status === "Processing" && (
             <div className="hover-content">
-              {feedback.tasks.map((task) => (
-                <p key={task.id}>{task.employeeId}</p>
+              {feedback.tasks
+              .filter((task) => task.employee.username !== "null")
+              .map((task) => (
+                <p key={task.id}>{task.employee.username}</p>
               ))}
             </div>
           )}
