@@ -1,6 +1,7 @@
 ﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Compression;
 
 namespace Group4.FacilitiesReport.API.Controllers
 {
@@ -28,6 +29,17 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
+        [HttpGet("ByStatus")]
+        public async Task<IActionResult> GetFeedbackByStatus(string status)
+        {
+            var feedbacks = await this._ifeedback.GetFeedbackByStatus((int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), status));
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+            return Ok(feedbacks);
+        }
+
         [HttpGet("User/{UserId}")]
         public async Task<IActionResult> GetFeedbackByUserId(string UserId)
         {
@@ -48,14 +60,15 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
+
         [HttpGet("Count")]
         public async Task<IActionResult> CountFeedback(string beginDate, string endDate)
         {
             int count = await this._ifeedback.CountFeedbackByDate(
                 DateTime.ParseExact(beginDate, "dd-MM-yyyy",
-                                       System.Globalization.CultureInfo.InvariantCulture),
+                                      System.Globalization.CultureInfo.InvariantCulture),
                 DateTime.ParseExact(endDate, "dd-MM-yyyy",
-                                       System.Globalization.CultureInfo.InvariantCulture));
+                                      System.Globalization.CultureInfo.InvariantCulture));
             return Ok(count);
         }
         [HttpGet("GetFile")]
@@ -84,6 +97,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             catch (Exception ex)
             {
+                return BadRequest(ex);
             }
             return Ok(fileUrl);
         }
@@ -92,7 +106,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpGet("Download")]
         public async Task<IActionResult> download(Guid feedbackId)
         {
-            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
             try
             {
                 string filePath = GetFilePath(feedbackId);
@@ -100,26 +113,23 @@ namespace Group4.FacilitiesReport.API.Controllers
                 {
                     DirectoryInfo fileInfo = new DirectoryInfo(filePath);
                     FileInfo[] fileInfos = fileInfo.GetFiles();
-                    foreach (FileInfo f in fileInfos)
+                    using (var zipStream = new MemoryStream())
                     {
-                        string filename = fileInfo.Name;
-                        string dir = filePath + "\\" + filename;
-                        if (System.IO.File.Exists(dir))
+                        using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
                         {
-                            string url = hostUrl + "/Uploading/Feedback/" + feedbackId + "/" + filename;
-                            MemoryStream stream = new MemoryStream();
-                            using (FileStream fileStream = new FileStream(dir, FileMode.Open))
+                            foreach (var file in fileInfos)
                             {
-                                await fileStream.CopyToAsync(stream);
+                                var zipEntry = archive.CreateEntry(file.Name);
+                                using (var entryStream = zipEntry.Open())
+                                {
+                                    var fileDir = filePath + "\\" + file.Name;
+                                    await entryStream.CopyToAsync(zipStream);
+                                }
                             }
-                            stream.Position = 0;
-                            return File(stream, "Multipart/FromForm");
                         }
+                        zipStream.Position = 0;
 
-                        else
-                        {
-                            return NotFound();
-                        }
+                        return File(zipStream, "application/zip", "FeedbackFiles.zip");
                     }
                 }
                 return NotFound();
@@ -129,34 +139,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 return NotFound(ex);
             }
         }
-        [NonAction]
-        private string GetContentType(string fileExtension)
-        {
-            switch (fileExtension.ToLower())
-            {
-                case ".png":
-                    return "image/png";
-                case ".jpg":
-                case ".jpeg":
-                    return "image/jpeg";
-                case ".gif":
-                    return "image/gif";
-                case "mp4":
-                    return "video/mp4";
-                case "quicktime":
-                    return "video/quicktime";
-                case "x-ms-wmv":
-                    return "x-ms-wmv";
-                case "x-msvideo":
-                    return "video/x-msvideo";
-                case "x-flv":
-                    return "video/x-flv";
-                case "webm":
-                    return "video/webm";
-                default:
-                    return "application/octet-stream";  // Fallback to binary data
-            }
-        }
+
         [HttpPost("Create")]
         public async Task<IActionResult> CreateFeedback(string userId, string title, string description, string cateId, string locatoinId, [FromForm] IFormFileCollection fileCollection)
         {
@@ -190,7 +173,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 errorcount++;
                 response.ErrorMessage = ex.Message;
             }
-            var feedback = await this._ifeedback.CreateFeedback(new Feedback
+            await this._ifeedback.CreateFeedback(new Feedback
             {
                 FeedbackId = feedbackId,
                 UserId = userId,
@@ -199,8 +182,9 @@ namespace Group4.FacilitiesReport.API.Controllers
                 CateId = cateId,
                 LocationId = locatoinId,
                 Notify = 0,
-                ImgUrl = GetFilePath(feedbackId),
-                DateTime = DateTime.Now
+                DataUrl = GetFilePath(feedbackId),
+                DateTime = DateTime.Now,
+                Status = "Waiting",
             });
             response.ResponseCode = 200;
             response.Result = "Feedback " + feedbackId + " create Successful!\n" +
@@ -213,7 +197,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
         {
-            var feedback = await this._ifeedback.UpdateFeedback(new Feedback
+            var feedback = await this._ifeedback.UpdateFeedback(new FeedbackUpdatableObject
             {
                 FeedbackId = feedbackId,
                 UserId = userId,
@@ -235,9 +219,12 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateFeedbackStatus(Guid feedbackId, string status)
         {
-            Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue);
-            var feedback = await this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
-            return Ok(feedback);
+            if (Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue))
+            {
+                var feedback = await this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
+                return Ok(feedback);
+            }
+            return BadRequest("Invalid status");
         }
 
         [HttpPut("ResponseFeedback")]
@@ -249,6 +236,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpDelete("RemoveFeedback/{feedbackId}")]
         public async Task<IActionResult> RemoveFeedback(Guid feedbackId)
         {
+
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
         }
         [NonAction]
