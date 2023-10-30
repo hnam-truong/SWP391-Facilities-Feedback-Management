@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from "react-google-login";
-// react-router-dom components
 import { useNavigate } from "react-router-dom";
 
 // @mui material components
@@ -15,7 +14,6 @@ import MDButton from "components/MDButton";
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-// import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import bgImage from "assets/images/HCM-scaled.jpeg";
 import logo from "assets/images/logo-ct-blue.png";
 import google from "assets/images/google-icon-2048x2048-czn3g8x8.png"
@@ -33,13 +31,15 @@ function Basic() {
       `https://localhost:7157/api/User/Login?Email=` + localStorage.getItem('email') + '&Password=' + localStorage.getItem('password')
     )
       .then(response => {
-        setUser(response.data); // Set the user state with the data from the response
+        setUser(response.data);
       })
       .catch(error => {
         console.error('Error:', error);
       });
     if (user.role) {
       localStorage.setItem('userID', user.userID)
+      localStorage.setItem('userRole', user.role.description)
+      localStorage.setItem('isAuthenticated', true)
       console.log(user.role.description);
       switch (user.role.description) {
         case "Manager":
@@ -50,11 +50,16 @@ function Basic() {
           navigate('/my-tasks');
           break;
 
-        case "Student" || "Lecturer" || "Casual Employee":
+        case "Student":
+        case "Lecturer":
+        case "Casual Employee":
           navigate('/my-reports');
           break;
+
+        default:
+          break;
       }
-    }
+    } 
   }, [user]);
 
   const handleSubmit = async (e) => {
@@ -62,14 +67,13 @@ function Basic() {
       `https://localhost:7157/api/User/Login?Email=` + email + '&Password=' + password
     )
       .then(response => {
-        setUser(response.data); // Set the user state with the data from the response
+        setUser(response.data);
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
     e.preventDefault();
-    // Create a JSON object with user credentials
     const userData = {
       email: email,
       password: password,
@@ -162,11 +166,9 @@ function Basic() {
                 fullWidth />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              {/* <Link to="/dashboard"> */}
-              <MDButton type="submit" variant="gradient" color="info" fullWidth>
+              <MDButton type="submit" variant="gradient" color="info" fullWidth >
                 sign in
               </MDButton>
-              {/* </Link> */}
               <MDBox
                 alignItems="center"
                 fontWeight="regular"

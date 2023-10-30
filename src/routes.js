@@ -7,12 +7,14 @@ import Create from "layouts/create";
 import SignIn from "layouts/authentication/sign-in";
 import SignOut from "layouts/authentication/sign-out";
 import UserReport from "layouts/user/my-report";
-import EmployeeTask from "layouts/employee/my-task";;
+import EmployeeTask from "layouts/employee/my-task";
+import Error404 from "layouts/error/error404";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import { layouts } from "chart.js";
 
+const userRole = localStorage.getItem("userRole");
+const isAuthenticated = localStorage.getItem("isAuthenticated");
 const routes = [
   {
     type: "collapse",
@@ -21,6 +23,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    roles: ["Manager"],
   },
   {
     type: "collapse",
@@ -29,6 +32,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/reports",
     component: <ReportsTable />,
+    roles: ["Manager"],
   },
   {
     type: "collapse",
@@ -37,6 +41,7 @@ const routes = [
     icon: <Icon fontSize="small">history</Icon>,
     route: "/history",
     component: <ReportHistory />,
+    roles: ["Manager"],
   },
   {
     type: "collapse",
@@ -45,14 +50,7 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in", 
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/sign-in",
-    component: <SignIn />,
+    roles: ["Manager"],
   },
   {
     type: "collapse",
@@ -61,6 +59,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",
@@ -69,6 +68,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",
@@ -77,16 +77,31 @@ const routes = [
     icon: <Icon fontSize="small">task</Icon>,
     route: "/my-tasks",
     component: <EmployeeTask />,
+    roles: ["Task Employee"]
   },
   {
     type: "collapse",
     name: "Sign Out",
-    key: "sign-out", 
+    key: "sign-out",
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/sign-out",
     component: <SignOut />,
   },
-
-];
+  {
+    type: "hidden",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/sign-in",
+    component: <SignIn />,
+  },
+  {
+    type: "route",
+    route: "*",
+    component: <Error404 />,
+  },
+].filter((route) => {
+  return route.roles ? route.roles.includes(userRole) : true;
+});
 
 export default routes;
