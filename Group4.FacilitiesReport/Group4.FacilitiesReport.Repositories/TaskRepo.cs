@@ -108,6 +108,11 @@ namespace Group4.FacilitiesReport.Repositories
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t=>t.Id==Id);
             if(_task!=null&&_task.Status==1)
             response= await UpdateTaskStatus(Id, 2);
+            else
+            {
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Task not available";
+            }
             return response;
         }
 
@@ -118,6 +123,11 @@ namespace Group4.FacilitiesReport.Repositories
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == Id);
             if (_task != null && _task.Status != 2)
                 response = await UpdateTaskStatus(Id, 3);
+            else
+            {
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Task not available";
+            }
             return response;
         }
 
@@ -138,7 +148,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "Task not available";
                 }
 
             }
@@ -168,7 +178,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     _response.ResponseCode = 404;
-                    _response.ErrorMessage = "Data not found";
+                    _response.ErrorMessage = "Task not available";
                 }
 
             }
@@ -196,7 +206,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     _response.ResponseCode = 400;
-                    _response.Result = "Data not found!";
+                    _response.Result = "Delete Failed!";
 
                 }
             }
@@ -225,7 +235,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "Task not available";
                 }
 
             }

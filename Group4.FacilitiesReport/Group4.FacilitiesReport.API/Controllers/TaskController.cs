@@ -228,16 +228,17 @@ namespace Group4.FacilitiesReport.API.Controllers
 
         [HttpPut("Cancel")]
         public async Task<IActionResult> TaskCancel(Guid Id) { 
+     
             var task=await _tasks.GetTaskById(Id);
-            if (task != null&& task.Status=="Responsed") return Ok(await _tasks.UpdateTaskStatus(Id, 3));
-            else return BadRequest();
+            if (task != null&& task.Status=="Responded") return Ok(await _tasks.UpdateTaskStatus(Id, 3));
+            else return NotFound();
         
         }
         [HttpPut("Closed")]
         public async Task<IActionResult> TaskClosed(Guid Id)
         {
             var task = await _tasks.GetTaskById(Id);
-            if (task != null && task.Status == "Responsed") { return Ok(await _tasks.UpdateTaskStatus(Id, 2)); }
+            if (task != null && task.Status == "Responded") { return Ok(await _tasks.UpdateTaskStatus(Id, 2)); }
             else
                 return NotFound();
         }
@@ -245,7 +246,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         public async Task<IActionResult> TaskDelivered(Guid Id)
         {
             var task = await _tasks.GetTaskById(Id);
-            if (task != null && task.Status == "Responsed") { return Ok(await _tasks.UpdateTaskStatus(Id, 0)); }
+            if (task != null && task.Status == "Responded") { return Ok(await _tasks.UpdateTaskStatus(Id, 0)); }
             else
                 return NotFound();
         }

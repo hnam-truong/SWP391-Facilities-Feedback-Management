@@ -10,7 +10,7 @@
         public string ImgConfirmationUrl { get; set; } = null!;
         public string? Note { get; set; }
         public string Status { get; set; }
-        public string? Responsed { get; set; }
+        public string? Responsed { get; set; } 
 
         public User Employee { get; set; } = null!;
         public Feedback Feedback { get; set; } = null!;

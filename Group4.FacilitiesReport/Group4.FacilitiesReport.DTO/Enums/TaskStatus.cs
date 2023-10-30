@@ -11,6 +11,6 @@ namespace Group4.FacilitiesReport.DTO.Enums
         Delivered,
         Responded, 
         Closed, 
-        Cancel
+        Cancelled
     }
 }
