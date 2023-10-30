@@ -29,6 +29,7 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddScoped<ILocation, LocationRepo>();
             builder.Services.AddScoped<ICate, CateRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
+            //builder.Services.AddScoped<EmployeeObject, TblUser>();
             builder.Services.AddScoped<IRefreshHandler, RefresHandler>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 

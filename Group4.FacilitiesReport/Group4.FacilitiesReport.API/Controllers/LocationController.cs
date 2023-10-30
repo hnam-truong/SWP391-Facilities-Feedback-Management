@@ -1,5 +1,6 @@
 ﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
+using Group4.FacilitiesReport.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -41,17 +42,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(loca);
         }
-
-        [HttpGet("/Disable")]
-        public async Task<IActionResult> GetLocationbyDisable(int Disable)
-        {
-            var loca = await _location.GetLocationsByDisable(Disable);
-            if (loca == null)
-            {
-                return NotFound();
-            }
-            return Ok(loca);
-        }
+       
         [HttpPost("Add")]
         public async Task<IActionResult> AddLocation(string LocationId, string Disable)
         {
@@ -63,21 +54,36 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(location);
         }
 
-        [HttpPut("UpdateLocation")]
-        public async Task<IActionResult> UpdateLocation(string LocationId, string Disable)
-        {
-            var location = await _location.UpdateLocation(new DTO.Location
-            {
-                LocationId = LocationId,
-                Disable = Disable
-            });
-            return Ok(location);
-        }
-        
+        [HttpPut("Disable")]
+        public async Task<IActionResult> DisableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 1));
+
+        [HttpPut("Enable")]
+        public async Task<IActionResult> EnableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 0));
+
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string LocationId)
         {
             return Ok(await _location.DeleteLocation(LocationId));
+        }
+        [NonAction]
+        public async Task<IActionResult> GetLocationEnable()
+        {
+            var loca = await _location.GetLocationsEnable();
+            if (loca == null)
+            {
+                return NotFound();
+            }
+            return Ok(loca);
+        }
+        [NonAction]
+        public async Task<IActionResult> GetLocationDisable()
+        {
+            var loca = await _location.GetLocationsDisable();
+            if (loca == null)
+            {
+                return NotFound();
+            }
+            return Ok(loca);
         }
     }
 }
