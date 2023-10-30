@@ -5,6 +5,7 @@ import ReportHistory from "layouts/manager/history";
 import Notifications from "layouts/manager/notifications";
 import Create from "layouts/create";
 import SignIn from "layouts/authentication/sign-in";
+import SignOut from "layouts/authentication/sign-out";
 import UserReport from "layouts/user/my-report";
 import EmployeeTask from "layouts/employee/my-task";;
 
@@ -76,6 +77,14 @@ const routes = [
     icon: <Icon fontSize="small">task</Icon>,
     route: "/my-tasks",
     component: <EmployeeTask />,
+  },
+  {
+    type: "collapse",
+    name: "Sign Out",
+    key: "sign-out", 
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/sign-out",
+    component: <SignOut />,
   },
 
 ];

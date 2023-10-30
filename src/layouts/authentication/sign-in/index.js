@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleLogin } from "react-google-login";
 // react-router-dom components
-import { Link, Router } from "react-router-dom";
-import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -16,14 +15,12 @@ import MDButton from "components/MDButton";
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-// Images
 // import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import bgImage from "assets/images/HCM-scaled.jpeg";
 import logo from "assets/images/logo-ct-blue.png";
 import google from "assets/images/google-icon-2048x2048-czn3g8x8.png"
 
 import axios from 'axios';
-import { Switch } from "@mui/material";
 
 function Basic() {
   const [email, setEmail] = useState('');
@@ -42,17 +39,18 @@ function Basic() {
         console.error('Error:', error);
       });
     if (user.role) {
+      localStorage.setItem('userID', user.userID)
       console.log(user.role.description);
       switch (user.role.description) {
         case "Manager":
           navigate('/dashboard');
           break;
 
-        case "Employee":
+        case "Task Employee":
           navigate('/my-tasks');
           break;
 
-        case "Student":
+        case "Student" || "Lecturer" || "Casual Employee":
           navigate('/my-reports');
           break;
       }
@@ -127,7 +125,7 @@ function Basic() {
         >
           <img src={logo} alt="logo" style={{ width: "220px", height: "auto" }} />
         </MDBox>
-        <MDBox
+        {/* <MDBox
           variant="gradient"
           bgColor="info"
           borderRadius="lg"
@@ -144,7 +142,7 @@ function Basic() {
           {...logoPosition}
         >
           Login with FeID
-        </MDBox>
+        </MDBox> */}
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>

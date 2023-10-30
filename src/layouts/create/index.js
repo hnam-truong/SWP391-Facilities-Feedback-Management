@@ -1,48 +1,45 @@
-import React, { useState, useMemo, useEffect } from 'react'; // Importing necessary modules from React and other libraries
+/* eslint-disable */
+import React, { useState, useMemo, useEffect } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
-import { Container, Box, Typography, Button, TextField } from '@mui/material'; // Importing necessary components from Material UI
+import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { motion } from 'framer-motion';
-import { css, keyframes } from '@emotion/react';
-import axios from 'axios';
 
-// Styling the components using Material UI's styled() function
-const StyledContainer = styled(Container)({
+const StyledContainer = styled(Container)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  minHeight: '100vh',
+  minHeight: '80vh',
   backgroundColor: '#f5f5f5',
-});
+  padding: '24px',
+}));
 
-const StyledForm = styled('form')({
+const StyledForm = styled('form')(() => ({
   display: 'grid',
-  gridTemplateColumns: '1fr',
-  gridGap: '24px',
+  gridTemplateRows: 'auto auto auto auto',
+  gridGap: '16px',
   width: '100%',
   maxWidth: '800px',
   backgroundColor: '#fff',
   borderRadius: '8px',
   padding: '24px',
   boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
-  '@media (min-width: 768px)': {
-    gridTemplateColumns: '1fr 1fr',
-  },
-});
+}));
 
-const StyledBox = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: 'fit-content',
+const StyledRow = styled(Box)(() => ({
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr 1fr',
+  gridGap: '40px',
   width: '100%',
-});
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: '1fr 1fr 1fr',
+  },
+}));
 
-const StyledSelect = styled(Select)({
+const StyledSelect = styled(Select)(() => ({
   width: '100%',
   borderRadius: '12px',
   '& .MuiSelect-root': {
@@ -54,26 +51,16 @@ const StyledSelect = styled(Select)({
     fontSize: '16px',
     color: '#333',
   },
-  '& .MuiInput-underline:before': {
-    borderBottom: 'none',
-  },
-  '& .MuiInput-underline:after': {
-    borderBottom: 'none',
-  },
-  '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
-    borderBottom: 'none',
-  },
-  '& .MuiInput-underline:hover:not(.Mui-disabled):after': {
-    borderBottom: 'none',
-  },
-  '& .MuiInput-underline.Mui-error:after': {
-    borderBottomColor: '#f44336',
-  },
-  '& .MuiInput-underline.Mui-error:hover:not(.Mui-disabled):before': {
-    borderBottomColor: '#f44336',
-  },
-  '& .MuiInput-underline.Mui-error:hover:not(.Mui-disabled):after': {
-    borderBottomColor: '#f44336',
+  '& .MuiInput-underline': {
+    '&:before, &:after': {
+      borderBottom: 'none',
+    },
+    '&:hover:not(.Mui-disabled):before, &:hover:not(.Mui-disabled):after': {
+      borderBottom: 'none',
+    },
+    '&.Mui-error:after, &.Mui-error:hover:not(.Mui-disabled):before, &.Mui-error:hover:not(.Mui-disabled):after': {
+      borderBottomColor: '#f44336',
+    },
   },
   '& .MuiSelect-menu': {
     maxHeight: '200px',
@@ -85,36 +72,33 @@ const StyledSelect = styled(Select)({
   '& .MuiSelect-menu-list': {
     padding: '8px',
   },
-  '& .MuiListItem-root': {
-    '&:hover': {
-      backgroundColor: '#f5f5f5',
-    },
+  '& .MuiListItem-root:hover': {
+    backgroundColor: '#f5f5f5',
   },
-});
+}));
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(() => ({
   width: '100%',
   borderRadius: '8px',
   '& .MuiInputBase-root': {
     padding: '16px',
   },
-});
+}));
 
-const StyledButton = styled(Button)({
+const StyledButton = styled(Button)(() => ({
   width: '100%',
   borderRadius: '8px',
   padding: '8px',
-  background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+  backgroundColor: 'bg-gradient-to-r from-pink-500 to-yellow-500',
   color: '#fff',
   transition: 'all 0.2s ease-in-out',
-  gridColumn: 'span 2',
   '&:hover': {
-    background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
+    backgroundColor: 'bg-gradient-to-r from-yellow-500 to-pink-500',
     transform: 'scale(1.05)',
   },
-});
+}));
 
-const StyledBackButton = styled(Button)({
+const StyledBackButton = styled(Button)(() => ({
   position: 'absolute',
   top: '16px',
   left: '16px',
@@ -125,9 +109,9 @@ const StyledBackButton = styled(Button)({
     backgroundColor: '#f5f5f5',
     transform: 'scale(1.05)',
   },
-});
+}));
 
-const StyledModal = styled(motion.div)({
+const StyledModal = styled(motion.div)(() => ({
   position: 'fixed',
   top: '50%',
   left: '50%',
@@ -140,65 +124,59 @@ const StyledModal = styled(motion.div)({
   width: '50%',
   borderRadius: '8px',
   overflow: 'hidden',
-});
+}));
 
-const StyledImage = styled('img')({
+const StyledImage = styled('img')(() => ({
   maxWidth: '100%',
   maxHeight: '100%',
-});
+}));
 
-// Creating a functional component called Create
 const Create = React.memo(() => {
-  // Using React hooks to manage state and form data
   const { register, handleSubmit, formState, setValue } = useForm();
   const [selectedCampus, setSelectedCampus] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [roomOptions, setRoomOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [dateTime, setDateTime] = useState(new Date().toLocaleString());
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
-  // Creating options for the Select components using useMemo hook
-  const campusOptions = useMemo(
-    () => [
-      { value: 'FPTU HCM', label: 'FPTU HCM' },
-      // { value: 'Studen Culture House', label: 'Studen Culture House' },
-    ],
-    []
-  );
 
-  const roomOptions = useMemo(
-    () => [
-      // ...Array.from({ length: 30 }, (_, i) => ({ value: `NVH_${i + 1}`, label: `NVH_${i + 1}` })),
-      // ...Array.from({ length: 16 }, (_, i) => ({ value: `NVH_${i + 401}`, label: `NVH_${i + 401}` })),
-      // ...Array.from({ length: 24 }, (_, i) => ({ value: `NVH_${i + 601}`, label: `NVH_${i + 601}` })),
-      ...Array.from({ length: 13 }, (_, i) => ({ value: `P.${i + 1}`, label: `P.${i + 1}` })),
-      ...Array.from({ length: 6 }, (_, i) => ({ value: `P.${i + 20}`, label: `P.${i + 20}` })),
-      ...Array.from({ length: 10 }, (_, i) => ({ value: `P.${i + 30}`, label: `P.${i + 30}` })),
-      ...Array.from({ length: 34 }, (_, i) => ({ value: `P.${i + 104}`, label: `P.${i + 104}` })),
-      ...Array.from({ length: 32 }, (_, i) => ({ value: `P.${i + 203}`, label: `P.${i + 203}` })),
-    ],
-    []
-  );
+  const campusOptions = useMemo(() => [{ value: 'FPTU HCM', label: 'FPTU HCM' }, { value: 'NVH', label: 'NVH' }], []);
 
-  const categoryOptions = useMemo(
-    () => [
-      { value: 'ELECTRICITY', label: 'ELECTRICITY' },
-      { value: 'WATER', label: 'WATER' },
-      { value: 'SUPPLIES', label: 'SUPPLIES' },
-    ],
-    []
-  );
-
-  // Clearing the previewUrl state when there's an error with the file input
   useEffect(() => {
-    if (formState.errors.file) {
-      setPreviewUrl(null);
-    }
-  }, [formState.errors.file]);
+    const fetchRoomOptions = async () => {
+      try {
+        const response = await fetch('https://localhost:7157/api/Location/GetAllLoca');
+        const data = await response.json();
+        const options = data.map((room) => ({ value: room.locationId, label: room.locationId }));
+        setRoomOptions(options);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
+    const fetchCategoryOptions = async () => {
+      try {
+        const response = await fetch('https://localhost:7157/api/Cate/GetAllCate');
+        const data = await response.json();
+        const options = data.map((category) => ({ value: category.id, label: category.description }));
+        setCategoryOptions(options);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRoomOptions();
+    fetchCategoryOptions();
+  }, []);
+
+  useEffect(() => { if (formState.errors.file) setSelectedImages(null); }, [formState.errors.file]);
 
   const onSubmit = async (data) => {
-    const { id, Title, MoreDetails, file } = data; // Remove the id field
+    const { Title, MoreDetails } = data;
     const { value: campus = '' } = selectedCampus || {};
     const { value: room = '' } = selectedRoom || {};
     const { value: category = '' } = selectedCategory || {};
@@ -209,179 +187,116 @@ const Create = React.memo(() => {
     formData.set('Category', category);
     formData.set('Title', Title);
     formData.set('MoreDetails', MoreDetails);
-    formData.set('file', file);
     formData.set('status', 'Open');
     formData.set('priority', 'High');
     formData.set('assignedTo', '');
     formData.set('createdAt', new Date().toISOString());
     formData.set('updatedAt', new Date().toISOString());
-
-    console.log(formData); // Log the formData object
+    if (selectedImages) {
+      formData.set('image', selectedImages);
+    }
 
     try {
       const response = await fetch("https://localhost:7157/api/Feedbacks/Create?"
-        + "userId=SA165555"
-        + "&title=" + data.Title
-        + "&description=" + data.MoreDetails
-        + "&cateId=C06"
-        + "&locatoinId=" + room
-        , {
-          method: 'POST',
-          body: formData,
-        });
+        + "userId=" + localStorage.getItem('userID')
+        + "&title=" + Title
+        + "&description=" + MoreDetails
+        + "&cateId=" + category
+        + "&locatoinId=" + room,
+        { method: 'POST', body: formData });
       const responseData = await response.json();
       console.log(responseData);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) { console.error(error); }
   };
 
-  // Rendering the form using Material UI components and the styled components
+  const handleFileChange = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const images = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        images.push(URL.createObjectURL(file));
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result);
+          setValue('file', file);
+        };
+      }
+      setSelectedImages(images);
+    }
+  };
+  const handleImageClick = (image) => {
+    setPreviewUrl(image);
+    setShowModal(true);
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDateTime(new Date().toLocaleString());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <StyledContainer>
-      <StyledBackButton startIcon={<ArrowBackIcon />} onClick={() => window.history.back()}>
-        Back
-      </StyledBackButton>
-      <Typography variant="h4" fontWeight="bold" mb={4}>
-        Report an Issue
-      </Typography>
+      <StyledBackButton startIcon={<ArrowBackIcon />} onClick={() => window.history.back()}>Back</StyledBackButton>
+      <Typography variant="h4" fontWeight="bold" mb={4}>Report an Issue</Typography>
+      <Typography variant="h6" fontWeight="medium" mb={1}>{dateTime}</Typography>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1} style={{ textAlign: 'center' }}>
-            Campus
-          </Typography>
-          <StyledSelect
-            name="Campus"
-            id="Campus"
-            options={campusOptions}
-            value={selectedCampus}
-            onChange={setSelectedCampus}
-            required
-            isSearchable
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor,
-                '&:hover': {
-                  borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor,
-                },
-              }),
-            }}
-          />
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1} style={{ textAlign: 'center' }}>
-            Room
-          </Typography>
-          <StyledSelect
-            name="Room"
-            id="Room"
-            options={roomOptions}
-            value={selectedRoom}
-            onChange={setSelectedRoom}
-            required
-            isSearchable
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                borderColor: formState.errors.Room ? '#f44336' : provided.borderColor,
-                '&:hover': {
-                  borderColor: formState.errors.Room ? '#f44336' : provided.borderColor,
-                },
-              }),
-            }}
-          />
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1}>
-            Category
-          </Typography>
-          <StyledSelect
-            name="Category"
-            id="Category"
-            options={categoryOptions}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            required
-            isSearchable
-            styles={{
-              control: (provided) => ({
-                ...provided,
-                borderColor: formState.errors.Category ? '#f44336' : provided.borderColor,
-                '&:hover': {
-                  borderColor: formState.errors.Category ? '#f44336' : provided.borderColor,
-                },
-              }),
-            }}
-          />
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1}>
-            Title
-          </Typography>
-          <StyledTextField
-            type="text"
-            name="Title"
-            label="Title"
-            {...register('Title', { required: true, maxLength: 30 })}
-            error={formState.errors.Title}
-            helperText={formState.errors.Title && 'Title is required'}
-          />
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1}>
-            More Details
-          </Typography>
+        <div>
+          <Typography variant="h6" fontWeight="medium" mb={1}>Title</Typography>
+          <StyledTextField type="text" name="Title" label="Title" {...register('Title', { required: true, maxLength: 30 })} error={formState.errors.Title} helperText={formState.errors.Title && 'Title is required'} />
+        </div>
+        <StyledRow>
+          <div>
+            <Typography variant="h6" fontWeight="medium" mb={1}>Campus</Typography>
+            <StyledSelect name="Campus" id="Campus" options={campusOptions} value={selectedCampus} onChange={setSelectedCampus} required isSearchable styles={{ control: (provided) => ({ ...provided, borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor, '&:hover': { borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor } }) }} />
+          </div>
+          <div>
+            <Typography variant="h6" fontWeight="medium" mb={1}>Room</Typography>
+            <StyledSelect name="Room" id="Room" options={roomOptions} value={selectedRoom} onChange={setSelectedRoom} required isSearchable styles={{ control: (provided) => ({ ...provided, borderColor: formState.errors.Room ? '#f44336' : provided.borderColor, '&:hover': { borderColor: formState.errors.Room ? '#f44336' : provided.borderColor } }) }} />
+          </div>
+          <div>
+            <Typography variant="h6" fontWeight="medium" mb={1}>Category</Typography>
+            <StyledSelect name="Category" id="Category" options={categoryOptions} value={selectedCategory} onChange={setSelectedCategory} required isSearchable styles={{ control: (provided) => ({ ...provided, borderColor: formState.errors.Category ? '#f44336' : provided.borderColor, '&:hover': { borderColor: formState.errors.Category ? '#f44336' : provided.borderColor } }) }} />
+          </div>
+        </StyledRow>
+        <div>
+          <Typography variant="h6" fontWeight="medium" mb={1}>More Details</Typography>
           <StyledTextField
             type="text"
             name="MoreDetails"
             label="More Details"
-            {...register('MoreDetails', { required: true, maxLength: 30 })}
+            {...register('MoreDetails', { required: true, maxLength: 100 })}
             error={formState.errors.MoreDetails}
             helperText={formState.errors.MoreDetails && 'More Details is required'}
+            sx={{ height: '200px' }}
+            multiline
+            rows={5}
           />
-        </StyledBox>
-        <StyledBox>
-          <Typography variant="h6" fontWeight="medium" mb={1}>
-            Upload Image/Video
-          </Typography>
-          <input
-            type="file"
-            accept="image/*,video/*"
-            onChange={(e) => {
-              setValue('file', e.target.files[0]);
-              setPreviewUrl(URL.createObjectURL(e.target.files[0]));
-            }}
-            style={{ marginTop: '8px' }}
-          />
-          {previewUrl && (
-            <StyledButton
-              variant="contained"
-              onClick={() => setShowModal(true)}
-              style={{ marginTop: '8px' }}
-            >
-              View Image
-            </StyledButton>
-          )}
-          {showModal && (
-            <StyledModal
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setShowModal(false)}
-            >
-              <StyledImage src={previewUrl} alt="Preview" />
-            </StyledModal>
-          )}
-        </StyledBox>
-        <Box sx={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-          <StyledButton type="submit" variant="contained">
-            Send Report
-          </StyledButton>
-        </Box>
+        </div>
+        <div>
+          <Typography variant="h6" fontWeight="medium" mb={1}>Images</Typography>
+          <input type="file" name="file" onChange={handleFileChange} multiple />
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
+            {selectedImages.map((selectedImage) => (
+              <Box key={selectedImage} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
+                <img src={selectedImage} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+              </Box>
+            ))}
+          </Box>
+        </div>
+        <Box sx={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', marginTop: '16px' }}><StyledButton type="submit" variant="contained">Send Report</StyledButton></Box>
       </StyledForm>
+      {showModal && (
+        <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
+          <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
+        </StyledModal>
+      )}
     </StyledContainer>
   );
 });
 
-export default Create; // Exporting the Create component as the default export of the module
+export default Create;
