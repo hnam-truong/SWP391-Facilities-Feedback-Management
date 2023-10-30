@@ -50,6 +50,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 {
                     Token = finaltoken,
                     RefreshToken = await _refreshHandler.GenerateToken(user.UserId),
+                    Id = user.UserId,
                 });
             }
             else
@@ -93,6 +94,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                         {
                             Token = _finalToken,
                             RefreshToken = await _refreshHandler.GenerateToken(username),
+                            Id = _existData.UserId,
                         });
                     }
                     else
