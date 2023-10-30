@@ -104,7 +104,7 @@ namespace Group4.FacilitiesReport.API.Controllers
 
 
         [HttpGet("Download")]
-        public async Task<IActionResult> download(Guid feedbackId)
+        public async Task<IActionResult> Download(Guid feedbackId)
         {
             try
             {
@@ -216,22 +216,46 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedback);
         }
 
-        [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateFeedbackStatus(Guid feedbackId, string status)
-        {
-            if (Enum.TryParse(status, out DTO.Enums.FeedbackStatus enumValue))
-            {
-                var feedback = await this._ifeedback.UpdateFeedbackStatus(feedbackId, (int)enumValue);
-                return Ok(feedback);
-            }
-            return BadRequest("Invalid status");
-        }
 
-        [HttpPut("ResponseFeedback")]
+        [HttpPut("RespondFeedback")]
         public async Task<IActionResult> ResponseFeedback(Guid feedbackId, string description)
         {
-            var feedback = await this._ifeedback.FeedbackResponse(feedbackId, description);
+            var feedback = await this._ifeedback.RespondFeedback(feedbackId, description);
             return Ok(feedback);
+        }
+        [HttpPut("CloseFeedback")]
+        public async Task<IActionResult> CloseFeedback(Guid feedbackId, string response)
+        {
+
+            return Ok(await _ifeedback.CloseFeedback(feedbackId, response));
+        }
+        [HttpPut("AcceptFeedback")]
+        public async Task<IActionResult> AcceptFeedback(Guid feedbackId, string response)
+        {
+            return Ok(await _ifeedback.AcceptFeedback(feedbackId, response));
+        }
+        [HttpPut("CancelFeedback")]
+        public async Task<IActionResult> CancelFeedback(Guid feedbackId, string response)
+        {
+            return Ok(await _ifeedback.CancelAcceptFeedback(feedbackId, response));
+        }
+        [HttpPut("RejectFeedback")]
+        public async Task<IActionResult> RejectFeedback(Guid feedbackId, string response)
+        {
+            return Ok(await _ifeedback.RejectFeedback(feedbackId, response));
+        }
+        [HttpPut("UndoFeedback")]
+        public async Task<IActionResult> UndoRejectFeedback(Guid feedbackId, string response)
+        {
+            return Ok(await _ifeedback.UndoRejectFeedback(feedbackId, response));
+        }
+
+
+
+        [NonAction]
+        private string GetFilePath(Guid feedbackId)
+        {
+            return this._webHostEnvironment.WebRootPath + "\\Uploading\\Feedback\\" + feedbackId.ToString();
         }
         [HttpDelete("RemoveFeedback/{feedbackId}")]
         public async Task<IActionResult> RemoveFeedback(Guid feedbackId)
@@ -239,10 +263,6 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
         }
-        [NonAction]
-        private string GetFilePath(Guid feedbackId)
-        {
-            return this._webHostEnvironment.WebRootPath + "\\Uploading\\Feedback\\" + feedbackId.ToString();
-        }
+
     }
 }

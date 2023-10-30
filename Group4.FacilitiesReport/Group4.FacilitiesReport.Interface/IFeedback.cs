@@ -13,8 +13,13 @@ namespace Group4.FacilitiesReport.Interface
         public Task<APIResponse> CreateFeedback(DTO.Feedback feedback);
         public Task<APIResponse> UpdateFeedback(DTO.FeedbackUpdatableObject feedback);
         public Task<APIResponse> NotifyFeedback(Guid feedbackID);
-        public Task<APIResponse> UpdateFeedbackStatus(Guid feedbackId, int status);
-        public Task<APIResponse> FeedbackResponse(Guid feedbackId, string response);
+        public Task<APIResponse> AcceptFeedback(Guid feedbackId, string response);
+        public Task<APIResponse> RejectFeedback(Guid feedbackId, string response);
+        public Task<APIResponse> CancelAcceptFeedback(Guid feedbackId, string response);
+        public Task<APIResponse> UndoRejectFeedback(Guid feedbackId, string response);
+        public Task<APIResponse> ExpiredFeedback(Guid feedbackId);
+        public Task<APIResponse> CloseFeedback(Guid feedbackId, string response);
+        public Task<APIResponse> RespondFeedback(Guid feedbackId, string response);
         public Task<APIResponse> RemoveFeedback(Guid feedbackId);
     }
 }
