@@ -5,7 +5,6 @@ using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
-using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Repositories
 {
