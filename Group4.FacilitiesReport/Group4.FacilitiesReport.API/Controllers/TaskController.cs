@@ -2,6 +2,7 @@
 using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO.Compression;
 
 namespace Group4.FacilitiesReport.API.Controllers
 {
@@ -106,8 +107,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpGet("Download")]
         public async Task<IActionResult> download(Guid feedbackId)
         {
-            List<string> fileUrl = new List<string>();
-            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
             try
             {
                 string filePath = GetFilePath(feedbackId);
@@ -115,44 +114,33 @@ namespace Group4.FacilitiesReport.API.Controllers
                 {
                     DirectoryInfo fileInfo = new DirectoryInfo(filePath);
                     FileInfo[] fileInfos = fileInfo.GetFiles();
-                    foreach (FileInfo f in fileInfos)
+                    using (var zipStream = new MemoryStream())
                     {
-                        string filename = fileInfo.Name;
-                        string dir = filePath + "\\" + filename;
-                        if (System.IO.File.Exists(dir))
+                        using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
                         {
-                            string url = hostUrl + "/Uploading/Feedback/" + feedbackId + "/" + filename;
-                            MemoryStream stream = new MemoryStream();
-                            using (FileStream fileStream = new FileStream(dir, FileMode.Open))
+                            foreach (var file in fileInfos)
                             {
-                                await fileStream.CopyToAsync(stream);
+                                var zipEntry = archive.CreateEntry(file.Name);
+                                using (var entryStream = zipEntry.Open())
+                                {
+                                    var fileDir = filePath + "\\" + file.Name;
+                                    await entryStream.CopyToAsync(zipStream);
+                                }
                             }
-                            stream.Position = 0;
-                            try
-                            {
-                                // Determine content type from file extension
-                                var contentType = GetContentType(f.Extension);
-                                return File(stream, contentType);
-                            }
-                            catch (Exception ex)
-                            {
-                                return StatusCode(500);
-                            }
+                        }
+                        zipStream.Position = 0;
 
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
+                        return File(zipStream, "application/zip", "TaskFiles.zip");
                     }
                 }
                 return NotFound();
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex);
             }
         }
+
         [NonAction]
         private string GetContentType(string fileExtension)
         {
