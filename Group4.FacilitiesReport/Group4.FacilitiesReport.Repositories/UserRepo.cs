@@ -39,21 +39,7 @@ namespace Group4.FacilitiesReport.Repositories
         {
             return await AllUser().Where(f => f.TblFeedbacks.Any()).CountAsync();
         }
-        //public async Task<List<EmployeeObject>> CountEmployeeTask(string CateId)
-        //{
-        //    List<EmployeeObject> response = new List<EmployeeObject>();
-        //    var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync();
-        //    var employees = await _context.TblUsers
-        //                                    .Where(u => u.Role.Description == "Employee" && u.Cates.Contains(Cate))
-        //                                    .ToListAsync();
-        //    if(employees!=null) 
-        //    {
-        //        response = _mapper.Map<List<TblUser>, List<EmployeeObject>>(employees);
-        //    }
-        //    return response;
-
-
-        //}
+       
         public async Task<List<EmployeeObject>> CountEmployeeTask(string CateId)
         {
             var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id == CateId);
