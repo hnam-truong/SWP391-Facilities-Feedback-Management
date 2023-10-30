@@ -17,7 +17,6 @@ namespace Group4.FacilitiesReport.API.Controllers
             _iCategory = iCategory;
             _mapper = mapper;
         }
-
         [HttpGet("GetAllCate")]
         public async Task<IActionResult> GetCates()
         {
