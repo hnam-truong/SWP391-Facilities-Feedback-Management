@@ -171,26 +171,24 @@ namespace Group4.FacilitiesReport.Repositories
                 {
                     _task.Responsed = response;
                     _task.Status = 1;
-                    await _context.SaveChangesAsync();
                     var fb = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == _task.FeedbackId);
                     var list = _context.TblTasks.Where(t => t.FeedbackId == _task.FeedbackId).ToList();
 
                     if (list != null)
                     {
+                        var flag = true;
                         foreach (var item in list)
                         {
-                            if (item.Status == 1)
+                            if (item.Status != 1)
                             {
-                                fb.Status = 2;
-                                await _context.SaveChangesAsync();
+                               flag =false;
                             }
-
                         }
-                        fb.Status = 1;
+                        if (flag) {
+                            fb.Status = 2;
+                        }
                         await _context.SaveChangesAsync();
                     }
-
-
                     _response.ResponseCode = 200;
                     _response.Result = Id.ToString();
                 }

@@ -79,7 +79,7 @@ namespace Group4.FacilitiesReport.API
                     ClockSkew = TimeSpan.Zero,
                 };
             });
-
+            
             //              JwtSetting
             var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
 

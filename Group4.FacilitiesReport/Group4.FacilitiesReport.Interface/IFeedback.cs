@@ -17,7 +17,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<APIResponse> RejectFeedback(Guid feedbackId, string response);
         public Task<APIResponse> CancelAcceptFeedback(Guid feedbackId, string response);
         public Task<APIResponse> UndoRejectFeedback(Guid feedbackId, string response);
-        public Task<APIResponse> ExpiredFeedback(Guid feedbackId);
+        //public void ExpiredFeedback(Guid feedbackId);
         public Task<APIResponse> CloseFeedback(Guid feedbackId, string response);
         public Task<APIResponse> RespondFeedback(Guid feedbackId, string response);
         public Task<APIResponse> RemoveFeedback(Guid feedbackId);

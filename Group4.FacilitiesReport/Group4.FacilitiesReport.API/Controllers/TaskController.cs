@@ -19,7 +19,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             _tasks = tasks;
             _webHostEnvironment = webHostEnvironment;
         }
-        [Authorize("Manager,Task Employee")]
+        //[Authorize("Manager,Task Employee")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetTasks()
         {
@@ -30,8 +30,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-        [Authorize("Manager,Task Employee")]
-        [HttpGet("{TaskId}")]
+        //[Authorize("Manager,Task Employee")]
+        [HttpGet("Task/{TaskId}")]
         public async Task<IActionResult> GetTaskByTaskId(Guid TaskId)
         {
             var task = await _tasks.GetTaskById(TaskId);
@@ -170,7 +170,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                     return "application/octet-stream";  // Fallback to binary data
             }
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("/CreateTask")]
         public async Task<IActionResult> CreateTask(Guid FeedbackId, string EmployeeId, string ManagerId, string Note, [FromForm] IFormFileCollection fileCollection)
         {
@@ -260,7 +260,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             var task = await _tasks.UpdateTaskNote(Id, Note);
             return Ok(task);
         }
-        [Authorize("Task Employee")]
+        //[Authorize("Task Employee")]
         [HttpPut("UpdateTaskResponse")]
         public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response)
         {
