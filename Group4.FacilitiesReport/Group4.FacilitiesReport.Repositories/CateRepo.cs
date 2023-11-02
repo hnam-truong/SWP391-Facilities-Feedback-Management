@@ -3,11 +3,6 @@ using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -22,7 +17,7 @@ namespace Group4.FacilitiesReport.Repositories
             _mapper = mapper;
         }
         private IQueryable<TblCategoriesProblem> AllCate() => _context.TblCategoriesProblems;
-        
+
 
         public async Task<List<Category>> GetCategories()
         {
@@ -74,7 +69,7 @@ namespace Group4.FacilitiesReport.Repositories
                 if (_cate != null)
                 {
                     _cate.Id = category.Id;
-                    _cate.Description= category.Description;
+                    _cate.Description = category.Description;
                     await _context.SaveChangesAsync();
                     response.ResponseCode = 200;
                     response.Result = _cate.Id.ToString();
@@ -103,6 +98,9 @@ namespace Group4.FacilitiesReport.Repositories
                 if (cate != null)
                 {
                     _context.TblCategoriesProblems.Remove(cate);
+                    var list = _context.TblUsers.Include(u => u.Role).Include(u => u.Cates.Where(c => c.Id == CateId)).Where(u => u.Role.Description == "Employee");
+                    foreach (var c in list)
+                        c.Cates.Remove(cate);
                     await _context.SaveChangesAsync();
                     _response.ResponseCode = 200;
                     _response.Result = CateId;
@@ -123,6 +121,6 @@ namespace Group4.FacilitiesReport.Repositories
             return _response;
         }
 
-        
+
     }
 }
