@@ -289,7 +289,7 @@ namespace Group4.FacilitiesReport.Repositories
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)
                     foreach (var task in await list) {
-                        task.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Cancelled");
+                        task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled");
                         await _context.SaveChangesAsync();
                     }
                         
