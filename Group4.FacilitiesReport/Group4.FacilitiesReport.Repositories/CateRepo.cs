@@ -53,7 +53,7 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 TblCategoriesProblem _cate = _mapper.Map<Category, TblCategoriesProblem>(category);
                 await _context.TblCategoriesProblems.AddAsync(_cate);
-                await this._context.SaveChangesAsync(); ;
+                await this._context.SaveChangesAsync(); 
                 _response.ResponseCode = 200;
                 _response.Result = _cate.Id;
 

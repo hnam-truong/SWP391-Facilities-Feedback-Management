@@ -9,7 +9,7 @@
 
         public Guid FeedbackId { get; set; }
         public string UserId { get; set; } = null!;
-        public DateTime? DateTime { get; set; }
+        public DateTime DateTime { get; set; }
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string DataUrl { get; set; } = null!;

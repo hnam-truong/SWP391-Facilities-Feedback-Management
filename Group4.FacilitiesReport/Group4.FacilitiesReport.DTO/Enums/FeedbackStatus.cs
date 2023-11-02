@@ -2,10 +2,11 @@
 {
     public enum FeedbackStatus
     {
-        Waiting,
-        Processing,
-        Closed,
-        Rejected,
-        Expired
+        Waiting, //0
+        Processing, //1
+        Responded, //2
+        Closed, //3
+        Rejected, //4 
+        Expired //5
     }
 }

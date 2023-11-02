@@ -23,6 +23,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<APIResponse> UpdateStatus(string UserId, int Status);
         public Task<APIResponse> UpdateUser(User User);
         public Task<APIResponse> AddUser(User user);
+        public Task<APIResponse> AddCateByUserId(string UserId, string CateId);
 
     }
 }

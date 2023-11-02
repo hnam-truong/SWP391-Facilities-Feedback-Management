@@ -4,6 +4,7 @@ using Group4.FacilitiesReport.DTO.Enums;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Group4.FacilitiesReport.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -17,13 +18,15 @@ namespace API.Controllers
     {
         private readonly IUser _iUser;
         private readonly IMapper _mapper;
-        
+        private readonly FacilitiesFeedbackManagement_SWP391Context _context;
 
-        public UserController(IUser IUser, IMapper mapper)
+        public UserController(IUser IUser, IMapper mapper,FacilitiesFeedbackManagement_SWP391Context context)
         {
             _iUser = IUser;
             _mapper = mapper;
+            _context = context;
         }
+        
         [HttpGet("CountUserActive")]
         public async Task<IActionResult> CountUserActive()
         {
@@ -72,9 +75,18 @@ namespace API.Controllers
             }
             return Ok(users);
         }
+        [HttpGet("CountEmployeeTask")]
+        public async Task<IActionResult> CountEmployeeTask(string CateId)
+        {
+            var data = await _iUser.CountEmployeeTask(CateId);
+            if (data == null)
+            {
+                return NotFound();
+            }
+            return Ok(data);
+        }
 
-       
-
+        
         [HttpGet("Login")]
         public async Task<IActionResult> Login(string Email, string Password)
         {
@@ -100,19 +112,29 @@ namespace API.Controllers
             return Ok(user);
         }
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser(string UserId, string Email, string Username, string Password)
+        public async Task<IActionResult> AddUser(string UserId, string Email, string Username, string Password, int RoleId)
         {
+            
+
             var user = await _iUser.AddUser(new User
             {
                 UserID = UserId,
                 Email = Email,
                 Username=Username,
                 Password = Password,
-                RoleId = 0,
+                RoleId = RoleId,
                 Status = "Active"
             });
             return Ok(user);
         }
+        [HttpPost("AddCateByUserId")]
+        public async Task<IActionResult> AddCateByUserId(string UserId, string CateId)
+        {
+            var user = await _iUser.AddCateByUserId(UserId, CateId);
+            return Ok(user);
+        }
+        
+
         [HttpPut("UpdateUser/{UserId}")]
         public async Task<IActionResult> UpdateUser(string UserId, string UserName, string Email, string Password)
         {
@@ -138,16 +160,7 @@ namespace API.Controllers
             return Ok(await _iUser.UpdateStatus(UserId, 0));
         }
      
-        [HttpGet("CountEmployeeTask")]
-        public async Task<IActionResult> CountEmployeeTask(string CateId)
-        {
-            var data = await _iUser.CountEmployeeTask(CateId);
-            if(data == null)
-            {
-                return NotFound();
-            }
-            return Ok(data);
-        }
+        
         
 
     }

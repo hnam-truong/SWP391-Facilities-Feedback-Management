@@ -105,11 +105,11 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
         [HttpGet("Download")]
-        public async Task<IActionResult> download(Guid feedbackId)
+        public async Task<IActionResult> download(Guid taskId)
         {
             try
             {
-                string filePath = GetFilePath(feedbackId);
+                string filePath = GetFilePath(taskId);
                 if (System.IO.Directory.Exists(filePath))
                 {
                     DirectoryInfo fileInfo = new DirectoryInfo(filePath);
