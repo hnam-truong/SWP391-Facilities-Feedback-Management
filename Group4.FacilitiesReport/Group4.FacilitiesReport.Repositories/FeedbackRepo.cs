@@ -37,8 +37,8 @@ namespace Group4.FacilitiesReport.Repositories
                 await this._context.TblFeedbacks.AddAsync(_feedback);
                 System.Threading.Tasks.Task.Delay(new TimeSpan(0, 0, 0)).ContinueWith(async function =>
                 {
-                     ExpiredFeedback(feedback.FeedbackId);
-                     _context.SaveChanges(); ;
+                    ExpiredFeedback(feedback.FeedbackId);
+                    _context.SaveChanges(); ;
                 });
                 await this._context.SaveChangesAsync(); ;
                 _response.ResponseCode = 200;
@@ -107,7 +107,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Feedback>> GetFeedbackByUserId(string UserId)
         {
             List<Feedback> _response = new List<Feedback>();
-            var _data = await AllFeedback().Where(f => f.UserId.Equals(UserId)).ToListAsync();
+            var _data = await AllFeedback().Where(f => f.UserId.ToLower().Equals(UserId.ToLower())).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
@@ -147,38 +147,16 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> RemoveFeedback(Guid feedbackId)
         {
-            APIResponse _response = new APIResponse();
-            try
+            APIResponse response = new APIResponse();
+            var _feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == feedbackId);
+            if (_feedback != null && _feedback.Status == 0)
+                response = await UpdateFeedbackStatus(feedbackId,6);
+            else
             {
-                TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
-                if (feedback != null && feedback.Status == 0)
-                {
-                    var _tasks = await _context.TblTasks.Where(t => t.FeedbackId.Equals(feedbackId)).ToListAsync();
-                    this._context.TblTasks.RemoveRange(_tasks);
-                    this._context.TblFeedbacks.Remove(feedback);
-                    await this._context.SaveChangesAsync();
-                    _response.ResponseCode = 200;
-                    _response.Result = feedbackId.ToString();
-                }
-                else if (feedback != null && feedback.Status != 0)
-                {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Invalid Call!";
-                }
-                else
-                {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Data not found!";
-
-                }
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Feedback not available";
             }
-            catch (Exception ex)
-            {
-                _response.ResponseCode = 400;
-                _response.Result = ex.Message;
-
-            }
-            return _response;
+            return response;
 
         }
 
@@ -301,10 +279,11 @@ namespace Group4.FacilitiesReport.Repositories
                 await RespondFeedback(feedbackId, response);
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)
-                    foreach (var task in await list)
+                    foreach (var task in await list) {
                         task.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Cancelled");
-
-                await _context.SaveChangesAsync();
+                        await _context.SaveChangesAsync();
+                    }
+                        
 
                 return await UpdateFeedbackStatus(feedbackId, (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"));
             }
@@ -347,7 +326,7 @@ namespace Group4.FacilitiesReport.Repositories
         {
             var item = await GetFeedback(feedbackId);
 
-            if (item != null && item.Status == "Waiting`")
+            if (item != null && item.Status == "Waiting")
             {
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)

@@ -28,7 +28,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<Location> GetLocationById(string LocationId)
         {
             Location _response = new Location();
-            var _data = await AllLocation().Where(f => f.LocationId.Equals(LocationId)).FirstOrDefaultAsync();
+            var _data = await AllLocation().Where(f => f.LocationId.ToLower().Equals(LocationId.ToLower())).FirstOrDefaultAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<TblLocation, Location>(_data);

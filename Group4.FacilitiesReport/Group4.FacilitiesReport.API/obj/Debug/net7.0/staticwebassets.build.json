@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DXmVl/n9Cg+cbPgNR156uWpLmTQzfhkE8HceSdWq8Hg=",
+  "Hash": "3cWpf0H+AJGTMO1NNPRERbDTVxRlIOK2TzOp90sM//4=",
   "Source": "Group4.FacilitiesReport.API",
   "BasePath": "_content/Group4.FacilitiesReport.API",
   "Mode": "Default",
@@ -119,6 +119,23 @@
       "OriginalItemSpec": "wwwroot\\Uploading\\Feedback\\a88f5713-8d8e-4676-9a12-0db4e3412a09\\chap1.jpg"
     },
     {
+      "Identity": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\Uploading\\Feedback\\be52117b-17bc-48a5-ab4a-e3447543e9bc\\chap1.jpg",
+      "SourceId": "Group4.FacilitiesReport.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\",
+      "BasePath": "_content/Group4.FacilitiesReport.API",
+      "RelativePath": "Uploading/Feedback/be52117b-17bc-48a5-ab4a-e3447543e9bc/chap1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploading\\Feedback\\be52117b-17bc-48a5-ab4a-e3447543e9bc\\chap1.jpg"
+    },
+    {
       "Identity": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\Uploading\\Feedback\\c7714903-acec-48c3-af02-04b8c53c3f3f\\chap1.jpg",
       "SourceId": "Group4.FacilitiesReport.API",
       "SourceType": "Discovered",
@@ -134,6 +151,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Uploading\\Feedback\\c7714903-acec-48c3-af02-04b8c53c3f3f\\chap1.jpg"
+    },
+    {
+      "Identity": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\Uploading\\Feedback\\d9e003be-c279-45ee-99e8-9b38928f37e0\\bg-02.jpg",
+      "SourceId": "Group4.FacilitiesReport.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\",
+      "BasePath": "_content/Group4.FacilitiesReport.API",
+      "RelativePath": "Uploading/Feedback/d9e003be-c279-45ee-99e8-9b38928f37e0/bg-02.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploading\\Feedback\\d9e003be-c279-45ee-99e8-9b38928f37e0\\bg-02.jpg"
     },
     {
       "Identity": "D:\\code.Capstone\\SWP391-Project\\Group4.FacilitiesReport\\Group4.FacilitiesReport.API\\wwwroot\\Uploading\\Feedback\\e7a3076e-cb03-43db-9fdd-32bea562d8a2\\Delegate.png",

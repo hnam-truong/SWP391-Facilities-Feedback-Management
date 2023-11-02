@@ -13,7 +13,6 @@ namespace Group4.FacilitiesReport.Interface
         public Task<List<User>> GetEmployeeByCate(string CateId);
         public Task<List<User>> GetUsersWhoProvidedFeedback();
         public Task<List<User>> GetUsers();
-        public Task<List<User>> GetUsersByStatus(int status);
         public Task<User> GetUserById(string userId);
         public Task<int> CountUsersActive();
         public Task<int> CountUsersBanned();

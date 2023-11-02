@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,8 +33,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(data);
         }
 
-        [HttpGet("/CateId")]
-        public async Task<IActionResult> GetTaskByCateId(string CateId)
+        [HttpGet("{CateId}")]
+        public async Task<IActionResult> GetCateByCateId(string CateId)
         {
             var category = await _iCategory.GetCategoryById(CateId);
             if (category == null)
@@ -42,7 +43,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(category);
         }
-
+        [Authorize("Manager")]
         [HttpPost("Create")]
         public async Task<IActionResult> CreateCate(string Id, string Des)
         {
@@ -53,7 +54,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-
+        [Authorize("Manager")]
         [HttpPut("UpdateCate")]
         public async Task<IActionResult> UpdateCate(string CateId, string Des)
         {
@@ -64,7 +65,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-        
+        [Authorize("Manager")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string CateId)
         {

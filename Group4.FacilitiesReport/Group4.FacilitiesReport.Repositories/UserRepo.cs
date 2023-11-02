@@ -91,19 +91,6 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return _response;
         }
-
-       
-        public async Task<List<User>> GetUsersByStatus(int status)
-        {
-            List<User> _response = new List<User>();
-            var _data = await AllUser().Where(f => f.Status.Equals(status)).ToListAsync();
-            if (_data != null)
-            {
-                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
-            }
-            return _response;
-        }
-
         
 
         public async Task<List<User>> GetUsersWhoProvidedFeedback()
@@ -163,7 +150,7 @@ namespace Group4.FacilitiesReport.Repositories
             else
             {
                 response.ResponseCode = 400;
-                response.ErrorMessage = "Invalid call";
+                response.ErrorMessage = "Add Failed!";
             }
             return response;
         }
@@ -188,7 +175,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "User not valid";
                 }
 
             }
@@ -216,7 +203,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "User not valid";
                 }
 
             }

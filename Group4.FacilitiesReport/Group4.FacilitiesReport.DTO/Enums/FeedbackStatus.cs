@@ -7,6 +7,7 @@
         Responded, //2
         Closed, //3
         Rejected, //4 
-        Expired //5
+        Expired, //5
+        Removed //6
     }
 }

@@ -96,6 +96,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\a88f5713-8d8e-4676-9a12-0db4e3412a09\chap1.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\be52117b-17bc-48a5-ab4a-e3447543e9bc\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/be52117b-17bc-48a5-ab4a-e3447543e9bc/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\be52117b-17bc-48a5-ab4a-e3447543e9bc\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\c7714903-acec-48c3-af02-04b8c53c3f3f\chap1.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>Group4.FacilitiesReport.API</SourceId>
@@ -111,6 +127,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\c7714903-acec-48c3-af02-04b8c53c3f3f\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\d9e003be-c279-45ee-99e8-9b38928f37e0\bg-02.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/d9e003be-c279-45ee-99e8-9b38928f37e0/bg-02.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\d9e003be-c279-45ee-99e8-9b38928f37e0\bg-02.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\e7a3076e-cb03-43db-9fdd-32bea562d8a2\Delegate.png))">
       <SourceType>Package</SourceType>
