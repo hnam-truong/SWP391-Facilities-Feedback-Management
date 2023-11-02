@@ -33,7 +33,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<Category> GetCategoryById(string CategoryId)
         {
             Category _response = new Category();
-            var _data = await AllCate().Where(f => f.Id.Equals(CategoryId)).FirstOrDefaultAsync();
+            var _data = await AllCate().Where(f => f.Id.ToLower().Equals(CategoryId.ToLower())).FirstOrDefaultAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<TblCategoriesProblem, Category>(_data);
@@ -48,7 +48,7 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 TblCategoriesProblem _cate = _mapper.Map<Category, TblCategoriesProblem>(category);
                 await _context.TblCategoriesProblems.AddAsync(_cate);
-                await this._context.SaveChangesAsync(); ;
+                await this._context.SaveChangesAsync(); 
                 _response.ResponseCode = 200;
                 _response.Result = _cate.Id;
 

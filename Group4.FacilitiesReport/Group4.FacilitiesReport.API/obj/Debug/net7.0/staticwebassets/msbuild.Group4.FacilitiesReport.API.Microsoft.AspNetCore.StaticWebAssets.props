@@ -1,5 +1,37 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\02ebf197-bd3e-4906-938e-b41604f0b159\Delegate.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/02ebf197-bd3e-4906-938e-b41604f0b159/Delegate.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\02ebf197-bd3e-4906-938e-b41604f0b159\Delegate.png))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\17d8786b-f89d-47e1-b9e0-3c566f91a3a7\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/17d8786b-f89d-47e1-b9e0-3c566f91a3a7/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\17d8786b-f89d-47e1-b9e0-3c566f91a3a7\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\2a497e82-45f4-47fc-b5da-480e537afe89\chap1.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>Group4.FacilitiesReport.API</SourceId>
@@ -15,6 +47,54 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\2a497e82-45f4-47fc-b5da-480e537afe89\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\30a3c211-0a86-4e9a-a809-4455399c5d68\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/30a3c211-0a86-4e9a-a809-4455399c5d68/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\30a3c211-0a86-4e9a-a809-4455399c5d68\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\7c63b2aa-0a7d-434d-bd8f-c3def474ec37\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/7c63b2aa-0a7d-434d-bd8f-c3def474ec37/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\7c63b2aa-0a7d-434d-bd8f-c3def474ec37\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\a84da92c-e3b0-470d-9596-eb3c24b5b461\bg-02.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/a84da92c-e3b0-470d-9596-eb3c24b5b461/bg-02.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\a84da92c-e3b0-470d-9596-eb3c24b5b461\bg-02.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\a88f5713-8d8e-4676-9a12-0db4e3412a09\chap1.jpg))">
       <SourceType>Package</SourceType>
@@ -32,6 +112,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\a88f5713-8d8e-4676-9a12-0db4e3412a09\chap1.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\be52117b-17bc-48a5-ab4a-e3447543e9bc\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/be52117b-17bc-48a5-ab4a-e3447543e9bc/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\be52117b-17bc-48a5-ab4a-e3447543e9bc\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\c7714903-acec-48c3-af02-04b8c53c3f3f\chap1.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>Group4.FacilitiesReport.API</SourceId>
@@ -47,6 +143,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\c7714903-acec-48c3-af02-04b8c53c3f3f\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\d9e003be-c279-45ee-99e8-9b38928f37e0\bg-02.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Feedback/d9e003be-c279-45ee-99e8-9b38928f37e0/bg-02.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\d9e003be-c279-45ee-99e8-9b38928f37e0\bg-02.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Feedback\e7a3076e-cb03-43db-9fdd-32bea562d8a2\Delegate.png))">
       <SourceType>Package</SourceType>

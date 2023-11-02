@@ -5,6 +5,7 @@ using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -161,16 +162,33 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> UpdateTaskResponse(Guid Id, string response)
         {
-          
+
             APIResponse _response = new APIResponse();
             try
             {
                 var _task = await _context.TblTasks.FindAsync(Id);
-                if (_task != null&& _task.Status==0)
+                if (_task != null && _task.Status == 0)
                 {
                     _task.Responsed = response;
                     _task.Status = 1;
-                    await _context.SaveChangesAsync();
+                    var fb = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == _task.FeedbackId);
+                    var list = _context.TblTasks.Where(t => t.FeedbackId == _task.FeedbackId).ToList();
+
+                    if (list != null)
+                    {
+                        var flag = true;
+                        foreach (var item in list)
+                        {
+                            if (item.Status != 1)
+                            {
+                               flag =false;
+                            }
+                        }
+                        if (flag) {
+                            fb.Status = 2;
+                        }
+                        await _context.SaveChangesAsync();
+                    }
                     _response.ResponseCode = 200;
                     _response.Result = Id.ToString();
                 }
@@ -191,31 +209,16 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> DeleteTask(Guid id)
         {
-            APIResponse _response = new APIResponse();
-            try
+            APIResponse response = new APIResponse();
+            var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == id);
+            if (_task != null && _task.Status == 0)
+                response = await UpdateTaskStatus(id, 4);
+            else
             {
-                TblTask? task = await _context.TblTasks.FindAsync(id);
-                if (task != null && task.Status == 0)
-                {
-                    _context.TblTasks.Remove(task);
-                    await _context.SaveChangesAsync();
-                    _response.ResponseCode = 200;
-                    _response.Result = id.ToString();
-                }
-                else
-                {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Delete Failed!";
-
-                }
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Task not available";
             }
-            catch (Exception ex)
-            {
-                _response.ResponseCode = 400;
-                _response.Result = ex.Message;
-
-            }
-            return _response;
+            return response;
         }
 
         public async Task<APIResponse> UpdateTaskStatus(Guid Id, int status)

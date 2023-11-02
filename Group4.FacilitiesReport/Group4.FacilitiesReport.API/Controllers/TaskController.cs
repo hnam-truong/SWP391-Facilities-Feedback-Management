@@ -1,5 +1,6 @@
 ﻿using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
@@ -18,7 +19,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             _tasks = tasks;
             _webHostEnvironment = webHostEnvironment;
         }
-
+        //[Authorize("Manager,Task Employee")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetTasks()
         {
@@ -29,8 +30,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-
-        [HttpGet("/TaskId")]
+        //[Authorize("Manager,Task Employee")]
+        [HttpGet("Task/{TaskId}")]
         public async Task<IActionResult> GetTaskByTaskId(Guid TaskId)
         {
             var task = await _tasks.GetTaskById(TaskId);
@@ -40,8 +41,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-
-        [HttpGet("/ManagerId")]
+        [Authorize("Manager")]
+        [HttpGet("{ManagerId}")]
         public async Task<IActionResult> GetTaskByManagerId(string ManagerId)
         {
             var task = await _tasks.GetTaskByManagerId(ManagerId);
@@ -51,8 +52,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-
-        [HttpGet("/EmployeeId")]
+        [Authorize("Manager")]
+        [HttpGet("{EmployeeId}")]
         public async Task<IActionResult> GetTaskByEmployee(string EmployeeId)
         {
             var task = await _tasks.GetTaskByEmployeeId(EmployeeId);
@@ -62,8 +63,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-
-        [HttpGet("/FeedbackId")]
+        [Authorize("Manager")]
+        [HttpGet("{FeedbackId}")]
         public async Task<IActionResult> GetTaskByfeedback(Guid FeedbackId)
         {
             var task = await _tasks.GetTaskByFeedbackId(FeedbackId);
@@ -105,11 +106,11 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
         [HttpGet("Download")]
-        public async Task<IActionResult> download(Guid feedbackId)
+        public async Task<IActionResult> download(Guid taskId)
         {
             try
             {
-                string filePath = GetFilePath(feedbackId);
+                string filePath = GetFilePath(taskId);
                 if (System.IO.Directory.Exists(filePath))
                 {
                     DirectoryInfo fileInfo = new DirectoryInfo(filePath);
@@ -169,8 +170,8 @@ namespace Group4.FacilitiesReport.API.Controllers
                     return "application/octet-stream";  // Fallback to binary data
             }
         }
-
-        [HttpPost("/Create")]
+        //[Authorize("Manager")]
+        [HttpPost("/CreateTask")]
         public async Task<IActionResult> CreateTask(Guid FeedbackId, string EmployeeId, string ManagerId, string Note, [FromForm] IFormFileCollection fileCollection)
         {
             int passcount = 0;
@@ -225,8 +226,8 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(response);
         }
-
-        [HttpPut("Cancel")]
+        [Authorize("Manager")]
+        [HttpPut("CancelTask")]
         public async Task<IActionResult> TaskCancel(Guid Id) { 
      
             var task=await _tasks.GetTaskById(Id);
@@ -234,7 +235,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             else return NotFound();
         
         }
-        [HttpPut("Closed")]
+        [Authorize("Manager")]
+        [HttpPut("CloseTask")]
         public async Task<IActionResult> TaskClosed(Guid Id)
         {
             var task = await _tasks.GetTaskById(Id);
@@ -242,7 +244,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             else
                 return NotFound();
         }
-        [HttpPut("Delivered")]
+        [Authorize("Manager")]
+        [HttpPut("DeliveredTask")]
         public async Task<IActionResult> TaskDelivered(Guid Id)
         {
             var task = await _tasks.GetTaskById(Id);
@@ -250,13 +253,14 @@ namespace Group4.FacilitiesReport.API.Controllers
             else
                 return NotFound();
         }
-
+        [Authorize("Manager")]
         [HttpPut("UpdateTaskNote")]
         public async Task<IActionResult> UpdateTaskNote(Guid Id, string Note)
         {
             var task = await _tasks.UpdateTaskNote(Id, Note);
             return Ok(task);
         }
+        //[Authorize("Task Employee")]
         [HttpPut("UpdateTaskResponse")]
         public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response)
         {

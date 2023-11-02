@@ -42,10 +42,10 @@ namespace Group4.FacilitiesReport.Repositories
        
         public async Task<List<EmployeeObject>> CountEmployeeTask(string CateId)
         {
-            var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id == CateId);
+            var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id.ToLower() == CateId.ToLower());
 
             var employees = await _context.TblUsers.Include(u=>u.TblTaskEmployees.Where(t=>t.Status==0))
-                                            .Where(u => u.Role.Description == "Employee" && u.Cates.Contains(Cate))
+                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate))
                                             .ToListAsync();
             if (employees != null)
             {
@@ -66,14 +66,14 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<User>> GetEmployeeByCate(string CateId)
         {
             var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x=> x.Id==CateId);
-            var data = await _context.TblUsers.Include(u => u.Cates).Include(u => u.Role).Where(u => u.Role.Description=="Employee" && u.Cates.Contains(Cate)).ToListAsync();
+            var data = await _context.TblUsers.Include(u => u.Cates).Include(u => u.Role).Where(u => u.Role.Description=="Task Employee" && u.Cates.Contains(Cate)).ToListAsync();
             return _mapper.Map<List<TblUser>, List<User>>(data);
         }
 
         public async Task<User> GetUserById(string userId)
         {
             User _response = new User();
-            var _data = await AllUser().Where(f => f.UserId.Equals(userId)).FirstOrDefaultAsync();
+            var _data = await AllUser().Where(f => f.UserId.ToLower().Equals(userId.ToLower())).FirstOrDefaultAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<TblUser, User>(_data);
@@ -91,19 +91,6 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return _response;
         }
-
-        //dm sửa hộ tao cái
-        public async Task<List<User>> GetUsersByStatus(int status)
-        {
-            List<User> _response = new List<User>();
-            var _data = await AllUser().Where(f => f.Status.Equals(status)).ToListAsync();
-            if (_data != null)
-            {
-                _response = _mapper.Map<List<TblUser>, List<User>>(_data);
-            }
-            return _response;
-        }
-
         
 
         public async Task<List<User>> GetUsersWhoProvidedFeedback()
@@ -148,8 +135,27 @@ namespace Group4.FacilitiesReport.Repositories
             return response;
         }
 
+        public async Task<APIResponse> AddCateByUserId(string UserId, string CateId)
+        {
+            APIResponse response = new APIResponse();
+            var user = await _context.TblUsers.Where(u => u.UserId == UserId).Include(u=>u.Role).FirstOrDefaultAsync();
+            var cate = await _context.TblCategoriesProblems.Where(u => u.Id.ToLower() == CateId.ToLower()).FirstOrDefaultAsync();
+            if(cate!=null && user!=null && user.Role.Description=="Task Employee")
+            {
+                user.Cates.Add(cate);
+                await _context.SaveChangesAsync();
+                response.ResponseCode = 200;
+                response.Result = UserId + " " + CateId;
+            }
+            else
+            {
+                response.ResponseCode = 400;
+                response.ErrorMessage = "Add Failed!";
+            }
+            return response;
+        }
 
-        
+
 
         public async Task<APIResponse> UpdateUser(User User)
         {
@@ -169,7 +175,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "User not valid";
                 }
 
             }
@@ -197,7 +203,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 404;
-                    response.ErrorMessage = "Data not found";
+                    response.ErrorMessage = "User not valid";
                 }
 
             }

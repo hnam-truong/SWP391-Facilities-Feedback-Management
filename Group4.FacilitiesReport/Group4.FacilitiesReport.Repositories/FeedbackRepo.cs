@@ -4,6 +4,7 @@ using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Timers;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -35,12 +36,20 @@ namespace Group4.FacilitiesReport.Repositories
                 this._logger.LogInformation("Create Begins");
                 TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
                 await this._context.TblFeedbacks.AddAsync(_feedback);
-                await System.Threading.Tasks.Task.Delay(new TimeSpan(48, 0, 0)).ContinueWith(async function =>
-                {
-                    await ExpiredFeedback(feedback.FeedbackId);
-                    await this._context.SaveChangesAsync(); ;
-                });
-                await this._context.SaveChangesAsync(); ;
+                await this._context.SaveChangesAsync();
+                
+                var timer = new System.Timers.Timer(15000); // 1 second interval
+                timer.Elapsed +=async (sender, e) => {
+
+                    
+                    if (_feedback != null && _feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
+                    {
+                        _feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
+                        await _context.SaveChangesAsync();
+                    }
+
+                };
+                timer.Start();
                 _response.ResponseCode = 200;
                 _response.Result = _feedback.FeedbackId.ToString();
             }
@@ -107,7 +116,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Feedback>> GetFeedbackByUserId(string UserId)
         {
             List<Feedback> _response = new List<Feedback>();
-            var _data = await AllFeedback().Where(f => f.UserId.Equals(UserId)).ToListAsync();
+            var _data = await AllFeedback().Where(f => f.UserId.ToLower().Equals(UserId.ToLower())).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
@@ -147,38 +156,16 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> RemoveFeedback(Guid feedbackId)
         {
-            APIResponse _response = new APIResponse();
-            try
+            APIResponse response = new APIResponse();
+            var _feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == feedbackId);
+            if (_feedback != null && _feedback.Status == 0)
+                response = await UpdateFeedbackStatus(feedbackId,6);
+            else
             {
-                TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
-                if (feedback != null && feedback.Status == 0)
-                {
-                    var _tasks = await _context.TblTasks.Where(t => t.FeedbackId.Equals(feedbackId)).ToListAsync();
-                    this._context.TblTasks.RemoveRange(_tasks);
-                    this._context.TblFeedbacks.Remove(feedback);
-                    await this._context.SaveChangesAsync();
-                    _response.ResponseCode = 200;
-                    _response.Result = feedbackId.ToString();
-                }
-                else if (feedback != null && feedback.Status != 0)
-                {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Invalid Call!";
-                }
-                else
-                {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Data not found!";
-
-                }
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Feedback not available";
             }
-            catch (Exception ex)
-            {
-                _response.ResponseCode = 400;
-                _response.Result = ex.Message;
-
-            }
-            return _response;
+            return response;
 
         }
 
@@ -301,10 +288,11 @@ namespace Group4.FacilitiesReport.Repositories
                 await RespondFeedback(feedbackId, response);
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)
-                    foreach (var task in await list)
-                        task.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Cancelled");
-
-                await _context.SaveChangesAsync();
+                    foreach (var task in await list) {
+                        task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled");
+                        await _context.SaveChangesAsync();
+                    }
+                        
 
                 return await UpdateFeedbackStatus(feedbackId, (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"));
             }
@@ -343,23 +331,16 @@ namespace Group4.FacilitiesReport.Repositories
             return new APIResponse { ResponseCode = 400, ErrorMessage = "Invalid Call" };
 
         }
-        public async Task<APIResponse> ExpiredFeedback(Guid feedbackId)
-        {
-            var item = await GetFeedback(feedbackId);
+        //public async void ExpiredFeedback(Guid feedbackId)
+        //{
+        //    APIResponse response = new APIResponse();
+        //    var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(f => f.FeedbackId == feedbackId);
+        //    if(feedback != null&&feedback.Status== (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
+        //    {
+        //        feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
+        //        await _context.SaveChangesAsync();
+        //    }
 
-            if (item != null && item.Status == "Waiting`")
-            {
-                var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
-                if (list != null)
-                    foreach (var task in await list)
-                    {
-                        await _context.SaveChangesAsync();
-                    }
-                return await UpdateFeedbackStatus(feedbackId, (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired"));
-
-            }
-            return new APIResponse { ResponseCode = 400, ErrorMessage = "Invalid Call" };
-
-        }
+        //}
     }
 }
