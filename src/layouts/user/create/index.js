@@ -247,7 +247,7 @@ const Create = React.memo(() => {
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Typography variant="h6" fontWeight="medium" mb={1}>Title</Typography>
-          <StyledTextField type="text" name="Title" label="Title" {...register('Title', { required: true, maxLength: 30 })} error={formState.errors.Title} helperText={formState.errors.Title && 'Title is required'} />
+          <StyledTextField type="text" name="Title" label="Title" inputProps={{ maxLength: 40 }} {...register('Title', { required: true, maxLength: 40 })} error={formState.errors.Title} helperText={formState.errors.Title && 'Title is required'} />
         </div>
         <StyledRow>
           <div>
@@ -269,7 +269,8 @@ const Create = React.memo(() => {
             type="text"
             name="MoreDetails"
             label="More Details"
-            {...register('MoreDetails', { required: true, maxLength: 100 })}
+            inputProps={{ maxLength: 300 }}
+            {...register('MoreDetails', { required: true, maxLength: 300 })}
             error={formState.errors.MoreDetails}
             helperText={formState.errors.MoreDetails && 'More Details is required'}
             sx={{ height: '200px' }}

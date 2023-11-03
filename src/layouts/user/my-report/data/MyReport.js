@@ -11,13 +11,18 @@ import MDBadge from "components/MDBadge";
 //MUI
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Button from '@mui/material/Button';
+import UpgradeIcon from '@mui/icons-material/Upgrade';
+import TextField from '@mui/material/TextField';import Tooltip from '@mui/material/Tooltip';
+
 
 export default function data() {
   const badgeContent = "waiting"; // Replace this with the actual badge content
   const [feedbacks, setFeedbacks] = useState([]);
   useEffect(() => {
     // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+    const apiUrl = "https://localhost:7157/api/Feedbacks/User/" + localStorage.getItem('userID');
 
     // Make a GET request to your API endpoint
     fetch(apiUrl)
@@ -78,7 +83,6 @@ export default function data() {
   );
 
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.userId !== "") //Khi có phân quyền userID chỉnh code ở đây để chỉ map ra đúng feedback của Mỗi User 
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <Link><h4>{feedback.title}</h4></Link>,
@@ -95,9 +99,13 @@ export default function data() {
                 return (
                   <MDBadge badgeContent={feedback.status} color="warning" variant="gradient" size="sm" />
                 );
-              case "Closed":
+              case "Responded":
                 return (
                   <MDBadge badgeContent={feedback.status} color="inherit" variant="gradient" size="sm" />
+                );
+              case "Closed":
+                return (
+                  <MDBadge badgeContent={feedback.status} color="success" variant="gradient" size="sm" />
                 );
               case "Rejected":
                 return (
@@ -119,11 +127,13 @@ export default function data() {
               case "Waiting":
                 return (
                   <div>
-                    <IconButton onClick={() => handleUpdateReport(feedback.feedbackId)}>
+                    <a href='#updateReport' id='openPopUp'>
+                    <IconButton>
                       <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
                         Edit
                       </MDTypography>
                     </IconButton>
+                    </a>
                     <IconButton onClick={() => handleRemoveReport(feedback.feedbackId)}>
                       <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
                         Remove
@@ -133,6 +143,75 @@ export default function data() {
                 );
             }
           })()}
+          <div id='updateReport' className='overlay'>
+            <Box sx={{backgroundColor: 'white'}} className='update-report'>
+              <a className='update-report-close' href='#updateReport-close'><HighlightOffIcon /></a>
+              <TextField
+                inputProps={{ maxLength: 40 }}
+                fullWidth
+                required
+                id="outlined-required"
+                label="Title"
+                value={feedback.title}
+              />
+              <div style={{ marginTop: "1rem" }}>
+                <TextField
+                  inputProps={{ maxLength: 30 }}
+                  sx={{ width: '50%', paddingRight: '3px' }}
+                  required
+                  id="outlined-required"
+                  label="Campus"
+                  value=''
+                />
+                <TextField
+                  inputProps={{ maxLength: 4 }}
+                  sx={{ width: '50%', paddingLeft: '3px' }}
+                  required
+                  id="outlined-required"
+                  label="Room"
+                  value={feedback.locationId}
+                />
+              </div>
+              <div style={{ marginTop: "1rem" }}>
+                <TextField
+                  sx={{ width: '50%', paddingRight: '3px' }}
+                  fullWidth
+                  required
+                  id="outlined-required"
+                  label="Category"
+                  value={feedback.cate.description}
+                />
+                <TextField
+                  sx={{ width: '50%', paddingLeft: '3px' }}
+                  fullWidth
+                  required
+                  id="outlined-required"
+                  label="Images"
+                  value=''
+                />
+              </div>
+              <TextField
+                inputProps={{ maxLength: 300 }}
+                style={{ marginTop: "1rem" }}
+                fullWidth
+                required
+                multiline
+                id="outlined-required outlined-multiline-static"
+                label="More details"
+                value={feedback.description}
+                rows={6}
+              />
+              <Button
+                style={{ marginTop: "1rem" }}
+                fullWidth
+                variant="contained"
+                startIcon={<UpgradeIcon />}
+                onClick=''
+              >
+                Update Report
+              </Button>
+            </Box>
+          </div>
         </MDBox>
       ),
     }));

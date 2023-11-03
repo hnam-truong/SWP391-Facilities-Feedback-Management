@@ -36,7 +36,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Waiting" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId="+ feedbackId + "&\status=Waiting", option)
+    fetch("https://localhost:7157/api/Feedbacks/UndoFeedback?feedbackId="+ feedbackId + "&response=" + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -126,7 +126,7 @@ export default function data() {
             switch (feedback.status) {
               case "Closed":
                 return (
-                  <MDBadge badgeContent="closed" color="inherit" variant="gradient" size="sm" />
+                  <MDBadge badgeContent="closed" color="success" variant="gradient" size="sm" />
                 );
               case "Rejected":
                 return (

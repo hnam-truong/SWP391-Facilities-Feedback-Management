@@ -12,10 +12,29 @@ import MDBadge from "components/MDBadge";
 import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
+import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 export default function data() {
-  const badgeContent = "waiting"; // Replace this with the actual badge content
   const [feedbacks, setFeedbacks] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [authorFilter, setAuthorFilter] = useState("All");
+  const [catLocFilter, setCatLocFilter] = useState("All");
+  const [timeExpireFilter, setTimeExpireFilter] = useState("All");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Define the URL of your API endpoint to fetch categories
+    const categoriesUrl = "https://localhost:7157/api/Cate/GetAllCate";
+
+    // Make a GET request to fetch categories
+    fetch(categoriesUrl)
+      .then((response) => response.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching categories:", error));
+  }, []);
+
   useEffect(() => {
     // Define the URL of your API endpoint
     const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
@@ -27,6 +46,39 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
+  const fetchData = (filterType, filterValue) => {
+    let apiUrl;
+
+    if (filterValue === "All") {
+      apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+    } else {
+      apiUrl = `https://localhost:7157/api/Feedbacks/${filterType}?${filterType}=${filterValue}`;
+    }
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setFeedbacks(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  };
+
+  const handleCatLocChange = (event) => {
+    const catLoc = event.target.value;
+    setCatLocFilter(catLoc);
+    fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
+  };
+
+  const handleStatusChange = (event) => {
+    const status = event.target.value;
+    setStatusFilter(status);
+    fetchData(`By${status.charAt(0)+ status.slice(1)}`, status);
+  };
+
+  const handleTimeExpireChange = (event) => {
+    const timeExpire = event.target.value;
+    setTimeExpireFilter(timeExpire);
+    fetchData(`By${timeExpire.charAt(0) + timeExpire.slice(1)}`, timeExpire);
+  };
+
   const handleCancelReport = (feedbackId) => {
     var option = {
       method: 'PUT',
@@ -35,7 +87,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Waiting" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Waiting", option)
+    fetch("https://localhost:7157/api/Feedbacks/CancelFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -59,13 +111,37 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Processing" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Processing", option)
+    fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
           prevFeedbacks.map((prevFeedback) =>
             prevFeedback.feedbackId === feedbackId
               ? { ...prevFeedback, status: "Processing" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+  }
+
+  const handleCloseReport = (feedbackId) => {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Closed" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/CloseFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Closed" }
               : prevFeedback
           )
         );
@@ -83,7 +159,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Rejected" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UpdateStatus?feedbackId=" + feedbackId + "&\status=Rejected", option)
+    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -158,7 +234,10 @@ export default function data() {
   );
 
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === "Waiting" || feedback.status === "Processing")
+    .filter((feedback) =>
+      (feedback.status === "Waiting" || feedback.status === "Processing" || feedback.status === "Responded") &&
+      (statusFilter === "All" || feedback.status === statusFilter)
+    )
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
         <div>
@@ -171,50 +250,82 @@ export default function data() {
       ),
 
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <Link><h4>{feedback.title}</h4></Link>,
-      info: <Info category={feedback.cate.description} location={feedback.locationId} />,
+      title: <Link><h4 style={{ color: 'blue' }}>{feedback.title}</h4></Link>,
+      cate: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1} className="status-cell">
           <MDBadge
             badgeContent={feedback.status}
-            color={feedback.status === "Waiting" ? "light" : "warning"}
-            variant="gradient"
+            color={
+              feedback.status === "Waiting"
+                ? "light"
+                : feedback.status === "Processing"
+                  ? "warning"
+                  : feedback.status === "Responded"
+                    ? "info"
+                    : "default"
+            } variant="gradient"
             size="sm"
           />
           {feedback.status === "Processing" && (
             <div className="hover-content">
               {feedback.tasks
-              .filter((task) => task.employee.username !== "null")
-              .map((task) => (
-                <p key={task.id}>{task.employee.username}</p>
-              ))}
+                .filter((task) => task.employee && task.employee.username)
+                .map((task) => (
+                  <p key={task.id}>
+                    {task.employee.username || 'Unknown Employee'}
+                  </p>
+                ))
+              }
             </div>
           )}
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
-      action: feedback.status === "Waiting" ? (
-        <div>
-          <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
-              Accept
-            </MDTypography>
-          </IconButton>
-          <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
-              Reject
-            </MDTypography>
-          </IconButton>
-        </div>
-      ) : (
-        <div>
-          <IconButton onClick={() => handleCancelReport(feedback.feedbackId)}>
-            <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-              Cancel
-            </MDTypography>
-          </IconButton>
-        </div>
-      ),
+      action: (() => {
+        switch (feedback.status) {
+          case "Waiting":
+            return (
+              <div>
+                <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
+                  <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
+                    Accept
+                  </MDTypography>
+                </IconButton>
+                <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
+                  <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+                    Reject
+                  </MDTypography>
+                </IconButton>
+              </div>
+            );
+          case "Processing":
+            return (
+              <div>
+                <IconButton onClick={() => handleCancelReport(feedback.feedbackId)}>
+                  <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+                    Cancel
+                  </MDTypography>
+                </IconButton>
+              </div>
+            );
+          case "Responded":
+            return (
+              <div>
+                <IconButton onClick={() => handleCloseReport(feedback.feedbackId)}>
+                  <MDTypography component="a" variant="caption" color="info" fontWeight="medium">
+                    Close
+                  </MDTypography>
+                </IconButton>
+                <IconButton onClick={() => handleTaskReport(feedback.feedbackId)}>
+                  <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
+                    Task
+                  </MDTypography>
+                </IconButton>
+              </div>
+            );
+        }
+      })(),
     }));
 
   return {
@@ -222,8 +333,48 @@ export default function data() {
       { Header: "", accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
-      { Header: "cat/loc", accessor: "info", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
+      {
+        Header: (
+          <span>
+            cat/loc:{" "}
+            <Select
+              value={catLocFilter}
+              onChange={handleCatLocChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.description}
+                </MenuItem>
+              ))}
+            </Select>
+          </span>
+        ),
+        accessor: "cate",
+        align: "left",
+      },
+      {
+        Header: (
+          <span>
+            status:{" "}
+            <Select
+              value={statusFilter}
+              onChange={handleStatusChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Waiting">Waiting</MenuItem>
+              <MenuItem value="Processing">Processing</MenuItem>
+              <MenuItem value="Responded">Responded</MenuItem>
+            </Select>
+          </span>
+        ),
+        accessor: "status",
+        align: "center",
+      },
       { Header: "time/expire", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],

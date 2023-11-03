@@ -3,7 +3,7 @@ import Dashboard from "layouts/manager/dashboard";
 import ReportsTable from "layouts/manager/tables";
 import ReportHistory from "layouts/manager/history";
 import Notifications from "layouts/manager/notifications";
-import Create from "layouts/create";
+import Create from "layouts/user/create";
 import SignIn from "layouts/authentication/sign-in";
 import SignOut from "layouts/authentication/sign-out";
 import UserReport from "layouts/user/my-report";
@@ -59,7 +59,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
-    roles: ["Student", "Lecturer", "Casual Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",
@@ -68,7 +68,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Casual Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",
