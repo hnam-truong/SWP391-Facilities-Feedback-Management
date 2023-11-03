@@ -26,28 +26,28 @@ namespace API.Controllers
             _mapper = mapper;
             _context = context;
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserActive")]
         public async Task<IActionResult> CountUserActive()
         {
             int count = await _iUser.CountUsersActive();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserBanned")]
         public async Task<IActionResult> CountUserBanned()
         {
             int count = await _iUser.CountUsersBanned();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserProvideFb")]
         public async Task<IActionResult> CountUserProvideFb()
         {
             int count = await _iUser.CountUsersWhoProvidedFeedback();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("AllUsers")]
         public async Task<IActionResult> GetAllUser()
         {
@@ -58,7 +58,7 @@ namespace API.Controllers
             }
             return Ok(users);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("{UserId}")]
         public async Task<IActionResult> GetUserByUserId(string UserId)
         {
@@ -69,7 +69,7 @@ namespace API.Controllers
             }
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("Employee/{CateId}")]
         public async Task<IActionResult> GetEmployeeByCate(string CateId)
         {
@@ -80,7 +80,7 @@ namespace API.Controllers
             }
             return Ok(users);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountEmployeeTask/{CateId}")]
         public async Task<IActionResult> CountEmployeeTask(string CateId)
         {
@@ -106,7 +106,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("UserProvideFb")]
         public async Task<IActionResult> GetUserProvideFeedbak()
         {
@@ -117,7 +117,7 @@ namespace API.Controllers
             }
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("AddUser")]
         public async Task<IActionResult> AddUser(string UserId, string Email, string Username, string Password, int RoleId)
         {
@@ -134,7 +134,7 @@ namespace API.Controllers
             });
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("AddCateByUserId")]
         public async Task<IActionResult> AddCateByUserId(string UserId, string CateId)
         {
@@ -155,13 +155,13 @@ namespace API.Controllers
             });
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("BannedUser")]
         public async Task<IActionResult> BannedUser(string UserId)
         {
             return Ok(await _iUser.UpdateStatus(UserId, 2));
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("Active")]
         public async Task<IActionResult> ActiveUser(string UserId)
         {

@@ -3,7 +3,9 @@ using Group4.FacilitiesReport.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace Group4.FacilitiesReport.API.Controllers
 {
@@ -19,8 +21,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             _tasks = tasks;
             _webHostEnvironment = webHostEnvironment;
         }
-        [Authorize("Manager")]
-        [HttpGet("GetAll")]
+        //[Authorize("Manager")]
+        [HttpGet("GetAllTask")]
         public async Task<IActionResult> GetTasks()
         {
             var data = await _tasks.GetTasks();
@@ -30,7 +32,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("Task/{TaskId}")]
         public async Task<IActionResult> GetTaskByTaskId(Guid TaskId)
         {
@@ -41,7 +43,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("{ManagerId}")]
         public async Task<IActionResult> GetTaskByManagerId(string ManagerId)
         {
@@ -52,7 +54,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-        [Authorize("Manager, Task Employee")]
+        //[Authorize("Manager, Task Employee")]
         [HttpGet("{EmployeeId}")]
         public async Task<IActionResult> GetTaskByEmployee(string EmployeeId)
         {
@@ -63,7 +65,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("{FeedbackId}")]
         public async Task<IActionResult> GetTaskByfeedback(Guid FeedbackId)
         {
@@ -170,7 +172,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                     return "application/octet-stream";  // Fallback to binary data
             }
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("/CreateTask")]
         public async Task<IActionResult> CreateTask(Guid FeedbackId, string EmployeeId, string ManagerId, string Note, [FromForm] IFormFileCollection fileCollection)
         {
@@ -226,7 +228,7 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(response);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("CancelTask")]
         public async Task<IActionResult> TaskCancel(Guid Id) { 
      
@@ -235,7 +237,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             else return NotFound();
         
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("CloseTask")]
         public async Task<IActionResult> TaskClosed(Guid Id)
         {
@@ -244,7 +246,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             else
                 return NotFound();
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("DeliveredTask")]
         public async Task<IActionResult> TaskDelivered(Guid Id)
         {
@@ -253,19 +255,57 @@ namespace Group4.FacilitiesReport.API.Controllers
             else
                 return NotFound();
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("UpdateTaskNote")]
         public async Task<IActionResult> UpdateTaskNote(Guid Id, string Note)
         {
             var task = await _tasks.UpdateTaskNote(Id, Note);
             return Ok(task);
         }
-        [Authorize("Task Employee")]
+        //[Authorize("Task Employee")]
         [HttpPut("UpdateTaskResponse")]
-        public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response)
+        public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response, [FromForm] IFormFileCollection fileCollection)
         {
-            var task = await _tasks.UpdateTaskResponse(Id, Response);
-            return Ok(task);
+            int passcount = 0;
+            int errorcount = 0;
+            APIResponse response = new APIResponse();
+            try
+            {
+                string FilePath = GetFilePath(Id);
+                if (!System.IO.File.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                foreach (var file in fileCollection)
+                {
+                    string fileDir = FilePath + "\\" + file.FileName;
+                    if (System.IO.File.Exists(fileDir))
+                    {
+                        System.IO.Directory.Delete(fileDir);
+                    }
+                    using (FileStream stream = System.IO.File.Create(fileDir))
+                    {
+                        await file.CopyToAsync(stream);
+                        passcount++;
+                    }
+                }
+                response = await _tasks.UpdateTaskResponse(Id, Response);
+                if (response.ResponseCode == 200)
+                {
+                    response.Result += " " +
+                        passcount + " File(s) uploaded. " +
+                        errorcount + " File(s) fail.";
+                }
+                
+                
+            }
+            catch (Exception ex)
+            {
+                errorcount++;
+                response.ResponseCode = 400;
+                response.ErrorMessage = ex.Message;
+            }
+            return Ok(response);
         }
 
         [HttpDelete("Remove")]

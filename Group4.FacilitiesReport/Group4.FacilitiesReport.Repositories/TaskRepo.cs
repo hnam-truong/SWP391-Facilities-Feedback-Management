@@ -49,7 +49,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<DTO.Task>> GetTaskByEmployeeId(string EmployeeId)
         {
             List<DTO.Task> _response = new List<DTO.Task>();
-            var _data = await AllTask().Where(f => f.EmployeeId.Equals(EmployeeId)).ToListAsync();
+            var _data = await AllTask().Include(u => u.Manager).Where(f => f.EmployeeId.Equals(EmployeeId)).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblTask>, List<DTO.Task>>(_data);

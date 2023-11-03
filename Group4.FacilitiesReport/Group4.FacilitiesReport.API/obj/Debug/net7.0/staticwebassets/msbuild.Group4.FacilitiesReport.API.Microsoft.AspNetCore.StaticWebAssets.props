@@ -288,6 +288,54 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5390b1ba-a3ec-4622-b9ea-7440340bb397\bg-02.jpg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\bg-02.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Task/5a4d6359-28e7-45f4-9d8b-33d975ebdff2/bg-02.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\bg-02.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\chap1.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Task/5a4d6359-28e7-45f4-9d8b-33d975ebdff2/chap1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\chap1.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\Delegate.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>Group4.FacilitiesReport.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Group4.FacilitiesReport.API</BasePath>
+      <RelativePath>Uploading/Task/5a4d6359-28e7-45f4-9d8b-33d975ebdff2/Delegate.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\5a4d6359-28e7-45f4-9d8b-33d975ebdff2\Delegate.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Uploading\Task\744b3584-f4c9-48e6-b78f-c8655f9ab29f\chap1.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>Group4.FacilitiesReport.API</SourceId>

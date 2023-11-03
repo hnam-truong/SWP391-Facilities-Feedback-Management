@@ -37,19 +37,6 @@ namespace Group4.FacilitiesReport.Repositories
                 TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
                 await this._context.TblFeedbacks.AddAsync(_feedback);
                 await this._context.SaveChangesAsync();
-                
-                var timer = new System.Timers.Timer(15000); // 1 second interval
-                timer.Elapsed +=async (sender, e) => {
-
-                    
-                    if (_feedback != null && _feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
-                    {
-                        _feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
-                        await _context.SaveChangesAsync();
-                    }
-
-                };
-                timer.Start();
                 _response.ResponseCode = 200;
                 _response.Result = _feedback.FeedbackId.ToString();
             }
