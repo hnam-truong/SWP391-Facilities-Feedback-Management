@@ -32,7 +32,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-
+        [Authorize("Manager")]
         [HttpGet("{CateId}")]
         public async Task<IActionResult> GetCateByCateId(string CateId)
         {

@@ -21,8 +21,8 @@ namespace Group4.FacilitiesReport.API.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-
-        [HttpGet("GetAllLoca")]
+        
+        [HttpGet("GetAllLocation")]
         public async Task<IActionResult> GetLocations()
         {
             var data = await _location.GetLocations();

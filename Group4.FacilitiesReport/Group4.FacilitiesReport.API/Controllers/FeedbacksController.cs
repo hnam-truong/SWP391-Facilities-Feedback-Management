@@ -19,7 +19,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             _ifeedback = ifeedback;
             _webHostEnvironment = webHostEnvironment;
         }
-
+        [Authorize("Manager")]
         [HttpGet("AllFeedbacks")]
         public async Task<IActionResult> GetAllFeedback()
         {
@@ -41,7 +41,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-        
+        [Authorize("Manager, Student, Lecturer, Casual Employee")]
         [HttpGet("User/{UserId}")]
         public async Task<IActionResult> GetFeedbackByUserId(string UserId)
         {
@@ -52,6 +52,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
+        [Authorize("Manager")]
         [HttpGet("Id/{feedbackId}")]
         public async Task<IActionResult> GetFeedback(Guid feedbackId)
         {
@@ -141,7 +142,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 return NotFound(ex);
             }
         }
-        //[Authorize("Student, Lecturer, Casual Employee")]
+        [Authorize("Student, Lecturer, Casual Employee")]
         [HttpPost("Create")]
         public async Task<IActionResult> CreateFeedback(string userId, string title, string description, string cateId, string locatoinId, [FromForm] IFormFileCollection fileCollection)
         {
@@ -211,7 +212,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(feedback);
         }
-
+        [Authorize("Student, Lecturer, Casual Employee, Manager")]
         [HttpPut("Notify")]
         public async Task<IActionResult> NotifyFeedback(Guid feedbackId)
         {
@@ -239,7 +240,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         {
             return Ok(await _ifeedback.AcceptFeedback(feedbackId, response));
         }
-
+        [Authorize("Manager")]
         [HttpPut("CancelFeedback")]
         public async Task<IActionResult> CancelFeedback(Guid feedbackId, string response)
         {
@@ -251,7 +252,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         {
             return Ok(await _ifeedback.RejectFeedback(feedbackId, response));
         }
-
+        [Authorize("Manager")]
         [HttpPut("UndoFeedback")]
         public async Task<IActionResult> UndoRejectFeedback(Guid feedbackId, string response)
         {
