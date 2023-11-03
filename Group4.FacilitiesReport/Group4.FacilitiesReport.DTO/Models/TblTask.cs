@@ -5,7 +5,7 @@ namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblTask
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Guid FeedbackId { get; set; }
         public string EmployeeId { get; set; } = null!;
         public string ManagerId { get; set; } = null!;

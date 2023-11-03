@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Compile Remove="wwwroot\Uploading\Feedback\Img\**" />
+    <Compile Remove="wwwroot\Uploading\Feedback\Video\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="wwwroot\Uploading\Feedback\Img\**" />
+    <Content Remove="wwwroot\Uploading\Feedback\Video\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="wwwroot\Uploading\Feedback\Img\**" />
+    <EmbeddedResource Remove="wwwroot\Uploading\Feedback\Video\**" />
+    <None Remove="Data\**" />
+    <None Remove="wwwroot\Uploading\Feedback\Img\**" />
+    <None Remove="wwwroot\Uploading\Feedback\Video\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
@@ -23,8 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\FeedbackDat\" />
-    <Folder Include="Data\TaskDat\" />
+    <Folder Include="wwwroot\Uploading\Feedback\" />
+    <Folder Include="wwwroot\Uploading\Task\Img\" />
   </ItemGroup>
 
 </Project>
