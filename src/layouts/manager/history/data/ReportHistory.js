@@ -36,7 +36,7 @@ export default function data() {
       },
       body: JSON.stringify({ status: "Waiting" }),
     };
-    fetch("https://localhost:7157/api/Feedbacks/UndoFeedback?feedbackId="+ feedbackId + "&response=" + feedbackId, option)
+    fetch("https://localhost:7157/api/Feedbacks/UndoFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
       .then((response) => { response.text() })
       .then((data) => {
         setFeedbacks((prevFeedbacks) =>
@@ -106,7 +106,10 @@ export default function data() {
     </MDBox>
   );
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired" )
+    .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired")
+    .sort((a, b) => {
+      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+    })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
         <div>
@@ -152,12 +155,12 @@ export default function data() {
       ) : (<MDTypography></MDTypography>),
     }));
 
-    // {
-    //   Header: "",
-    //   accessor: "checkBox",
-    //   align: "right",
-    //   width: "0%",
-    // },
+  // {
+  //   Header: "",
+  //   accessor: "checkBox",
+  //   align: "right",
+  //   width: "0%",
+  // },
   return {
     columns: [
       { Header: "", accessor: "star", align: "center", width: "0%" },

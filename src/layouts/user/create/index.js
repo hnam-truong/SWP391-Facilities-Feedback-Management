@@ -6,6 +6,7 @@ import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { motion } from 'framer-motion';
+import MDSnackbar from "components/MDSnackbar";
 
 const StyledContainer = styled(Container)(() => ({
   display: 'flex',
@@ -142,17 +143,26 @@ const Create = React.memo(() => {
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
   const [selectedImages, setSelectedImages] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
-
+  const [filteredRoomOptions, setFilteredRoomOptions] = useState([]);
+  const [roomDisabled, setRoomDisabled] = useState(true);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [showErrorNotification, setShowErrorNotification] = useState(false);
 
   const campusOptions = useMemo(() => [{ value: 'FPTU HCM', label: 'FPTU HCM' }, { value: 'NVH', label: 'NVH' }], []);
 
   useEffect(() => {
     const fetchRoomOptions = async () => {
       try {
-        const response = await fetch('https://localhost:7157/api/Location/GetAllLoca');
+        const response = await fetch('https://localhost:7157/api/Location/GetAllLocation');
         const data = await response.json();
         const options = data.map((room) => ({ value: room.locationId, label: room.locationId }));
+
+        const filteredOptions = selectedCampus?.value === 'NVH'
+          ? options.filter((room) => room.label.startsWith('NVH'))
+          : options.filter((room) => !room.label.startsWith('NVH'));
+
         setRoomOptions(options);
+        setFilteredRoomOptions(filteredOptions);
       } catch (error) {
         console.error(error);
       }
@@ -169,9 +179,10 @@ const Create = React.memo(() => {
       }
     };
 
-    fetchRoomOptions();
     fetchCategoryOptions();
-  }, []);
+    fetchRoomOptions();
+  }, [selectedCampus]);
+
 
   useEffect(() => { if (formState.errors.file) setSelectedImages(null); }, [formState.errors.file]);
 
@@ -206,7 +217,22 @@ const Create = React.memo(() => {
         { method: 'POST', body: formData });
       const responseData = await response.json();
       console.log(responseData);
-    } catch (error) { console.error(error); }
+
+      // Notify when the report is created successfully
+      setShowSuccessNotification(true);
+
+      // Clear all form data
+      setSelectedCampus(null);
+      setSelectedRoom(null);
+      setSelectedCategory(null);
+      setValue('Title', '');
+      setValue('MoreDetails', '');
+      setSelectedImages([]);
+      setPreviewUrl(null);
+    } catch (error) {
+      console.error(error);
+      setShowErrorNotification(true);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -239,6 +265,13 @@ const Create = React.memo(() => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleCampusChange = (selectedOption) => {
+    setSelectedCampus(selectedOption);
+
+    // Enable Room selection when a Campus is chosen
+    setRoomDisabled(false);
+  };
+
   return (
     <StyledContainer>
       <StyledBackButton startIcon={<ArrowBackIcon />} onClick={() => window.history.back()}>Back</StyledBackButton>
@@ -252,11 +285,42 @@ const Create = React.memo(() => {
         <StyledRow>
           <div>
             <Typography variant="h6" fontWeight="medium" mb={1}>Campus</Typography>
-            <StyledSelect name="Campus" id="Campus" options={campusOptions} value={selectedCampus} onChange={setSelectedCampus} required isSearchable styles={{ control: (provided) => ({ ...provided, borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor, '&:hover': { borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor } }) }} />
+            <StyledSelect
+              name="Campus"
+              id="Campus"
+              options={campusOptions}
+              value={selectedCampus}
+              onChange={handleCampusChange} // Add the onChange handler
+              required
+              isSearchable
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor,
+                  '&:hover': { borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor },
+                }),
+              }}
+            />
           </div>
           <div>
             <Typography variant="h6" fontWeight="medium" mb={1}>Room</Typography>
-            <StyledSelect name="Room" id="Room" options={roomOptions} value={selectedRoom} onChange={setSelectedRoom} required isSearchable styles={{ control: (provided) => ({ ...provided, borderColor: formState.errors.Room ? '#f44336' : provided.borderColor, '&:hover': { borderColor: formState.errors.Room ? '#f44336' : provided.borderColor } }) }} />
+            <StyledSelect
+              name="Room"
+              id="Room"
+              options={filteredRoomOptions}
+              value={selectedRoom}
+              onChange={setSelectedRoom}
+              isDisabled={roomDisabled} // Disable Room selection when roomDisabled is true
+              required
+              isSearchable
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  borderColor: formState.errors.Room ? '#f44336' : provided.borderColor,
+                  '&:hover': { borderColor: formState.errors.Room ? '#f44336' : provided.borderColor },
+                }),
+              }}
+            />
           </div>
           <div>
             <Typography variant="h6" fontWeight="medium" mb={1}>Category</Typography>
@@ -295,6 +359,29 @@ const Create = React.memo(() => {
         <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
           <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
         </StyledModal>
+      )}
+      {showSuccessNotification && (
+        <MDSnackbar
+          color="success"
+          icon="check"
+          title="Success"
+          content="Report sent successfully"
+          // dateTime={new Date().toLocaleString()}
+          open={showSuccessNotification}
+          onClose={() => setShowSuccessNotification(false)}
+          close={() => setShowSuccessNotification(false)}
+        />
+      )}
+      {showErrorNotification && (
+        <MDSnackbar
+          color="error"
+          icon="warning"
+          title="Error"
+          content="An error occurred while sending the report."
+          open={showErrorNotification}
+          onClose={() => setShowErrorNotification(false)}
+          close={() => setShowErrorNotification(false)}
+        />
       )}
     </StyledContainer>
   );

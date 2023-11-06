@@ -14,12 +14,12 @@ import Box from "@mui/material/Box";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Button from '@mui/material/Button';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
-import TextField from '@mui/material/TextField';import Tooltip from '@mui/material/Tooltip';
+import TextField from '@mui/material/TextField'; import Tooltip from '@mui/material/Tooltip';
 
 
 export default function data() {
-  const badgeContent = "waiting"; // Replace this with the actual badge content
   const [feedbacks, setFeedbacks] = useState([]);
+
   useEffect(() => {
     // Define the URL of your API endpoint
     const apiUrl = "https://localhost:7157/api/Feedbacks/User/" + localStorage.getItem('userID');
@@ -37,13 +37,18 @@ export default function data() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ status: "Removed" }),
     };
     fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        window.location.reload();
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Removed" }
+              : prevFeedback
+          )
+        );
       })
       .catch((error) => {
         console.error("Error: " + error.message);
@@ -83,6 +88,9 @@ export default function data() {
   );
 
   const feedbackRows = feedbacks
+    .sort((a, b) => {
+      new Date(a.dateTime) - new Date(b.dateTime);
+    })
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <Link><h4>{feedback.title}</h4></Link>,
@@ -128,11 +136,11 @@ export default function data() {
                 return (
                   <div>
                     <a href='#updateReport' id='openPopUp'>
-                    <IconButton>
-                      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-                        Edit
-                      </MDTypography>
-                    </IconButton>
+                      <IconButton>
+                        <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+                          Edit
+                        </MDTypography>
+                      </IconButton>
                     </a>
                     <IconButton onClick={() => handleRemoveReport(feedback.feedbackId)}>
                       <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
@@ -144,7 +152,7 @@ export default function data() {
             }
           })()}
           <div id='updateReport' className='overlay'>
-            <Box sx={{backgroundColor: 'white'}} className='update-report'>
+            <Box sx={{ backgroundColor: 'white' }} className='update-report'>
               <a className='update-report-close' href='#updateReport-close'><HighlightOffIcon /></a>
               <TextField
                 inputProps={{ maxLength: 40 }}

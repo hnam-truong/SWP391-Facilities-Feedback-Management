@@ -15,6 +15,7 @@ import StarIcon from "@mui/icons-material/Star";
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from "@mui/material/TextField";
 
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -23,6 +24,23 @@ export default function data() {
   const [catLocFilter, setCatLocFilter] = useState("All");
   const [timeExpireFilter, setTimeExpireFilter] = useState("All");
   const [categories, setCategories] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  const RespondForm = () => {
+    if (!showForm) {
+      return null;
+    }
+    return (
+      <strong>
+      <div className="form-popup">
+        <div className="respond">
+        <TextField label="Form Field 1" />
+        <button onClick={() => setShowForm(false)}>Close Form</button>
+        </div>
+      </div>
+      </strong>
+    );
+  };
 
   useEffect(() => {
     // Define the URL of your API endpoint to fetch categories
@@ -70,7 +88,7 @@ export default function data() {
   const handleStatusChange = (event) => {
     const status = event.target.value;
     setStatusFilter(status);
-    fetchData(`By${status.charAt(0)+ status.slice(1)}`, status);
+    fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
   };
 
   const handleTimeExpireChange = (event) => {
@@ -101,6 +119,7 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
+    setShowForm(true);
   }
 
   const handleAcceptReport = (feedbackId) => {
@@ -125,6 +144,7 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
+    setShowForm(true);
   }
 
   const handleCloseReport = (feedbackId) => {
@@ -149,6 +169,7 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
+    setShowForm(true);
   }
 
   const handleRejectReport = (feedbackId) => {
@@ -173,6 +194,13 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
+    setShowForm(true);
+  }
+
+  const handleTaskReport = (feedbackId) => {
+    // ... (existing code)
+    // Set showForm to true when the Task button is clicked
+    setShowForm(true);
   }
 
   const handleNoti = (feedbackId) => {
@@ -238,6 +266,9 @@ export default function data() {
       (feedback.status === "Waiting" || feedback.status === "Processing" || feedback.status === "Responded") &&
       (statusFilter === "All" || feedback.status === statusFilter)
     )
+    .sort((a, b) => {
+      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+    })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
         <div>
@@ -289,7 +320,7 @@ export default function data() {
               <div>
                 <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
                   <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
-                    Accept
+                    Accept  
                   </MDTypography>
                 </IconButton>
                 <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
@@ -330,27 +361,12 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "", accessor: "star", align: "center", width: "0%" },
+      { Header: (<RespondForm />), accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
       {
         Header: (
-          <span>
-            cat/loc:{" "}
-            <Select
-              value={catLocFilter}
-              onChange={handleCatLocChange}
-              displayEmpty
-              inputProps={{ 'aria-label': 'Without label' }}
-            >
-              <MenuItem value="All">All</MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.description}
-                </MenuItem>
-              ))}
-            </Select>
-          </span>
+          "cat/loc"
         ),
         accessor: "cate",
         align: "left",

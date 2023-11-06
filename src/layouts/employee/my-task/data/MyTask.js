@@ -78,7 +78,7 @@ export default function data() {
   );
 
   const feedbackRows = feedbacks
-    .filter((feedback) => feedback.userId !== "") //Khi có phân quyền userID chỉnh code ở đây để chỉ map ra đúng feedback của Mỗi User 
+    .filter((feedback) => feedback.userId === localStorage.getItem('userID'))
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <Link><h4>{feedback.title}</h4></Link>,

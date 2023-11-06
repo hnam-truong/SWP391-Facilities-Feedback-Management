@@ -55,9 +55,6 @@ function Basic() {
         case "Casual Employee":
           navigate('/my-reports');
           break;
-
-        default:
-          break;
       }
     } 
   }, [user]);
@@ -91,6 +88,7 @@ function Basic() {
         localStorage.setItem('email', email);
         localStorage.setItem('password', password);
 
+        window.location.reload();
       } else {
         console.error('Login failed');
       }

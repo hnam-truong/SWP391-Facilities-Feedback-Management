@@ -9,6 +9,7 @@ import SignOut from "layouts/authentication/sign-out";
 import UserReport from "layouts/user/my-report";
 import EmployeeTask from "layouts/employee/my-task";
 import Error404 from "layouts/error/error404";
+import SystemHandler from "layouts/system-handler";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -77,7 +78,16 @@ const routes = [
     icon: <Icon fontSize="small">task</Icon>,
     route: "/my-tasks",
     component: <EmployeeTask />,
-    roles: ["Task Employee"]
+    roles: ["Task Employee", "Manager"]
+  },
+  {
+    type: "collapse",
+    name: "System Handler",
+    key: "system-handler",
+    icon: <Icon fontSize="small">system</Icon>,
+    route: "/system-handler",
+    component: <SystemHandler />,
+    roles: ["System Handler", "Manager"]
   },
   {
     type: "collapse",
