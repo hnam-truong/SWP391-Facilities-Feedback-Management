@@ -27,12 +27,12 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<int> CountUsersActive()
         {
-            return await AllUser().Where(f => f.Status == 0).CountAsync();
+            return await AllUser().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Active")).CountAsync();
         }
 
         public async Task<int> CountUsersBanned()
         {
-            return await AllUser().Where(f => f.Status == 2).CountAsync();
+            return await AllUser().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Banned")).CountAsync();
         }
 
         public async Task<int> CountUsersWhoProvidedFeedback()
@@ -108,7 +108,7 @@ namespace Group4.FacilitiesReport.Repositories
         {
             
             var _data = await AllUser().Include(u => u.Role).Where(f => f.Email.ToLower()==Email.ToLower() && f.Password.Equals(Password)).FirstOrDefaultAsync();
-            if (_data != null && _data.Status ==0)
+            if (_data != null && _data.Status ==(int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Active"))
             {
                  return  _mapper.Map<TblUser, User>(_data);
             }

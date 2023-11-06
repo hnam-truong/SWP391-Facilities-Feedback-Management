@@ -31,6 +31,13 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<APIResponse> CreateFeedback(Feedback feedback)
         {
             APIResponse _response = new APIResponse();
+            var exist = await CheckExistence(feedback.LocationId,feedback.CateId);
+            if (!exist)
+            {
+                _response.ResponseCode = 400;
+                _response.ErrorMessage = "Location and Category not exist";
+                return _response;
+            }
             try
             {
                 this._logger.LogInformation("Create Begins");
@@ -208,7 +215,7 @@ namespace Group4.FacilitiesReport.Repositories
                 }
                 else
                 {
-                    _response.ResponseCode = 400;
+                    _response.ResponseCode = 404;
                     _response.Result = "Data not found!";
 
                 }
@@ -237,7 +244,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Feedback>> GetFeedbackByLocation(string locationId)
         {
             List<Feedback> _response = new List<Feedback>();
-            var _data = await AllFeedback().Where(f => f.LocationId == locationId && f.Status < 3 && DateTime.Now.Subtract(f.DateTime).TotalDays < 7).ToListAsync();
+            var _data = await AllFeedback().Where(f => f.LocationId.ToLower() == locationId.ToLower() && f.Status < 3 && DateTime.Now.Subtract(f.DateTime).TotalDays < 7).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
@@ -318,16 +325,10 @@ namespace Group4.FacilitiesReport.Repositories
             return new APIResponse { ResponseCode = 400, ErrorMessage = "Invalid Call" };
 
         }
-        //public async void ExpiredFeedback(Guid feedbackId)
-        //{
-        //    APIResponse response = new APIResponse();
-        //    var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(f => f.FeedbackId == feedbackId);
-        //    if(feedback != null&&feedback.Status== (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
-        //    {
-        //        feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //}
+        public async Task<bool> CheckExistence(string locationId, string cateId)
+        {
+            var exists = await _context.TblFeedbacks.AnyAsync(f => f.LocationId == locationId && f.CateId == cateId);
+            return exists;
+        }
     }
 }

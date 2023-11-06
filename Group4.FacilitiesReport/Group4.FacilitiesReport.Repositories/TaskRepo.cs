@@ -82,21 +82,22 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<APIResponse> CreateTask(DTO.Task task)
         {
             APIResponse response = new APIResponse();
-            var data = await _context.TblFeedbacks.FirstOrDefaultAsync(x => x.FeedbackId.Equals(task.FeedbackId));
-            if (data != null && data.Status <= 1)
+            var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(x => x.FeedbackId.Equals(task.FeedbackId));
+            var employee = await _context.TblUsers.Include(e => e.Cates).FirstOrDefaultAsync(x => x.UserId.ToLower().Equals(task.EmployeeId.ToLower()));
+
+            if (feedback != null && feedback.Status <= (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
             {
                 TblTask _task = _mapper.Map<DTO.Task, TblTask>(task);
                 await _context.TblTasks.AddAsync(_task);
-                data.Status = 1;
+                feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing");
                 await _context.SaveChangesAsync();
-
                 response.ResponseCode = 200;
                 response.Result = task.Id.ToString();
             }
             else
             {
-                response.ResponseCode = 400;
-                response.ErrorMessage = "Feedback is not Available";
+                response.ResponseCode = 404;
+                response.ErrorMessage = "Feedback is not available or CateId does not match.";
             }
             return response;
         }
@@ -106,8 +107,8 @@ namespace Group4.FacilitiesReport.Repositories
         {
             APIResponse response = new APIResponse();
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t=>t.Id==Id);
-            if(_task!=null&&_task.Status==1)
-            response= await UpdateTaskStatus(Id, 2);
+            if(_task!=null&&_task.Status== (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
+            response= await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"));
             else
             {
                 response.ResponseCode = 404;
@@ -121,8 +122,8 @@ namespace Group4.FacilitiesReport.Repositories
         {
             APIResponse response = new APIResponse();
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == Id);
-            if (_task != null && _task.Status != 2)
-                response = await UpdateTaskStatus(Id, 3);
+            if (_task != null && _task.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"))
+                response = await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled"));
             else
             {
                 response.ResponseCode = 404;
@@ -140,7 +141,7 @@ namespace Group4.FacilitiesReport.Repositories
                 if (_task != null)
                 {
                     _task.Note = Note;
-                    _task.Status = 0;
+                    _task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered");
                     await _context.SaveChangesAsync();
                     response.ResponseCode = 200;
                     response.Result = Id.ToString();
@@ -167,10 +168,10 @@ namespace Group4.FacilitiesReport.Repositories
             try
             {
                 var _task = await _context.TblTasks.FindAsync(Id);
-                if (_task != null && _task.Status == 0)
+                if (_task != null && _task.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered"))
                 {
                     _task.Responsed = response;
-                    _task.Status = 1;
+                    _task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded");
                     var fb = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == _task.FeedbackId);
                     var list = _context.TblTasks.Where(t => t.FeedbackId == _task.FeedbackId).ToList();
 
@@ -179,13 +180,13 @@ namespace Group4.FacilitiesReport.Repositories
                         var flag = true;
                         foreach (var item in list)
                         {
-                            if (item.Status != 1)
+                            if (item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
                             {
                                flag =false;
                             }
                         }
                         if (flag) {
-                            fb.Status = 2;
+                            fb.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Responded");
                         }
                         await _context.SaveChangesAsync();
                     }
@@ -202,7 +203,7 @@ namespace Group4.FacilitiesReport.Repositories
             catch (Exception ex)
             {
                 _response.ResponseCode = 400;
-                _response.ErrorMessage = ex.Message;
+                _response.ErrorMessage = "Response failed!!";
             }
             return _response;
         }
@@ -211,8 +212,8 @@ namespace Group4.FacilitiesReport.Repositories
         {
             APIResponse response = new APIResponse();
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == id);
-            if (_task != null && _task.Status == 0)
-                response = await UpdateTaskStatus(id, 4);
+            if (_task != null && _task.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered"))
+                response = await UpdateTaskStatus(id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Removed"));
             else
             {
                 response.ResponseCode = 404;

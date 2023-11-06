@@ -50,7 +50,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Location>> GetLocationsDisable()
         {
             List<Location> _response = new List<Location>();
-            var _data = await AllLocation().Where(f => f.Disable == 1).ToListAsync();
+            var _data = await AllLocation().Where(f => f.Disable == (int)Enum.Parse(typeof(DTO.Enums.LocationStatus), "Disable")).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblLocation>, List<Location>>(_data);
@@ -60,7 +60,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Location>> GetLocationsEnable()
         {
             List<Location> _response = new List<Location>();
-            var _data = await AllLocation().Where(f => f.Disable == 0).ToListAsync();
+            var _data = await AllLocation().Where(f => f.Disable == (int)Enum.Parse(typeof(DTO.Enums.LocationStatus), "Enable")).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblLocation>, List<Location>>(_data);
