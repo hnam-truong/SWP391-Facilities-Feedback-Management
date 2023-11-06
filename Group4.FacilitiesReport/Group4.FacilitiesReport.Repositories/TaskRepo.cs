@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;

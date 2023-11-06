@@ -14,6 +14,7 @@ namespace Group4.FacilitiesReport.DTO.Models
         }
 
         public virtual DbSet<TblCategoriesProblem> TblCategoriesProblems { get; set; } = null!;
+        public virtual DbSet<TblConfig> TblConfigs { get; set; } = null!;
         public virtual DbSet<TblFeedback> TblFeedbacks { get; set; } = null!;
         public virtual DbSet<TblLocation> TblLocations { get; set; } = null!;
         public virtual DbSet<TblRefreshToken> TblRefreshTokens { get; set; } = null!;
@@ -21,6 +22,13 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual DbSet<TblUser> TblUsers { get; set; } = null!;
         public virtual DbSet<TblUserRole> TblUserRoles { get; set; } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +43,21 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.Description).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<TblConfig>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("tbl_Config");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Value).HasColumnType("sql_variant");
+
+                entity.Property(e => e.Variable)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TblFeedback>(entity =>
