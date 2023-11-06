@@ -1,11 +1,11 @@
 USE [msdb]
 GO
 
-/****** Object:  Job [Expired]    Script Date: 11/3/2023 12:24:45 AM ******/
+/****** Object:  Job [Expired]    Script Date: 11/6/2023 12:28:12 AM ******/
 BEGIN TRANSACTION
 DECLARE @ReturnCode INT
 SELECT @ReturnCode = 0
-/****** Object:  JobCategory [[Uncategorized (Local)]]    Script Date: 11/3/2023 12:24:45 AM ******/
+/****** Object:  JobCategory [[Uncategorized (Local)]]    Script Date: 11/6/2023 12:28:12 AM ******/
 IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=N'[Uncategorized (Local)]' AND category_class=1)
 BEGIN
 EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=N'[Uncategorized (Local)]'
@@ -25,18 +25,19 @@ EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'Expired',
 		@category_name=N'[Uncategorized (Local)]', 
 		@owner_login_name=N'sa', @job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
-/****** Object:  Step [Expired]    Script Date: 11/3/2023 12:24:46 AM ******/
+/****** Object:  Step [Expired]    Script Date: 11/6/2023 12:28:13 AM ******/
 EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Expired', 
 		@step_id=1, 
 		@cmdexec_success_code=0, 
 		@on_success_action=1, 
 		@on_success_step_id=0, 
-		@on_fail_action=2, 
+		@on_fail_action=3, 
 		@on_fail_step_id=0, 
 		@retry_attempts=0, 
 		@retry_interval=0, 
 		@os_run_priority=0, @subsystem=N'TSQL', 
-		@command=N'EXEC ExpireFeedback', 
+		@command=N'EXEC ExpireTask
+EXEC EXpireFeedback', 
 		@database_name=N'FacilitiesFeedbackManagement_SWP391', 
 		@flags=0
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
