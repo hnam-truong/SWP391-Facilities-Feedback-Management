@@ -84,7 +84,7 @@ const routes = [
     type: "collapse",
     name: "System Handler",
     key: "system-handler",
-    icon: <Icon fontSize="small">system</Icon>,
+    icon: <Icon fontSize="small">settings</Icon>,
     route: "/system-handler",
     component: <SystemHandler />,
     roles: ["System Handler", "Manager"]
