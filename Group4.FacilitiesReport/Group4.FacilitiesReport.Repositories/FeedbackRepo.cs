@@ -31,28 +31,35 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<APIResponse> CreateFeedback(Feedback feedback)
         {
             APIResponse _response = new APIResponse();
-            var exist = await CheckExistence(feedback.LocationId,feedback.CateId);
-            if (!exist)
+            var exist = await CheckExistence(feedback.LocationId, feedback.CateId);
+            if (exist)
             {
                 _response.ResponseCode = 400;
-                _response.ErrorMessage = "Location and Category not exist";
+                _response.ErrorMessage = "Type of Feedback is already exist";
                 return _response;
+
+
             }
-            try
+            else
             {
-                this._logger.LogInformation("Create Begins");
-                TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
-                await this._context.TblFeedbacks.AddAsync(_feedback);
-                await this._context.SaveChangesAsync();
-                _response.ResponseCode = 200;
-                _response.Result = _feedback.FeedbackId.ToString();
+                try
+                {
+                    this._logger.LogInformation("Create Begins");
+                    TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
+                    await this._context.TblFeedbacks.AddAsync(_feedback);
+                    await this._context.SaveChangesAsync();
+                    _response.ResponseCode = 200;
+                    _response.Result = _feedback.FeedbackId.ToString();
+                }
+                catch (Exception ex)
+                {
+                    _response.ResponseCode = 400;
+                    _response.ErrorMessage = ex.Message;
+                    this._logger.LogError(ex.Message, ex);
+                }
+
             }
-            catch (Exception ex)
-            {
-                _response.ResponseCode = 400;
-                _response.ErrorMessage = ex.Message;
-                this._logger.LogError(ex.Message, ex);
-            }
+
             return _response;
         }
 
