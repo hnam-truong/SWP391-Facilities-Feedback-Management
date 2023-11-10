@@ -19,7 +19,7 @@ namespace Group4.FacilitiesReport.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.WebHost.UseUrls("https://*:7157");
             builder.Services.AddControllers();
             builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -79,7 +79,7 @@ namespace Group4.FacilitiesReport.API
                     ClockSkew = TimeSpan.Zero,
                 };
             });
-            
+
             //              JwtSetting
             var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
 
@@ -93,16 +93,7 @@ namespace Group4.FacilitiesReport.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            var timer = new Timer(CheckExpiredFeedback, null, 0, 1000);
 
-            void CheckExpiredFeedback(object state)
-            {
-                // Query database for expired feedback
-                var expiredFeedback = GetExpiredFeedback();
-
-                // Update database 
-                UpdateExpiredFeedback(expiredFeedback);
-            }
 
             var app = builder.Build();
 

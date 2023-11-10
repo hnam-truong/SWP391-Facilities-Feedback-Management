@@ -41,7 +41,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-        
+
         [HttpGet("User/{UserId}")]
         public async Task<IActionResult> GetFeedbackByUserId(string UserId)
         {
@@ -71,6 +71,20 @@ namespace Group4.FacilitiesReport.API.Controllers
                                       System.Globalization.CultureInfo.InvariantCulture),
                 DateTime.ParseExact(endDate, "dd-MM-yyyy",
                                       System.Globalization.CultureInfo.InvariantCulture));
+            return Ok(count);
+        }
+        [Authorize("Manager")]
+        [HttpGet("CountLastWeek")]
+        public async Task<IActionResult> CountWeek()
+        {
+            var count = await this._ifeedback.RecentGraphFeedback();
+            return Ok(count);
+        }
+        [Authorize("Manager")]
+        [HttpGet("CountLastYear")]
+        public async Task<IActionResult> CountYear()
+        {
+            var count = await this._ifeedback.MonthlyGraphFeedback();
             return Ok(count);
         }
         [HttpGet("GetFile")]
@@ -188,7 +202,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 DateTime = DateTime.Now,
                 Status = "Waiting",
             });
-            response.ResponseCode =msg.ResponseCode;
+            response.ResponseCode = msg.ResponseCode;
             response.ErrorMessage = msg.ErrorMessage;
             response.Result = "Feedback " + feedbackId + " create Successful!\n" +
                 passcount + " File(s) uploaded.\n" +

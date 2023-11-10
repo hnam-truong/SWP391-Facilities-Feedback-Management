@@ -4,7 +4,6 @@ using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Timers;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -25,6 +24,8 @@ namespace Group4.FacilitiesReport.Repositories
                     .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).OrderByDescending(f => f.Notify).ThenBy(f => f.DateTime);
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {
+            if (beginDate.Date.CompareTo(endDate.Date) == 0)
+                return await AllFeedback().Where(f => f.DateTime.Date == beginDate.Date).CountAsync();
             return await AllFeedback().Where(f => f.DateTime > beginDate && f.DateTime < endDate).CountAsync();
         }
 
@@ -37,11 +38,12 @@ namespace Group4.FacilitiesReport.Repositories
                 TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
                 await this._context.TblFeedbacks.AddAsync(_feedback);
                 await this._context.SaveChangesAsync();
-                
-                var timer = new System.Timers.Timer(15000); // 1 second interval
-                timer.Elapsed +=async (sender, e) => {
 
-                    
+                var timer = new System.Timers.Timer(15000); // 1 second interval
+                timer.Elapsed += async (sender, e) =>
+                {
+
+
                     if (_feedback != null && _feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
                     {
                         _feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
@@ -159,7 +161,7 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse response = new APIResponse();
             var _feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == feedbackId);
             if (_feedback != null && _feedback.Status == 0)
-                response = await UpdateFeedbackStatus(feedbackId,6);
+                response = await UpdateFeedbackStatus(feedbackId, 6);
             else
             {
                 response.ResponseCode = 404;
@@ -288,11 +290,12 @@ namespace Group4.FacilitiesReport.Repositories
                 await RespondFeedback(feedbackId, response);
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)
-                    foreach (var task in await list) {
+                    foreach (var task in await list)
+                    {
                         task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled");
                         await _context.SaveChangesAsync();
                     }
-                        
+
 
                 return await UpdateFeedbackStatus(feedbackId, (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"));
             }
@@ -330,6 +333,39 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return new APIResponse { ResponseCode = 400, ErrorMessage = "Invalid Call" };
 
+        }
+
+        public async Task<List<FeedbackGraphObject>> RecentGraphFeedback()
+        {
+            var now = DateTime.Now.AddDays(-7);
+            var list = new List<FeedbackGraphObject>();
+            for (int i = 0; i <= 6; i++)
+            {
+                list.Add(new FeedbackGraphObject { Date = now.DayOfWeek.ToString(), Amount = await CountFeedbackByDate(now, now) });
+                now.AddDays(1);
+            }
+            return list;
+        }
+
+        public async Task<List<FeedbackGraphObject>> MonthlyGraphFeedback()
+        {
+            var now = DateTime.Now.AddMonths(-12);
+            var list = new List<FeedbackGraphObject>();
+            for (int i = 0; i <= 11; i++)
+            {
+                DateTime date = now;
+                var firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
+                list.Add(new FeedbackGraphObject { Date = now.Month.ToString(), Amount = await CountFeedbackByDate(firstDayOfMonth, lastDayOfMonth) });
+                now.AddMonths(1);
+            }
+            return list;
+        }
+
+        public async Task<List<Feedback>> GetFeedbacksByCate(string id)
+        {
+            var list = await AllFeedback().Where(f => f.CateId == id).ToListAsync();
+            return _mapper.Map<List<Feedback>>(list);
         }
         //public async void ExpiredFeedback(Guid feedbackId)
         //{

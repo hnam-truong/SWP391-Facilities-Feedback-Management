@@ -21,5 +21,8 @@ namespace Group4.FacilitiesReport.Interface
         public Task<APIResponse> CloseFeedback(Guid feedbackId, string response);
         public Task<APIResponse> RespondFeedback(Guid feedbackId, string response);
         public Task<APIResponse> RemoveFeedback(Guid feedbackId);
+        public Task<List<FeedbackGraphObject>> RecentGraphFeedback();
+        public Task<List<FeedbackGraphObject>> MonthlyGraphFeedback();
+        public Task<List<Feedback>> GetFeedbacksByCate(string id);
     }
 }

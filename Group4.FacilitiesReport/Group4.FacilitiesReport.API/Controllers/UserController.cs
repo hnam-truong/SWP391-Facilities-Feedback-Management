@@ -58,7 +58,6 @@ namespace API.Controllers
             }
             return Ok(users);
         }
-        [Authorize("Manager")]
         [HttpGet("{UserId}")]
         public async Task<IActionResult> GetUserByUserId(string UserId)
         {
