@@ -31,14 +31,13 @@ import createCache from "@emotion/cache";
 
 // Facilities' Feedback React routes
 import routes from "routes";
-import { BrowserRouter as Router, Switch,  } from 'react-router-dom';
 
 // Facilities' Feedback React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
-import brandWhite from "assets/images/logo-trang.png";
-import brandDark from "assets/images/logo-den.png";
+import brandWhite from "assets/images/logo-ct.png";
+import brandDark from "assets/images/logo-ct-dark.png";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -137,7 +136,7 @@ export default function App() {
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
-        {layout === "dashboard" && (
+        {layout === "dashboard" && pathname !== "/sign-in" && pathname !== "/error-404" && pathname !== "/" && (
           <>
             <Sidenav
               color={sidenavColor}
@@ -154,14 +153,14 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/" element={<Navigate to="/sign-in" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {layout === "dashboard" && pathname !== "/sign-in" && pathname !== "/error-404" && pathname !== "/" && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -178,7 +177,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/sign-in" />} />
       </Routes>
     </ThemeProvider>
   );

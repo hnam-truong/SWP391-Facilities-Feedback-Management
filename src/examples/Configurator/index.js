@@ -123,10 +123,10 @@ function Configurator() {
         px={3}
       >
         <MDBox>
-          <MDTypography variant="h5">Material UI Configurator</MDTypography>
-          <MDTypography variant="body2" color="text">
+          <MDTypography variant="h5">Choose Your Favorite</MDTypography>
+          {/* <MDTypography variant="body2" color="text">
             See our dashboard options.
-          </MDTypography>
+          </MDTypography> */}
         </MDBox>
 
         <Icon
@@ -270,7 +270,7 @@ function Configurator() {
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
         <Divider />
-        <MDBox mt={3} mb={2}>
+        {/* <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}
             href="https://www.facebook.com/fptboardgameclub"
@@ -323,7 +323,7 @@ function Configurator() {
               &nbsp; Share
             </MDButton>
           </MDBox>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
     </ConfiguratorRoot>
   );
