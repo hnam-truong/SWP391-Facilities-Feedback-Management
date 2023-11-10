@@ -3,6 +3,7 @@ import Dashboard from "layouts/manager/dashboard";
 import ReportsTable from "layouts/manager/tables";
 import ReportHistory from "layouts/manager/history";
 import Notifications from "layouts/manager/notifications";
+import Category from "layouts/manager/category";
 import Create from "layouts/user/create";
 import SignIn from "layouts/authentication/sign-in";
 import SignOut from "layouts/authentication/sign-out";
@@ -51,6 +52,15 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
+    roles: ["Manager"],
+  },
+  {
+    type: "collapse",
+    name: "Categories",
+    key: "categories",
+    icon: <Icon fontSize="small">category</Icon>,
+    route: "/categories",
+    component: <Category />,
     roles: ["Manager"],
   },
   {
