@@ -24,6 +24,9 @@ function Dashboard() {
   const [bannedUsers, setBannedUsers] = useState("");
   const [feedbackCount, setFeedbackCount] = useState("");
   const [usersProvidedFeedback, setUsersProvidedFeedback] = useState("");
+  const [usersProvidedFeedbackToday, setUsersProvidedFeedbackToday] = useState("");
+  const [feedbackClosed, setFeedbackClosed] = useState("");
+  const [feedbackClosedToday, setFeedbackClosedToday] = useState("");
 
   const formatDate = (date) => {
     const dd = String(date.getDate()).padStart(2, '0');
@@ -62,6 +65,33 @@ function Dashboard() {
         console.error("Error fetching users providing feedback count:", error);
       });
 
+    fetch("https://localhost:7157/api/User/CountUserProvideFbToday")
+      .then((response) => response.json())
+      .then((data) => {
+        setUsersProvidedFeedbackToday(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching users providing feedback today count:", error);
+      });
+
+    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosed")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackClosed(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching count of all closed feedbacks:", error);
+      });
+
+    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosedToday")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackClosedToday(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching count of closed feedbacks today:", error);
+      });
+
     const currentDate = new Date();
     const formattedDate = formatDate(currentDate);
     fetch(
@@ -90,7 +120,7 @@ function Dashboard() {
                 count={feedbackCount}
                 percentage={{
                   color: "success",
-                  amount: "150" + " Reports",
+                  amount: feedbackClosed + " Reports",
                   label: "were completed",
                 }}
               />
@@ -104,7 +134,7 @@ function Dashboard() {
                 count="300"
                 percentage={{
                   color: "success",
-                  amount: "15" + " Reports",
+                  amount: feedbackClosedToday + " Reports",
                   label: "were completed today",
                 }}
               />
@@ -134,7 +164,7 @@ function Dashboard() {
                 count={usersProvidedFeedback}
                 percentage={{
                   color: "success",
-                  amount: "2" + " Reports",
+                  amount: usersProvidedFeedbackToday + " Reports",
                   label: "today",
                 }}
               />

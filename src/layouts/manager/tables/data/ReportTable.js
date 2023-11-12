@@ -2,6 +2,7 @@
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import ReactDOM from 'react-dom';
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,7 +15,16 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import TextField from "@mui/material/TextField";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { set } from "react-hook-form";
+import DialogActions from '@material-ui/core/DialogActions';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { Man } from "@mui/icons-material";
+
 
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -24,23 +34,191 @@ export default function data() {
   const [timeExpireFilter, setTimeExpireFilter] = useState("All");
   const [categories, setCategories] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [note, setNote] = useState('');
 
-  const RespondForm = () => {
-    if (!showForm) {
-      return null;
-    }
-    return (
-      <strong>
-      <div className="form-popup">
-        <div className="respond">
-        <TextField label="Form Field 1" />
-        <button onClick={() => setShowForm(false)}>Close Form</button>
-        </div>
-      </div>
-      </strong>
-    );
+
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  const handleEmployeeChange = (event) => {
+    const selectedEmployeeId = event.target.value;
+    const selectedEmployee = employees.find(employee => employee.userID === selectedEmployeeId);
+    setSelectedEmployee(selectedEmployee);
   };
 
+  const handleNoteChange = (event) => {
+    setNote(event.target.value);
+  };
+
+  const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
+    const formData = new FormData();
+    formData.set('FeedbackId', FeedbackId);
+    formData.set('ManagerId', ManagerId);
+    formData.set('EmployeeId', EmployeeId);
+    formData.set('Note', Note);
+
+    try {
+      const response = await fetch("https://localhost:7157/CreateTask?"
+        + "FeedbackId=" + selectedFeedback.feedbackId
+        + "&EmployeeId=" + selectedEmployee.userID
+        + "&ManagerId=" + localStorage.getItem('userID')
+
+        + "&Note=" + "messssi"
+        , {
+          method: 'POST',
+          body: formData
+        });
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  const fetchEmployees = async (cateId) => {
+    const response = await fetch(`https://localhost:7157/api/User/Employee/${cateId}`);
+    const data = await response.json();
+    setEmployees(data);
+  }
+
+  const handleClickOpen = (feedbackId) => {
+    fetch(`https://localhost:7157/api/Feedbacks/Id/${feedbackId}`)
+      .then(response => response.json())
+      .then(data => {
+        setSelectedFeedback(data);
+        setOpen(true);
+      })
+      .catch(error => console.error("Error: " + error.message));
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  const MoreDetailsButton = ({ feedbackId }) => (
+    <IconButton onClick={() => handleClickOpen(feedbackId)}>
+      <VisibilityIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const handleRejectReport = (feedbackId) => {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Rejected" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Rejected" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+    setOpen(true); // Show the popup
+  }
+
+  const RespondForm = () => {
+    const handleClose = () => {
+      setOpen(false);
+    };
+
+    return (
+      <div>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Feedback Details</DialogTitle>
+          <DialogContent>
+            {selectedFeedback && (
+              <div>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><strong>Author:</strong></td>
+                      <td>{selectedFeedback.user.username}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Role:</strong></td>
+                      <td>{selectedFeedback.user.role.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Title:</strong></td>
+                      <td>{selectedFeedback.title}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Category:</strong></td>
+                      <td>{selectedFeedback.cate.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Description:</strong></td>
+                      <td>{selectedFeedback.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Assignee:</strong></td>
+                      <td>
+                        <select onChange={handleEmployeeChange}>
+                          {employees.map(employee => (
+                            <option key={employee.userID} value={employee.userID}>
+                              {employee.username}
+
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Note:</strong></td>
+                      <td>
+                        <textarea id="note" name="note" value={note} onChange={handleNoteChange}></textarea>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Location:</strong></td>
+                      <td>{selectedFeedback.locationId}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Status:</strong></td>
+                      <td>{selectedFeedback.status}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Date/Time:</strong></td>
+                      <td>{new Date(selectedFeedback.dateTime).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: '2-digit' })}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Close
+            </Button>
+            <button onClick={handleAccept} color="primary">
+              Accept
+            </button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  };
+  useEffect(() => {
+    if (selectedFeedback) {
+      fetchEmployees(selectedFeedback.cate.id);
+    }
+  }, [selectedFeedback]);
   useEffect(() => {
     // Define the URL of your API endpoint to fetch categories
     const categoriesUrl = "https://localhost:7157/api/Cate/GetAllCate";
@@ -78,11 +256,11 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   };
 
-  const handleCatLocChange = (event) => {
-    const catLoc = event.target.value;
-    setCatLocFilter(catLoc);
-    fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
-  };
+  // const handleCatLocChange = (event) => {
+  //   const catLoc = event.target.value;
+  //   setCatLocFilter(catLoc);
+  //   fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
+  // };
 
   const handleStatusChange = (event) => {
     const status = event.target.value;
@@ -90,11 +268,11 @@ export default function data() {
     fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
   };
 
-  const handleTimeExpireChange = (event) => {
-    const timeExpire = event.target.value;
-    setTimeExpireFilter(timeExpire);
-    fetchData(`By${timeExpire.charAt(0) + timeExpire.slice(1)}`, timeExpire);
-  };
+  // const handleTimeExpireChange = (event) => {
+  //   const timeExpire = event.target.value;
+  //   setTimeExpireFilter(timeExpire);
+  //   fetchData(`By${timeExpire.charAt(0) + timeExpire.slice(1)}`, timeExpire);
+  // };
 
   const handleCancelReport = (feedbackId) => {
     var option = {
@@ -171,30 +349,6 @@ export default function data() {
     setShowForm(true);
   }
 
-  const handleRejectReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Rejected" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Rejected" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-    setShowForm(true);
-  }
 
   const handleTaskReport = (feedbackId) => {
     // ... (existing code)
@@ -204,7 +358,7 @@ export default function data() {
 
   const handleNoti = (feedbackId) => {
     fetch(
-      `https://localhost:7157/api/Feedbacks/Notify?feedbackId=` + feedbackId,
+      `/Feedbacks/Notify?feedbackId=` + feedbackId,
       {
         method: "PUT",
         headers: {
@@ -239,6 +393,7 @@ export default function data() {
       </MDBox>
     </MDBox>
   );
+
 
   const Info = ({ category, location }) => (
     <MDBox lineHeight={1} textAlign="left">
@@ -297,7 +452,7 @@ export default function data() {
             } variant="gradient"
             size="sm"
           />
-          {feedback.status === "Processing" && (
+          {/* {feedback.status === "Processing" && (
             <div className="hover-content">
               {feedback.tasks
                 .filter((task) => task.employee && task.employee.username)
@@ -308,7 +463,7 @@ export default function data() {
                 ))
               }
             </div>
-          )}
+          )} */}
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
@@ -319,7 +474,7 @@ export default function data() {
               <div>
                 <IconButton onClick={() => handleAcceptReport(feedback.feedbackId)}>
                   <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
-                    Accept  
+                    Accept
                   </MDTypography>
                 </IconButton>
                 <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
@@ -327,6 +482,7 @@ export default function data() {
                     Reject
                   </MDTypography>
                 </IconButton>
+                <MoreDetailsButton feedbackId={feedback.feedbackId} />
               </div>
             );
           case "Processing":
@@ -337,6 +493,7 @@ export default function data() {
                     Cancel
                   </MDTypography>
                 </IconButton>
+                <MoreDetailsButton feedbackId={feedback.feedbackId} />
               </div>
             );
           case "Responded":
@@ -352,17 +509,23 @@ export default function data() {
                     Task
                   </MDTypography>
                 </IconButton>
+                <MoreDetailsButton feedbackId={feedback.feedbackId} />
               </div>
             );
         }
       })(),
     }));
 
+
   return {
     columns: [
       { Header: (<RespondForm />), accessor: "star", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
-      { Header: "title", accessor: "title", align: "left" },
+      {
+        Header: "title",
+        accessor: "title",
+        align: "left",
+      },
       {
         Header: (
           "cat/loc"
@@ -392,8 +555,11 @@ export default function data() {
       },
       { Header: "time/expire", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
+
     ],
 
     rows: feedbackRows,
+
   };
+
 }

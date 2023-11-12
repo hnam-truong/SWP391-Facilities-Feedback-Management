@@ -201,6 +201,12 @@ body {
     z-index: 999;
 }
 
+.form-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
 .respond {
     border-radius: 6px;
     background-color: rgb(246, 246, 246);
