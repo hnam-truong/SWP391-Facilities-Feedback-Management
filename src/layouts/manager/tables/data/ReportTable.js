@@ -29,11 +29,10 @@ import { Man } from "@mui/icons-material";
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [cateFilter, setCateFilter] = useState("All");
   const [authorFilter, setAuthorFilter] = useState("All");
-  const [catLocFilter, setCatLocFilter] = useState("All");
   const [timeExpireFilter, setTimeExpireFilter] = useState("All");
   const [categories, setCategories] = useState([]);
-  const [showForm, setShowForm] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [employees, setEmployees] = useState([]);
@@ -52,19 +51,13 @@ export default function data() {
     setNote(event.target.value);
   };
 
-  const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
+  const handleAccept = async () => {
     const formData = new FormData();
-    formData.set('FeedbackId', FeedbackId);
-    formData.set('ManagerId', ManagerId);
-    formData.set('EmployeeId', EmployeeId);
-    formData.set('Note', Note);
-
     try {
       const response = await fetch("https://localhost:7157/CreateTask?"
         + "FeedbackId=" + selectedFeedback.feedbackId
         + "&EmployeeId=" + selectedEmployee.userID
         + "&ManagerId=" + localStorage.getItem('userID')
-
         + "&Note=" + "messssi"
         , {
           method: 'POST',
@@ -206,9 +199,9 @@ export default function data() {
             <Button onClick={handleClose} color="primary">
               Close
             </Button>
-            <button onClick={handleAccept} color="primary">
+            <Button onClick={handleAccept} color="primary">
               Accept
-            </button>
+            </Button>
           </DialogActions>
         </Dialog>
       </div>
@@ -239,6 +232,7 @@ export default function data() {
       .then((response) => response.json())
       .then((data) => setFeedbacks(data))
       .catch((error) => console.error("Error fetching data:", error));
+
   }, []);
 
   const fetchData = (filterType, filterValue) => {
@@ -256,11 +250,11 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   };
 
-  // const handleCatLocChange = (event) => {
-  //   const catLoc = event.target.value;
-  //   setCatLocFilter(catLoc);
-  //   fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
-  // };
+  const handleCateChange = (event) => {
+    const catLoc = event.target.value;
+    setCateFilter(catLoc);
+    fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
+  };
 
   const handleStatusChange = (event) => {
     const status = event.target.value;
@@ -296,7 +290,6 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-    setShowForm(true);
   }
 
   const handleAcceptReport = (feedbackId) => {
@@ -321,7 +314,6 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-    setShowForm(true);
   }
 
   const handleCloseReport = (feedbackId) => {
@@ -346,19 +338,35 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-    setShowForm(true);
   }
 
-
   const handleTaskReport = (feedbackId) => {
-    // ... (existing code)
-    // Set showForm to true when the Task button is clicked
-    setShowForm(true);
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Processing" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Processing" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
   }
 
   const handleNoti = (feedbackId) => {
     fetch(
-      `/Feedbacks/Notify?feedbackId=` + feedbackId,
+      `https://localhost:7157/api/Feedbacks/Notify?feedbackId=` + feedbackId,
       {
         method: "PUT",
         headers: {
@@ -418,7 +426,8 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter((feedback) =>
       (feedback.status === "Waiting" || feedback.status === "Processing" || feedback.status === "Responded") &&
-      (statusFilter === "All" || feedback.status === statusFilter)
+      (statusFilter === "All" || feedback.status === statusFilter) &&
+      (cateFilter === "All" || feedback.cate.description === cateFilter)
     )
     .sort((a, b) => {
       return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
@@ -435,7 +444,7 @@ export default function data() {
       ),
 
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <Link><h4 style={{ color: 'blue' }}>{feedback.title}</h4></Link>,
+      title: <h4>{feedback.title}</h4>,
       cate: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1} className="status-cell">
@@ -528,7 +537,22 @@ export default function data() {
       },
       {
         Header: (
-          "cat/loc"
+          <span>
+            cate/loc:{" "}
+            <Select
+              value={cateFilter}
+              onChange={handleCateChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate.id} value={cate.description}>
+                  {cate.description}
+                </MenuItem>
+              ))}
+            </Select>
+          </span>
         ),
         accessor: "cate",
         align: "left",
