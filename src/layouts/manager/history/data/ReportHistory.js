@@ -98,13 +98,27 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {day}
-      </MDTypography>
-    </MDBox>
-  );
+  const Time = ({ day, expire }) => {
+    // Create a new Date object
+    const date = new Date(day);
+  
+    // Format the date as DD/MM/YY
+    const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
+  
+    // Format the time as HH:MM
+    const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  
+    return (
+      <MDBox lineHeight={1} textAlign="left">
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {formattedDate}
+        </MDTypography>
+        <MDTypography variant="caption">
+          {formattedTime}
+        </MDTypography>
+      </MDBox>
+    );
+  };
   const feedbackRows = feedbacks
     .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired")
     .sort((a, b) => {

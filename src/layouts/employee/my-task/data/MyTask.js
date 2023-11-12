@@ -14,18 +14,26 @@ import Box from "@mui/material/Box";
 
 export default function data() {
   const badgeContent = "waiting"; // Replace this with the actual badge content
-  const [feedbacks, setFeedbacks] = useState([]);
-  useEffect(() => {
-    // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+  const [allFeedbacks, setAllFeedbacks] = useState([]);
+const [employeeTasks, setEmployeeTasks] = useState([]);
 
-    // Make a GET request to your API endpoint
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => setFeedbacks(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
 
+useEffect(() => {
+  const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => setAllFeedbacks(data))
+    .catch((error) => console.error("Error fetching data:", error));
+}, []);
+
+useEffect(() => {
+  const employeeId = localStorage.getItem('userID');
+  const apiUrl = `https://localhost:7157/api/Task/EmployeeID/${employeeId}`;
+  fetch(apiUrl)
+    .then((response) => response.json())
+    .then((data) => setEmployeeTasks(data))
+    .catch((error) => console.error("Error fetching data:", error));
+}, []);
   const handleRemoveReport = (feedbackId) => {
     var option = {
       method: 'DELETE',
@@ -66,19 +74,30 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day, expire }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {day}
-      </MDTypography>
-      <MDTypography variant="caption" color="error">
-        {expire}
-      </MDTypography>
-    </MDBox>
-  );
+  const Time = ({ day, expire }) => {
+    // Create a new Date object
+    const date = new Date(day);
+  
+    // Format the date as DD/MM/YY
+    const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
+  
+    // Format the time as HH:MM
+    const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  
+    return (
+      <MDBox lineHeight={1} textAlign="left">
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {formattedDate}
+        </MDTypography>
+        <MDTypography variant="caption">
+          {formattedTime}
+        </MDTypography>
+      </MDBox>
+    );
+  };
 
-  const feedbackRows = feedbacks
-    .filter((feedback) => feedback.userId === localStorage.getItem('userID'))
+  const feedbackRows = allFeedbacks
+  .filter((feedback) => employeeTasks.some(task => task.feedbackId === feedback.feedbackId))
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title: <Link><h4>{feedback.title}</h4></Link>,
@@ -127,6 +146,7 @@ export default function data() {
                     <IconButton onClick={() => handleRemoveReport(feedback.feedbackId)}>
                       <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
                         Remove
+                        
                       </MDTypography>
                     </IconButton>
                   </div>

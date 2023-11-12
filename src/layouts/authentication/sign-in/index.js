@@ -19,62 +19,78 @@ import logo from "assets/images/logo-ct-blue.png";
 import google from "assets/images/google-icon-2048x2048-czn3g8x8.png"
 
 import axios from 'axios';
-const API_URL = 'https://localhost:7157/api/User/Login';
 
 function Basic() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
-  const logoPosition = { mx: -1, mt: 4, p: -3, mb: 1 };
+
   const navigate = useNavigate();
-
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(`${API_URL}?Email=${localStorage.getItem('email')}&Password=${localStorage.getItem('password')}`);
+    axios.get(
+      `https://localhost:7157/api/User/Login?Email=` + localStorage.getItem('email') + '&Password=' + localStorage.getItem('password')
+    )
+      .then(response => {
         setUser(response.data);
-        if (response.data.role) {
-          localStorage.setItem('userID', response.data.userID);
-          localStorage.setItem('userRole', response.data.role.description);
-          localStorage.setItem('isAuthenticated', true);
-          navigateBasedOnRole(response.data.role.description);
-        }
-      } catch (error) {
+      })
+      .catch(error => {
         console.error('Error:', error);
-      }
-    };
-    fetchUser();
-  }, []);
+      });
+    if (user.role) {
+      localStorage.setItem('userID', user.userID)
+      localStorage.setItem('userRole', user.role.description)
+      localStorage.setItem('isAuthenticated', true)
+      console.log(user.role.description);
+      switch (user.role.description) {
+        case "Manager":
+          navigate('/dashboard');
+          break;
 
-  const navigateBasedOnRole = (role) => {
-    switch (role) {
-      case "Manager":
-        navigate('/dashboard');
-        break;
-      case "Employee":
-        navigate('/my-tasks');
-        break;
-      case "Student":
-      case "Lecturer":
-        navigate('/my-reports');
-        break;
-    }
-  };
+        case "Task Employee":
+          navigate('/my-tasks');
+          break;
+
+        case "Student":
+        case "Lecturer":
+        case "Casual Employee":
+          navigate('/my-reports');
+          break;
+      }
+    } 
+  }, [user]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.get(`${API_URL}?Email=${email}&Password=${password}`);
-      if (response.data.email === email && response.data.password === password) {
+    axios.get(
+      `https://localhost:7157/api/User/Login?Email=` + email + '&Password=' + password
+    )
+      .then(response => {
         setUser(response.data);
-        localStorage.setItem('userID', response.data.userID);
-        localStorage.setItem('userRole', response.data.role.description);
-        localStorage.setItem('isAuthenticated', true);
-        navigateBasedOnRole(response.data.role.description);
-        console.log('User:', response.data.role.description);
-        
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
+    e.preventDefault();
+    const userData = {
+      email: email,
+      password: password,
+    };
+    try {
+      const response = await axios.post('https://localhost:7157/api/Authorize/GenerateToken', userData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        const data = response.data;
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('email', email);
+        localStorage.setItem('password', password);
+
+        window.location.reload();
       } else {
-        console.error('Email or password is incorrect');
+        console.error('Login failed');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -82,17 +98,53 @@ function Basic() {
   };
 
 
+  const clientId = 'YOUR_CLIENT_ID';
+  const [rememberMe, setRememberMe] = useState(false);
+  const [logoPosition, setLogoPosition] = useState({ mx: -1, mt: 4, p: -3, mb: 1 });
+  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const onSuccess = (response) => {
+    console.log('Login Success:', response);
+  };
+
+  const onFailure = (error) => {
+    console.log('Login Failed:', error);
+  };
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox
-     
+          // variant="gradient"
+          // bgColor="info"
+          // borderRadius="lg"
+          // coloredShadow="info"
+          // mx={1}
+          // mt={1}
+          // p={-3}
+          // mb={1}
           textAlign="center"
           {...logoPosition}
         >
           <img src={logo} alt="logo" style={{ width: "220px", height: "auto" }} />
         </MDBox>
-      
+        {/* <MDBox
+          variant="gradient"
+          bgColor="info"
+          borderRadius="lg"
+          coloredShadow="info"
+          mx={1}
+          mt={1}
+          p={-3}
+          mb={1}
+          pt={1}
+          pb={1}
+          color="white"
+          fontWeight="bold"
+          textAlign="center"
+          {...logoPosition}
+        >
+          Login with FeID
+        </MDBox> */}
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
@@ -122,7 +174,24 @@ function Basic() {
                 textAlign="center"
                 ml={-1}
                 mt={3}>
+                
               </MDBox>
+              {/* <GoogleLogin
+                clientId="YOUR_GOOGLE_CLIENT_ID"
+                render={(renderProps) => (
+                  <button
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    style={{ marginTop: '10px', width: '100%', height: '40px', borderStyle: 'solid', borderColor: '#6e6e79', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6e6e79', backgroundColor: '#ffff' }}
+                  >
+                    <img src={google} alt="google" style={{ width: '20px', height: 'auto', marginRight: '5px' }}></img>
+                    <strong>SIGN IN WITH GOOGLE</strong>
+                  </button>
+                )}
+                onSuccess={onSuccess}
+                onFailure={onFailure}
+                cookiePolicy={'single_host_origin'}
+              /> */}
             </MDBox>
           </MDBox>
         </MDBox>
@@ -132,4 +201,3 @@ function Basic() {
 }
 
 export default Basic;
-

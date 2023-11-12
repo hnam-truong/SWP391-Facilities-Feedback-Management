@@ -43,6 +43,7 @@ const StyledRow = styled(Box)(() => ({
 const StyledSelect = styled(Select)(() => ({
   width: '100%',
   borderRadius: '12px',
+  zIndex: 1000,
   '& .MuiSelect-root': {
     padding: '16px',
     borderColor: '#ccc',
@@ -199,14 +200,14 @@ const Create = React.memo(() => {
     formData.set('Title', Title);
     formData.set('MoreDetails', MoreDetails);
     formData.set('status', 'Open');
-    formData.set('priority', 'High');
-    formData.set('assignedTo', '');
-    formData.set('createdAt', new Date().toISOString());
-    formData.set('updatedAt', new Date().toISOString());
-    if (selectedImages) {
-      formData.set('image', selectedImages);
+    // if (selectedImages) {
+    //   formData.set('image', selectedImages);
+    // }
+    if (selectedImages && selectedImages.length) {
+      selectedImages.forEach((image, index) => {
+        formData.append('fileCollection', image.file, image.file.name);
+      });
     }
-
     try {
       const response = await fetch("https://localhost:7157/api/Feedbacks/Create?"
         + "userId=" + localStorage.getItem('userID')
@@ -214,10 +215,11 @@ const Create = React.memo(() => {
         + "&description=" + MoreDetails
         + "&cateId=" + category
         + "&locatoinId=" + room,
+
         { method: 'POST', body: formData });
       const responseData = await response.json();
       console.log(responseData);
-
+     
       // Notify when the report is created successfully
       setShowSuccessNotification(true);
 
@@ -227,7 +229,7 @@ const Create = React.memo(() => {
       setSelectedCategory(null);
       setValue('Title', '');
       setValue('MoreDetails', '');
-      setSelectedImages([]);
+      // setSelectedImages([]);
       setPreviewUrl(null);
     } catch (error) {
       console.error(error);
@@ -235,25 +237,22 @@ const Create = React.memo(() => {
     }
   };
 
-  const handleFileChange = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const images = [];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        images.push(URL.createObjectURL(file));
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-          setPreviewUrl(reader.result);
-          setValue('file', file);
-        };
-      }
-      setSelectedImages(images);
-    }
+  const handleFileChange = (event) => {
+    const fileArray = Array.from(event.target.files).map((file) => {
+      return {
+        file,
+        preview: URL.createObjectURL(file)
+      };
+    });
+    setSelectedImages((prevImages) => prevImages.concat(fileArray));
   };
+
+  // Cleanup the object URLs after using them
+  useEffect(() => {
+    return () => {
+      selectedImages.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [selectedImages]);
   const handleImageClick = (image) => {
     setPreviewUrl(image);
     setShowModal(true);
@@ -346,9 +345,9 @@ const Create = React.memo(() => {
           <Typography variant="h6" fontWeight="medium" mb={1}>Images</Typography>
           <input type="file" name="file" onChange={handleFileChange} multiple />
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
-            {selectedImages.map((selectedImage) => (
-              <Box key={selectedImage} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
-                <img src={selectedImage} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+            {selectedImages.map((selectedImage, index) => (
+              <Box key={index} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
+                <img key={index} src={selectedImage.preview} alt="Preview" style={{ width: '100%', height: '100%' }} />
               </Box>
             ))}
           </Box>

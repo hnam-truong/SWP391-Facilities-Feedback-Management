@@ -87,7 +87,7 @@ body {
     -webkit-text-fill-color: transparent;
     background-size: cover;
     background-position: center;
-    }
+}
 
 
 .notfound h2 {
@@ -146,12 +146,12 @@ body {
     visibility: hidden;
     opacity: 0;
     z-index: 999;
-  }
-  
-  .overlay:target {
+}
+
+.overlay:target {
     visibility: visible;
     opacity: 1;
-  }
+}
 
 .update-report {
     z-index: 3;
@@ -179,18 +179,18 @@ body {
     position: absolute;
     left: 0.4rem;
     top: 0.4rem;
-  }
+}
 
-  .update-report-close:hover {
+.update-report-close:hover {
     color: #0076ad;
-  }
-  
-  #update-report-close:target~.overlay {
+}
+
+#update-report-close:target~.overlay {
     visibility: hidden;
     opacity: 0;
-  }
+}
 
-  .form-popup {
+.form-popup {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -199,9 +199,15 @@ body {
     background: rgba(0, 0, 0, 0.7);
     transition: all 500ms;
     z-index: 999;
+}
+
+.form-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
   }
 
-  .respond{
+.respond {
     border-radius: 6px;
     background-color: rgb(246, 246, 246);
     padding: 4vh;
@@ -213,4 +219,4 @@ body {
     top: 25%;
     left: 25%;
     z-index: 999;
-  }
+}

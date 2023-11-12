@@ -3,6 +3,7 @@ import Dashboard from "layouts/manager/dashboard";
 import ReportsTable from "layouts/manager/tables";
 import ReportHistory from "layouts/manager/history";
 import Notifications from "layouts/manager/notifications";
+import Category from "layouts/manager/category";
 import Create from "layouts/user/create";
 import SignIn from "layouts/authentication/sign-in";
 import SignOut from "layouts/authentication/sign-out";
@@ -14,11 +15,8 @@ import SystemHandler from "layouts/system-handler";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
-
-// const { user } = useUser();
-// const userRole = user ? user.role.description : null;
 const userRole = localStorage.getItem("userRole");
-
+const isAuthenticated = localStorage.getItem("isAuthenticated");
 const routes = [
   {
     type: "collapse",
@@ -58,12 +56,21 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Categories",
+    key: "categories",
+    icon: <Icon fontSize="small">category</Icon>,
+    route: "/categories",
+    component: <Category />,
+    roles: ["Manager"],
+  },
+  {
+    type: "collapse",
     name: "My Reports",
     key: "my-reports",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
-    roles: ["Student", "Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",
@@ -72,7 +79,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Manager"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",
@@ -81,13 +88,13 @@ const routes = [
     icon: <Icon fontSize="small">task</Icon>,
     route: "/my-tasks",
     component: <EmployeeTask />,
-    roles: ["Employee", "Manager"]
+    roles: ["Task Employee", "Manager"]
   },
   {
     type: "collapse",
     name: "System Handler",
     key: "system-handler",
-    icon: <Icon fontSize="small">system</Icon>,
+    icon: <Icon fontSize="small">settings</Icon>,
     route: "/system-handler",
     component: <SystemHandler />,
     roles: ["System Handler", "Manager"]

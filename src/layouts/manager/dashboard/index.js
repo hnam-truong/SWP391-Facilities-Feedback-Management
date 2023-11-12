@@ -16,8 +16,95 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 import reportsBarChartData from "layouts/manager/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/manager/dashboard/data/reportsLineChartData";
 
+import React, { useState, useEffect } from "react";
+
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
+  const [totalUsers, setTotalUsers] = useState("");
+  const [bannedUsers, setBannedUsers] = useState("");
+  const [feedbackCount, setFeedbackCount] = useState("");
+  const [usersProvidedFeedback, setUsersProvidedFeedback] = useState("");
+  const [usersProvidedFeedbackToday, setUsersProvidedFeedbackToday] = useState("");
+  const [feedbackClosed, setFeedbackClosed] = useState("");
+  const [feedbackClosedToday, setFeedbackClosedToday] = useState("");
+
+  const formatDate = (date) => {
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+
+    return dd + '-' + mm + '-' + yyyy;
+  }
+
+  useEffect(() => {
+    // Fetch data from the API
+    fetch("https://localhost:7157/api/User/CountUserActive")
+      .then((response) => response.json())
+      .then((data) => {
+        // Update the state with the fetched count
+        setTotalUsers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user count:", error);
+      });
+    fetch("https://localhost:7157/api/User/CountUserBanned")
+      .then((response) => response.json())
+      .then((data) => {
+        setBannedUsers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching banned user count:", error);
+      });
+
+    fetch("https://localhost:7157/api/User/CountUserProvideFb")
+      .then((response) => response.json())
+      .then((data) => {
+        setUsersProvidedFeedback(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching users providing feedback count:", error);
+      });
+
+    fetch("https://localhost:7157/api/User/CountUserProvideFbToday")
+      .then((response) => response.json())
+      .then((data) => {
+        setUsersProvidedFeedbackToday(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching users providing feedback today count:", error);
+      });
+
+    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosed")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackClosed(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching count of all closed feedbacks:", error);
+      });
+
+    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosedToday")
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackClosedToday(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching count of closed feedbacks today:", error);
+      });
+
+    const currentDate = new Date();
+    const formattedDate = formatDate(currentDate);
+    fetch(
+      `https://localhost:7157/api/Feedbacks/Count?beginDate=01-01-2023&endDate=${formattedDate}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackCount(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching feedback count:", error);
+      });
+  }, []);
 
   return (
     <DashboardLayout>
@@ -30,11 +117,11 @@ function Dashboard() {
                 color="dark"
                 icon="table_view"
                 title="Total Report"
-                count={2300}
+                count={feedbackCount}
                 percentage={{
                   color: "success",
-                  amount: "150" + " reports",
-                  label: "completed",
+                  amount: feedbackClosed + " Reports",
+                  label: "were completed",
                 }}
               />
             </MDBox>
@@ -47,8 +134,8 @@ function Dashboard() {
                 count="300"
                 percentage={{
                   color: "success",
-                  amount: "15" + " reports",
-                  label: "completed",
+                  amount: feedbackClosedToday + " Reports",
+                  label: "were completed today",
                 }}
               />
             </MDBox>
@@ -58,12 +145,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="person"
-                title="Total User"
-                count="34k"
+                title="Active User"
+                count={totalUsers}
                 percentage={{
                   color: "success",
-                  amount: "91" + " Users",
-                  label: "created report today",
+                  amount: bannedUsers + " Users",
+                  label: "were banned",
                 }}
               />
             </MDBox>
@@ -73,12 +160,12 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="User created report today"
-                count="+91"
+                title="Users Created Reports"
+                count={usersProvidedFeedback}
                 percentage={{
                   color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  amount: usersProvidedFeedbackToday + " Reports",
+                  label: "today",
                 }}
               />
             </MDBox>
@@ -91,7 +178,7 @@ function Dashboard() {
                 <ReportsBarChart
                   color="info"
                   title="Reports in this week"
-                  description="none"
+                  description=""
                   date="campaign sent 2 days ago"
                   chart={reportsBarChartData}
                 />
@@ -104,7 +191,7 @@ function Dashboard() {
                   title="Reports over the months"
                   description={
                     <>
-                      (<strong>+15%</strong>) increase in today sales.
+
                     </>
                   }
                   date="updated 4 min ago"
@@ -117,7 +204,7 @@ function Dashboard() {
                 <ReportsLineChart
                   color="dark"
                   title="users created reports over the months"
-                  description="none"
+                  description=""
                   date="just updated"
                   chart={tasks}
                 />

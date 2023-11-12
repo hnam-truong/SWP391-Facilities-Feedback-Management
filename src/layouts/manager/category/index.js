@@ -13,10 +13,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import ReportTable from "layouts/manager/tables/data/ReportTable";
+import CateTable from "./data/CateTable";
 
-function ReportsTable() {
-  const { columns, rows } = ReportTable();
+function CatesTable() {
+  const { columns, rows } = CateTable();
 
   return (
     <DashboardLayout>
@@ -36,7 +36,7 @@ function ReportsTable() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Reports Table
+                  Categories Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -57,4 +57,4 @@ function ReportsTable() {
   );
 }
 
-export default ReportsTable;
+export default CatesTable;

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ReactDOM from 'react-dom';
-import './ReportTable.css';
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,10 +13,8 @@ import MDBadge from "components/MDBadge";
 import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
-// import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-// import TextField from "@mui/material/TextField";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -27,6 +24,17 @@ import { set } from "react-hook-form";
 import DialogActions from '@material-ui/core/DialogActions';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Man } from "@mui/icons-material";
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  dialog: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // This makes the dialog transparent
+  },
+  paper: {
+    width: '70%', // This makes the dialog 70% of the screen width
+    maxHeight: '70%', // This makes the dialog 70% of the screen height
+  },
+}));
 
 
 export default function data() {
@@ -42,43 +50,67 @@ export default function data() {
   const [employees, setEmployees] = useState([]);
   const [note, setNote] = useState('');
 
+  const [imageUrls, setImageUrls] = useState([]);
+  const fetchImageUrls = async (feedbackId) => {
+    const response = await fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${feedbackId}`);
+    const data = await response.json();
+    setImageUrls(data);
+  };
+  useEffect(() => {
+    if (selectedFeedback) {
+      fetchImageUrls(selectedFeedback.feedbackId);
+    }
+  }, [selectedFeedback]);
+
+  const EmployeeOption = React.memo(({ employee }) => (
+    <option key={employee.userID} value={employee.userID}>
+      {employee.username}
+    </option>
+  ));
+  const EmployeeSelect = React.memo(({ employees, selectedEmployee, onEmployeeChange }) => (
+    <select value={selectedEmployee?.userID} onChange={onEmployeeChange}>
+      {employees.map(employee => (
+        <EmployeeOption key={employee.userID} employee={employee} />
+      ))}
+    </select>
+  ));
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-const handleEmployeeChange = (event) => {
-  const selectedEmployeeId = event.target.value;
-  const selectedEmployee = employees.find(employee => employee.userID === selectedEmployeeId);
-  setSelectedEmployee(selectedEmployee);
-};
+  const handleEmployeeChange = (event) => {
+    const selectedEmployeeId = event.target.value;
+    const selectedEmployee = employees.find(employee => employee.userID === selectedEmployeeId);
+    setSelectedEmployee(selectedEmployee);
+  };
 
-const handleNoteChange = (event) => {
-  setNote(event.target.value);
-};
+  const handleNoteChange = (event) => {
+    setNote(event.target.value);
+  };
 
-const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
-  const formData = new FormData();
-  formData.set('FeedbackId', FeedbackId);
-  formData.set('ManagerId', ManagerId);
-  formData.set('EmployeeId', EmployeeId);
-  formData.set('Note', Note);
+  const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
+    const formData = new FormData();
+    formData.set('FeedbackId', FeedbackId);
+    formData.set('ManagerId', ManagerId);
+    formData.set('EmployeeId', EmployeeId);
+    formData.set('Note', Note);
 
-  try {
-    const response = await fetch("https://localhost:7157/CreateTask?"
-    +"FeedbackId="+ selectedFeedback.feedbackId
-    +"&EmployeeId="+ selectedEmployee.userID
-    +"&ManagerId="+ localStorage.getItem('userID')
-    
-    +"&Note="+ "messssi"
-    , {
-      method: 'POST',
-      body: formData
-    });
-    const responseData = await response.json();
-    console.log(responseData);
-  } catch (error) {
-    console.error(error);
-  }
-};
+    try {
+      const response = await fetch("https://localhost:7157/CreateTask?"
+        + "FeedbackId=" + selectedFeedback.feedbackId
+        + "&EmployeeId=" + selectedEmployee.userID
+        + "&ManagerId=" + localStorage.getItem('userID')
+
+        + "&Note=" + "messssi"
+        , {
+          method: 'POST',
+          body: formData
+        });
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 
   const fetchEmployees = async (cateId) => {
@@ -87,17 +119,19 @@ const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
     setEmployees(data);
   }
 
-  const handleClickOpen = (feedbackId) => {
-    fetch(`https://localhost:7157/api/Feedbacks/Id/${feedbackId}`)
+  const handleClickOpen = (id) => {
+    fetch(`https://localhost:7157/api/Feedbacks/Id/${id}`)
       .then(response => response.json())
       .then(data => {
         setSelectedFeedback(data);
+        return fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${data.feedbackId}`);
+      })
+      .then(response => response.json())
+      .then(data => {
+        setImageUrls(data);
         setOpen(true);
       })
       .catch(error => console.error("Error: " + error.message));
-  };
-  const handleClose = () => {
-    setOpen(false);
   };
 
 
@@ -133,85 +167,87 @@ const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
   }
 
   const RespondForm = () => {
+    const classes = useStyles(); // Add this line
     const handleClose = () => {
       setOpen(false);
     };
 
+
     return (
       <div>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open}
+          onClose={handleClose}
+          classes={{ paper: classes.paper }}
+        >
           <DialogTitle>Feedback Details</DialogTitle>
-          <DialogContent>
+          <DialogContent className={classes.dialog}>
             {selectedFeedback && (
-            <div>
-            <table>
-              <tbody>
-                <tr>
-                  <td><strong>Author:</strong></td>
-                  <td>{selectedFeedback.user.username}</td>
-                </tr>
-                <tr>
-                  <td><strong>Role:</strong></td>
-                  <td>{selectedFeedback.user.role.description}</td>
-                </tr>
-                <tr>
-                  <td><strong>Title:</strong></td>
-                  <td>{selectedFeedback.title}</td>
-                </tr>
-                <tr>
-                  <td><strong>Category:</strong></td>
-                  <td>{selectedFeedback.cate.description}</td>
-                </tr>
-                <tr>
-                  <td><strong>Description:</strong></td>
-                  <td>{selectedFeedback.description}</td>
-                </tr>
-                <tr>
-  <td><strong>Assignee:</strong></td>
-  <td>
-  <select onChange={handleEmployeeChange}>
-  {employees.map(employee => (
-    <option key={employee.userID} value={employee.userID}>
-      {employee.username}
-      
-    </option>
-  ))}
-</select>
-  </td>
-</tr>
-<tr>
-  <td><strong>Note:</strong></td>
-  <td>
-    <textarea id="note" name="note" value={note} onChange={handleNoteChange}></textarea>
-  </td>
-</tr>
-<tr>
-  <td></td>
-</tr>
-                <tr>
-                  <td><strong>Location:</strong></td>
-                  <td>{selectedFeedback.locationId}</td>
-                </tr>
-                <tr>
-                  <td><strong>Status:</strong></td>
-                  <td>{selectedFeedback.status}</td>
-                </tr>
-                <tr>
-                  <td><strong>Date/Time:</strong></td>
-                  <td>{new Date(selectedFeedback.dateTime).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: '2-digit' })}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <div>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td><strong>Author:</strong></td>
+                      <td>{selectedFeedback.user.username}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Role:</strong></td>
+                      <td>{selectedFeedback.user.role.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Title:</strong></td>
+                      <td>{selectedFeedback.title}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Category:</strong></td>
+                      <td>{selectedFeedback.cate.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Description:</strong></td>
+                      <td>{selectedFeedback.description}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Assignee:</strong></td>
+                      <td>
+                        <EmployeeSelect
+                          employees={employees}
+                          selectedEmployee={selectedEmployee}
+                          onEmployeeChange={handleEmployeeChange}
+                        />
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td><strong>Location:</strong></td>
+                      <td>{selectedFeedback.locationId}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Status:</strong></td>
+                      <td>{selectedFeedback.status}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Date/Time:</strong></td>
+                      <td>{new Date(selectedFeedback.dateTime).toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: '2-digit' })}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Images:</strong></td>
+                      <td>
+                        {imageUrls.map((url, index) => (
+                          <img key={index} src={url} alt="Feedback" style={{ width: '100%', height: '100%' }} />
+                        ))}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Close
             </Button>
-            <button onClick={handleAccept} color="primary">
+            <Button onClick={handleAccept} color="primary">
               Accept
-              </button>
+            </Button>
           </DialogActions>
         </Dialog>
       </div>
@@ -407,16 +443,27 @@ const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
     </MDBox>
   );
 
-  const Time = ({ day, expire }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {day}
-      </MDTypography>
-      <MDTypography variant="caption" color="error">
-        {expire}
-      </MDTypography>
-    </MDBox>
-  );
+  const Time = ({ day, expire }) => {
+    // Create a new Date object
+    const date = new Date(day);
+  
+    // Format the date as DD/MM/YY
+    const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
+  
+    // Format the time as HH:MM
+    const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  
+    return (
+      <MDBox lineHeight={1} textAlign="left">
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {formattedDate}
+        </MDTypography>
+        <MDTypography variant="caption">
+          {formattedTime}
+        </MDTypography>
+      </MDBox>
+    );
+  };
 
   const feedbackRows = feedbacks
     .filter((feedback) =>
@@ -455,7 +502,7 @@ const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
             } variant="gradient"
             size="sm"
           />
-          {feedback.status === "Processing" && (
+          {/* {feedback.status === "Processing" && (
             <div className="hover-content">
               {feedback.tasks
                 .filter((task) => task.employee && task.employee.username)
@@ -466,7 +513,7 @@ const handleAccept = async (FeedbackId, ManagerId, EmployeeId, Note) => {
                 ))
               }
             </div>
-          )}
+          )} */}
         </MDBox>
       ),
       time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
