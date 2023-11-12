@@ -23,6 +23,7 @@ function Dashboard() {
   const [totalUsers, setTotalUsers] = useState("");
   const [bannedUsers, setBannedUsers] = useState("");
   const [feedbackCount, setFeedbackCount] = useState("");
+  const [feedbackCountToday, setFeedbackCountToday] = useState("");
   const [usersProvidedFeedback, setUsersProvidedFeedback] = useState("");
   const [usersProvidedFeedbackToday, setUsersProvidedFeedbackToday] = useState("");
   const [feedbackClosed, setFeedbackClosed] = useState("");
@@ -104,6 +105,17 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error fetching feedback count:", error);
       });
+
+    fetch(
+      `https://localhost:7157/api/Feedbacks/Count?beginDate=${formattedDate}&endDate=${formattedDate}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setFeedbackCountToday(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching feedback count:", error);
+      });
   }, []);
 
   return (
@@ -131,7 +143,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="add"
                 title="Today's Reports"
-                count="300"
+                count={feedbackCountToday}
                 percentage={{
                   color: "success",
                   amount: feedbackClosedToday + " Reports",
