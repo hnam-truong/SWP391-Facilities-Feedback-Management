@@ -19,7 +19,6 @@ import reportsLineChartData from "layouts/manager/dashboard/data/reportsLineChar
 import React, { useState, useEffect } from "react";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
   const [totalUsers, setTotalUsers] = useState("");
   const [bannedUsers, setBannedUsers] = useState("");
   const [feedbackCount, setFeedbackCount] = useState("");
@@ -28,6 +27,8 @@ function Dashboard() {
   const [usersProvidedFeedbackToday, setUsersProvidedFeedbackToday] = useState("");
   const [feedbackClosed, setFeedbackClosed] = useState("");
   const [feedbackClosedToday, setFeedbackClosedToday] = useState("");
+  const [reportsBarChartData, setReportsBarChartData] = useState([]);
+  const [reportsLineChartData, setReportsLineChartData] = useState([]);
 
   const formatDate = (date) => {
     const dd = String(date.getDate()).padStart(2, '0');
@@ -37,86 +38,123 @@ function Dashboard() {
     return dd + '-' + mm + '-' + yyyy;
   }
 
-  useEffect(() => {
-    // Fetch data from the API
-    fetch("https://localhost:7157/api/User/CountUserActive")
-      .then((response) => response.json())
-      .then((data) => {
-        // Update the state with the fetched count
-        setTotalUsers(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching user count:", error);
-      });
-    fetch("https://localhost:7157/api/User/CountUserBanned")
-      .then((response) => response.json())
-      .then((data) => {
-        setBannedUsers(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching banned user count:", error);
-      });
+  // Map the data to the desired format
+  const labels = reportsBarChartData.map(item => item.date.substring(0, 3));
+  const data = reportsBarChartData.map(item => item.amount);
 
-    fetch("https://localhost:7157/api/User/CountUserProvideFb")
-      .then((response) => response.json())
-      .then((data) => {
-        setUsersProvidedFeedback(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users providing feedback count:", error);
-      });
+  const labelsYear = reportsLineChartData.map(item => item.date.substring(5, 7));
+  const dataYear = reportsLineChartData.map(item => item.amount);
 
-    fetch("https://localhost:7157/api/User/CountUserProvideFbToday")
-      .then((response) => response.json())
-      .then((data) => {
-        setUsersProvidedFeedbackToday(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users providing feedback today count:", error);
-      });
+  // Create the final object
+  const resultOf7Day = {
+    labels,
+    datasets: { label: "Report", data }
+  };
 
-    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosed")
-      .then((response) => response.json())
-      .then((data) => {
-        setFeedbackClosed(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching count of all closed feedbacks:", error);
-      });
+  const reportOfYear = {
+    labels: labelsYear,
+    datasets: { label: "Report", data: dataYear }
+  };
 
-    fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosedToday")
-      .then((response) => response.json())
-      .then((data) => {
-        setFeedbackClosedToday(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching count of closed feedbacks today:", error);
-      });
+    useEffect(() => {
+      fetch("https://localhost:7157/api/Feedbacks/CountLastYear")
+        .then((response) => response.json())
+        .then((data) => {
+          // Update the state with the fetched data for last year's report count
+          setReportsLineChartData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching last year's report count:", error);
+        });
 
-    const currentDate = new Date();
-    const formattedDate = formatDate(currentDate);
-    fetch(
-      `https://localhost:7157/api/Feedbacks/Count?beginDate=01-01-2023&endDate=${formattedDate}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setFeedbackCount(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching feedback count:", error);
-      });
+      fetch("https://localhost:7157/api/Feedbacks/CountLastWeek")
+        .then((response) => response.json())
+        .then((data) => {
+          // Update the state with the fetched data for last week's report count
+          setReportsBarChartData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching last week's report count:", error);
+        });
+      // Fetch data from the API
+      fetch("https://localhost:7157/api/User/CountUserActive")
+        .then((response) => response.json())
+        .then((data) => {
+          // Update the state with the fetched count
+          setTotalUsers(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user count:", error);
+        });
+      fetch("https://localhost:7157/api/User/CountUserBanned")
+        .then((response) => response.json())
+        .then((data) => {
+          setBannedUsers(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching banned user count:", error);
+        });
 
-    fetch(
-      `https://localhost:7157/api/Feedbacks/Count?beginDate=${formattedDate}&endDate=${formattedDate}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setFeedbackCountToday(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching feedback count:", error);
-      });
-  }, []);
+      fetch("https://localhost:7157/api/User/CountUserProvideFb")
+        .then((response) => response.json())
+        .then((data) => {
+          setUsersProvidedFeedback(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching users providing feedback count:", error);
+        });
+
+      fetch("https://localhost:7157/api/User/CountUserProvideFbToday")
+        .then((response) => response.json())
+        .then((data) => {
+          setUsersProvidedFeedbackToday(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching users providing feedback today count:", error);
+        });
+
+      fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosed")
+        .then((response) => response.json())
+        .then((data) => {
+          setFeedbackClosed(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching count of all closed feedbacks:", error);
+        });
+
+      fetch("https://localhost:7157/api/Feedbacks/CountFeedbackClosedToday")
+        .then((response) => response.json())
+        .then((data) => {
+          setFeedbackClosedToday(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching count of closed feedbacks today:", error);
+        });
+
+      const currentDate = new Date();
+      const formattedDate = formatDate(currentDate);
+      fetch(
+        `https://localhost:7157/api/Feedbacks/Count?beginDate=01-01-2023&endDate=${formattedDate}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setFeedbackCount(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching feedback count:", error);
+        });
+
+      fetch(
+        `https://localhost:7157/api/Feedbacks/Count?beginDate=${formattedDate}&endDate=${formattedDate}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setFeedbackCountToday(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching feedback count:", error);
+        });
+    }, []);
 
   return (
     <DashboardLayout>
@@ -185,33 +223,33 @@ function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="Reports in this week"
+                  title="Reports in the last 7 days"
                   description=""
                   date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  chart={resultOf7Day}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Reports over the months"
+                  title="Reports in the last 12 months"
                   description={
                     <>
 
                     </>
                   }
                   date="updated 4 min ago"
-                  chart={sales}
+                  chart={reportOfYear}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
@@ -221,7 +259,7 @@ function Dashboard() {
                   chart={tasks}
                 />
               </MDBox>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>

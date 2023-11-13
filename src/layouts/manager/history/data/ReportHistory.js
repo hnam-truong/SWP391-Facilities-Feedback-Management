@@ -108,7 +108,7 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired")
     .sort((a, b) => {
-      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+      return b.notify - a.notify || new Date(b.dateTime) - new Date(a.dateTime);
     })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (

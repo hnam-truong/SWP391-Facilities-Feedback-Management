@@ -430,7 +430,7 @@ export default function data() {
       (cateFilter === "All" || feedback.cate.description === cateFilter)
     )
     .sort((a, b) => {
-      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+      return b.notify - a.notify || new Date(b.dateTime) - new Date(a.dateTime);
     })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
