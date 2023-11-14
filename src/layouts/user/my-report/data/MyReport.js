@@ -2,22 +2,17 @@
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import Modal from '@mui/material/Modal';
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
-
+import UpdateReport from "./UpdateReport";
 //MUI
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Button from '@mui/material/Button';
-import UpgradeIcon from '@mui/icons-material/Upgrade';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@mui/material/TextField'; import Tooltip from '@mui/material/Tooltip';
-
+import Dialog from '@mui/material/Dialog';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -26,22 +21,13 @@ export default function data() {
   // Modify your handleEditClick function to update the selectedFeedback state
   const handleEditClick = (feedback) => {
     setSelectedFeedback(feedback);
-  }
-  const [imageUrls, setImageUrls] = useState([]);
-  const fetchImageUrls = async (feedbackId) => {
-    console.log('Fetching image URLs for feedback:', feedbackId);
-    const response = await fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${feedbackId}`);
-    const data = await response.json();
-    console.log('Fetched image URLs:', data);
-    setImageUrls(data);
+    setShowUpdateReport(true); // show the UpdateReport component
   };
+  const [showUpdateReport, setShowUpdateReport] = useState(false);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  useEffect(() => {
-    console.log('Selected feedback:', selectedFeedback);
-    if (selectedFeedback) {
-      fetchImageUrls(selectedFeedback.feedbackId);
-    }
-  }, [selectedFeedback]);
+
 
   useEffect(() => {
     // Define the URL of your API endpoint
@@ -54,7 +40,7 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  
+
 
   const handleRemoveReport = (feedbackId) => {
     var option = {
@@ -169,9 +155,9 @@ export default function data() {
           {(() => {
             switch (feedback.status) {
               case "Waiting":
-                return (
-                  <div>
 
+                return (
+                  <MDBox>
                     <a href='#updateReport' id='openPopUp' onClick={() => handleEditClick(feedback)}>
                       <IconButton>
                         <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
@@ -184,81 +170,21 @@ export default function data() {
                         Remove
                       </MDTypography>
                     </IconButton>
-                  </div>
+                    <Dialog
+                      open={showUpdateReport}
+                      onClose={() => setShowUpdateReport(false)}
+                      BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+                      fullScreen={fullScreen}
+                      maxWidth="80vw" // Set the maximum width to 80% of the viewport width
+                      PaperProps={{ style: { maxHeight: '95vh' } }} // Set the maximum height to 80% of the viewport height
+                    >
+                      <UpdateReport selectedFeedback={selectedFeedback} />
+                    </Dialog>
+                  </MDBox>
                 );
             }
           })()}
-          <div id='updateReport' className='overlay'>
-            <Box sx={{ backgroundColor: 'white' }} className='update-report'>
-              <a className='update-report-close' href='#updateReport-close'><HighlightOffIcon /></a>
-              <TextField
-                inputProps={{ maxLength: 40 }}
-                fullWidth
-                required
-                id="outlined-required"
-                label="Title"
-                value={selectedFeedback ? selectedFeedback.title : ''}
-              />
-              <div style={{ marginTop: "1rem" }}>
-                <TextField
-                  inputProps={{ maxLength: 30 }}
-                  sx={{ width: '50%', paddingRight: '3px' }}
-                  required
-                  id="outlined-required"
-                  label="Campus"
-                  value=''
-                />
-                <TextField
-                  inputProps={{ maxLength: 4 }}
-                  sx={{ width: '50%', paddingLeft: '3px' }}
-                  required
-                  id="outlined-required"
-                  label="Room"
-                  value={selectedFeedback ? selectedFeedback.locationId : ''}
-                />
-              </div>
-              <div style={{ marginTop: "1rem" }}>
-                <TextField
-                  sx={{ width: '50%', paddingRight: '3px' }}
-                  fullWidth
-                  required
-                  id="outlined-required"
-                  label="Category"
-                  value={selectedFeedback ? selectedFeedback.cate.description : ''}
-                />
 
-              </div>
-             
-              <TextField
-                inputProps={{ maxLength: 300 }}
-                style={{ marginTop: "1rem" }}
-                fullWidth
-                required
-                multiline
-                id="outlined-required outlined-multiline-static"
-                label="More details"
-                value={selectedFeedback ? selectedFeedback.description : ''}
-                rows={6}
-              />
-               <div style={{ marginTop: "1rem" }}>
-  <h3>Image</h3>
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gridGap: '40px', overflowY: 'auto', maxHeight: '100px' }}>
-    {imageUrls.map((url, index) => (
-      <img key={index} src={url} alt={`Feedback ${index}`} style={{ width: '100%', padding: '3px' }} />
-    ))}
-  </div>
-</div>
-              <Button
-                style={{ marginTop: "1rem" }}
-                fullWidth
-                variant="contained"
-                startIcon={<UpgradeIcon />}
-                onClick=''
-              >
-                Update Report
-              </Button>
-            </Box>
-          </div>
         </MDBox>
       ),
     }));
