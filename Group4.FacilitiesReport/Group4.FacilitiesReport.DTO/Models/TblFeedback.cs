@@ -1,10 +1,13 @@
-﻿namespace Group4.FacilitiesReport.DTO.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblFeedback
     {
         public TblFeedback()
         {
-            Tasks = new HashSet<TblTask>();
+            TblTask = new HashSet<TblTask>();
         }
 
         public Guid FeedbackId { get; set; }
@@ -22,6 +25,6 @@
         public virtual TblCategoriesProblem Cate { get; set; } = null!;
         public virtual TblLocation Location { get; set; } = null!;
         public virtual TblUser User { get; set; } = null!;
-        public virtual ICollection<TblTask> Tasks { get; set; }
+        public virtual ICollection<TblTask> TblTask { get; set; }
     }
 }

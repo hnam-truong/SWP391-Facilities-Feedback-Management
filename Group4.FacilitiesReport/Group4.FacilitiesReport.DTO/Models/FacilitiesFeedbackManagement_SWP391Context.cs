@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Group4.FacilitiesReport.DTO.Models
 {
@@ -26,7 +29,8 @@ namespace Group4.FacilitiesReport.DTO.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-8KQM4AH; Database=FacilitiesFeedbackManagement_SWP391; Uid=sa; Pwd=12345");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=ADMIN\\SA;User ID=sa;Initial Catalog=FacilitiesFeedbackManagement_SWP391;Password=12345;Connect Timeout=30;Encrypt=False;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
             }
         }
 
@@ -47,13 +51,16 @@ namespace Group4.FacilitiesReport.DTO.Models
 
             modelBuilder.Entity<TblConfig>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("tbl_Config");
+
+                entity.HasIndex(e => e.Variable, "UQ__tbl_Conf__038C0B3AC9FAE17A")
+                    .IsUnique();
 
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.Value).HasColumnType("sql_variant");
+                entity.Property(e => e.Value)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Variable)
                     .HasMaxLength(30)
@@ -78,7 +85,7 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.DataUrl)
-                    .HasMaxLength(150)
+                    .HasMaxLength(300)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DateTime)
@@ -141,7 +148,7 @@ namespace Group4.FacilitiesReport.DTO.Models
             modelBuilder.Entity<TblRefreshToken>(entity =>
             {
                 entity.HasKey(e => e.UserId)
-                    .HasName("PK__Tbl_Refr__1788CC4C0CC98109");
+                    .HasName("PK__Tbl_Refr__1788CC4C074386FC");
 
                 entity.ToTable("Tbl_RefreshToken");
 
@@ -177,7 +184,7 @@ namespace Group4.FacilitiesReport.DTO.Models
                 entity.Property(e => e.FeedbackId).HasColumnName("FeedbackID");
 
                 entity.Property(e => e.ImgConfirmationUrl)
-                    .HasMaxLength(150)
+                    .HasMaxLength(300)
                     .IsUnicode(false)
                     .HasColumnName("ImgConfirmationURL");
 
@@ -199,7 +206,7 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasConstraintName("FK__tbl_Task__Employ__5DCAEF64");
 
                 entity.HasOne(d => d.Feedback)
-                    .WithMany(p => p.Tasks)
+                    .WithMany(p => p.TblTask)
                     .HasForeignKey(d => d.FeedbackId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Task__Feedba__5CD6CB2B");
@@ -268,7 +275,7 @@ namespace Group4.FacilitiesReport.DTO.Models
             modelBuilder.Entity<TblUserRole>(entity =>
             {
                 entity.HasKey(e => e.RoleId)
-                    .HasName("PK__tbl_User__8AFACE3A18C26795");
+                    .HasName("PK__tbl_User__8AFACE3A8EC7BBE9");
 
                 entity.ToTable("tbl_UserRole");
 

@@ -4,6 +4,8 @@ using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
+using System.Timers;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -12,57 +14,77 @@ namespace Group4.FacilitiesReport.Repositories
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
         private readonly ILogger<FeedbackRepo> _logger;
+        private readonly IConfig _config;
 
-        public FeedbackRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<FeedbackRepo> logger)
+        public FeedbackRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<FeedbackRepo> logger, IConfig config)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
-
+            _config = config;
         }
-        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks)
-                    .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).OrderByDescending(f => f.Notify).ThenBy(f => f.DateTime);
+        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.TblTask)
+                    .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).OrderByDescending(f => f.Notify).ThenByDescending(f => f.DateTime);
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {
-            if (beginDate.Date.CompareTo(endDate.Date) == 0)
-                return await AllFeedback().Where(f => f.DateTime.Date == beginDate.Date).CountAsync();
-            return await AllFeedback().Where(f => f.DateTime > beginDate && f.DateTime < endDate).CountAsync();
+            return await AllFeedback().Where(f => f.DateTime.Date >= beginDate.Date && f.DateTime.Date <= endDate.Date).CountAsync();
+        }
+        public async Task<int> CountFeedbackClosedByDate()
+
+        {
+            var today = DateTime.Today;
+            return await AllFeedback().Where(f => f.DateTime.Date == today.Date && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
+        }
+        public async Task<int> CountFeedbackClosed()
+        {
+            return await AllFeedback().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
         }
 
         public async Task<APIResponse> CreateFeedback(Feedback feedback)
         {
             APIResponse _response = new APIResponse();
-            try
-            {
-                this._logger.LogInformation("Create Begins");
-                TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
-                await this._context.TblFeedbacks.AddAsync(_feedback);
-                await this._context.SaveChangesAsync();
+            var exist = await CheckExistence(feedback.LocationId, feedback.CateId);
 
-                var timer = new System.Timers.Timer(15000); // 1 second interval
-                timer.Elapsed += async (sender, e) =>
-                {
-
-
-                    if (_feedback != null && _feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
-                    {
-                        _feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
-                        await _context.SaveChangesAsync();
-                    }
-
-                };
-                timer.Start();
-                _response.ResponseCode = 200;
-                _response.Result = _feedback.FeedbackId.ToString();
-            }
-            catch (Exception ex)
+            if (exist && feedback.Status == "Waiting" || feedback.Status == "Processing")
             {
                 _response.ResponseCode = 400;
-                _response.ErrorMessage = ex.Message;
-                this._logger.LogError(ex.Message, ex);
+                _response.ErrorMessage = "Type of Feedback is already exist";
+                return _response;
             }
+            else
+            {
+                int count = _context.TblFeedbacks.Where(f => f.LocationId == feedback.LocationId && (f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting") || f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing"))).Count();
+                var config = await _config.ValueOf("MaxFeedbackPerLocation");
+                if (config != null && Convert.ToUInt32(config) > count)
+                {
+                    try
+                    {
+                        this._logger.LogInformation("Create Begins");
+                        TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
+                        await this._context.TblFeedbacks.AddAsync(_feedback);
+                        await this._context.SaveChangesAsync();
+                        _response.ResponseCode = 200;
+                        _response.Result = _feedback.FeedbackId.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        _response.ResponseCode = 400;
+                        _response.ErrorMessage = ex.Message;
+                        this._logger.LogError(ex.Message, ex);
+                    }
+                }
+                else
+                {
+                    _response.ResponseCode = 400;
+                    _response.ErrorMessage = "Max Feedback!!!!";
+                }
+            }
+
             return _response;
         }
+
+
+
 
         public async Task<APIResponse> RespondFeedback(Guid feedbackId, string response)
         {
@@ -223,7 +245,7 @@ namespace Group4.FacilitiesReport.Repositories
                 }
                 else
                 {
-                    _response.ResponseCode = 400;
+                    _response.ResponseCode = 404;
                     _response.Result = "Data not found!";
 
                 }
@@ -252,7 +274,7 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<Feedback>> GetFeedbackByLocation(string locationId)
         {
             List<Feedback> _response = new List<Feedback>();
-            var _data = await AllFeedback().Where(f => f.LocationId == locationId && f.Status < 3 && DateTime.Now.Subtract(f.DateTime).TotalDays < 7).ToListAsync();
+            var _data = await AllFeedback().Where(f => f.LocationId.ToLower() == locationId.ToLower() && f.Status < 3 && DateTime.Now.Subtract(f.DateTime).TotalDays < 7).ToListAsync();
             if (_data != null)
             {
                 _response = _mapper.Map<List<TblFeedback>, List<Feedback>>(_data);
@@ -335,48 +357,96 @@ namespace Group4.FacilitiesReport.Repositories
 
         }
 
+        public async Task<bool> CheckExistence(string locationId, string cateId)
+        {
+            var exists = await _context.TblFeedbacks.AnyAsync(f => f.LocationId == locationId && f.CateId == cateId);
+            return exists;
+        }
+        //public async Task<List<FeedbackGraphObject>> RecentGraphFeedback()
+        //{
+        //    var now = DateTime.Now.AddDays(-7).Date;
+        //    var list = new List<FeedbackGraphObject>();
+        //    for (int i = 0; i <= 7; i++)
+        //    {
+        //        list.Add(new FeedbackGraphObject
+        //        {
+        //            Date = now.DayOfWeek.ToString(),
+        //            Amount = (await CountFeedbackByDate(now, now)).ToString()
+        //        });
+        //        now = now.AddDays(1);
+        //    }
+        //    return list;
+        //}
+
+        //public async Task<List<FeedbackGraphObject>> MonthlyGraphFeedback()
+        //{
+        //    var now = DateTime.Now.AddMonths(-12);
+        //    var list = new List<FeedbackGraphObject>();
+        //    for (int i = 0; i <= 12; i++)
+        //    {
+        //        DateTime date = now;
+        //        var firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+        //        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
+        //        list.Add(new FeedbackGraphObject
+        //        {
+        //            Date = now.Month.ToString(),
+        //            Amount = (await CountFeedbackByDate(firstDayOfMonth, lastDayOfMonth)).ToString()
+        //        });
+        //        now = now.AddMonths(1);
+        //    }
+        //    return list;
+        //}
         public async Task<List<FeedbackGraphObject>> RecentGraphFeedback()
         {
-            var now = DateTime.Now.AddDays(-7);
+            var now = DateTime.Now.Date.AddDays(-6);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i <= 6; i++)
             {
-                list.Add(new FeedbackGraphObject { Date = now.DayOfWeek.ToString(), Amount = await CountFeedbackByDate(now, now) });
-                now.AddDays(1);
+                list.Add(new FeedbackGraphObject { Date = now.DayOfWeek.ToString(), Amount = await CountFeedbackByDate(now.AddSeconds(-1), now.AddDays(1)) });
+                now = now.AddDays(1);
             }
             return list;
         }
+
 
         public async Task<List<FeedbackGraphObject>> MonthlyGraphFeedback()
         {
-            var now = DateTime.Now.AddMonths(-12);
+            var now = DateTime.Now.AddMonths(-11);
             var list = new List<FeedbackGraphObject>();
-            for (int i = 0; i <= 11; i++)
+            for (int i = 0; i < 12; i++)
             {
-                DateTime date = now;
-                var firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+                var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
                 var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddSeconds(-1);
-                list.Add(new FeedbackGraphObject { Date = now.Month.ToString(), Amount = await CountFeedbackByDate(firstDayOfMonth, lastDayOfMonth) });
-                now.AddMonths(1);
+                list.Add(new FeedbackGraphObject
+                {
+                    Date = now.ToString("yyyy-MM"),
+                    Amount = (await CountFeedbackByDate(firstDayOfMonth, lastDayOfMonth))
+                });
+                now = now.AddMonths(1);
             }
             return list;
         }
-
         public async Task<List<Feedback>> GetFeedbacksByCate(string id)
         {
             var list = await AllFeedback().Where(f => f.CateId == id).ToListAsync();
             return _mapper.Map<List<Feedback>>(list);
         }
-        //public async void ExpiredFeedback(Guid feedbackId)
-        //{
-        //    APIResponse response = new APIResponse();
-        //    var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(f => f.FeedbackId == feedbackId);
-        //    if(feedback != null&&feedback.Status== (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"))
-        //    {
-        //        feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Expired");
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //}
+        public async Task<List<FeedbackGraphObject>> RecentUserCreateFeedback()
+        {
+            var now = DateTime.Now.Date.AddDays(-6);
+            var list = new List<FeedbackGraphObject>();
+            for (int i = 0; i <= 6; i++)
+            {
+                list.Add(new FeedbackGraphObject { Date = now.DayOfWeek.ToString(), Amount = await CountUserByDate(now.AddSeconds(-1), now.AddDays(1)) });
+                now = now.AddDays(1);
+            }
+            return list;
+        }
+        public async Task<int> CountUserByDate(DateTime beginDate, DateTime endDate)
+        {
+            if (beginDate.Date.CompareTo(endDate.Date) == 0)
+                return await _context.TblUsers.Include(u => u.TblFeedbacks.Where(f => f.DateTime == beginDate.Date)).CountAsync();
+            return await _context.TblUsers.Include(u => u.TblFeedbacks.Where(f => f.DateTime > beginDate.Date && f.DateTime < endDate.Date)).CountAsync(); ;
+        }
     }
 }

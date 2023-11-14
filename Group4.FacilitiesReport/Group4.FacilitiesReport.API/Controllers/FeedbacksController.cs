@@ -19,7 +19,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             _ifeedback = ifeedback;
             _webHostEnvironment = webHostEnvironment;
         }
-
+        //[Authorize("Manager")]
         [HttpGet("AllFeedbacks")]
         public async Task<IActionResult> GetAllFeedback()
         {
@@ -30,7 +30,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("ByStatus")]
         public async Task<IActionResult> GetFeedbackByStatus(string status)
         {
@@ -41,7 +41,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-
+        //[Authorize("Manager, Student, Lecturer, Casual Employee")]
         [HttpGet("User/{UserId}")]
         public async Task<IActionResult> GetFeedbackByUserId(string UserId)
         {
@@ -52,6 +52,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
+        //[Authorize("Manager")]
         [HttpGet("Id/{feedbackId}")]
         public async Task<IActionResult> GetFeedback(Guid feedbackId)
         {
@@ -62,7 +63,19 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(feedbacks);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
+        [HttpGet("Cate/{CateId}")]
+        public async Task<IActionResult> GetFeedbackByCate(string CateId)
+        {
+            var feedbacks = await this._ifeedback.GetFeedbacksByCate(CateId);
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+            return Ok(feedbacks);
+        }
+
+        //[Authorize("Manager")]
         [HttpGet("Count")]
         public async Task<IActionResult> CountFeedback(string beginDate, string endDate)
         {
@@ -73,25 +86,44 @@ namespace Group4.FacilitiesReport.API.Controllers
                                       System.Globalization.CultureInfo.InvariantCulture));
             return Ok(count);
         }
-        [Authorize("Manager")]
+        [HttpGet("CountFeedbackClosedToday")]
+        public async Task<IActionResult> CountFeedbackClosedToday()
+        {
+            int count = await this._ifeedback.CountFeedbackClosedByDate();
+
+            return Ok(count);
+        }
+        [HttpGet("CountFeedbackClosed")]
+        public async Task<IActionResult> CountTaskClosed()
+        {
+            int count = await _ifeedback.CountFeedbackClosed();
+            return Ok(count);
+        }
+        //[Authorize("Manager")]
         [HttpGet("CountLastWeek")]
         public async Task<IActionResult> CountWeek()
         {
             var count = await this._ifeedback.RecentGraphFeedback();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountLastYear")]
         public async Task<IActionResult> CountYear()
         {
             var count = await this._ifeedback.MonthlyGraphFeedback();
             return Ok(count);
         }
+        [HttpGet("CountUser")]
+        public async Task<IActionResult> CountUser()
+        {
+            var count = await this._ifeedback.RecentUserCreateFeedback();
+            return Ok(count);
+        }
         [HttpGet("GetFile")]
         public async Task<IActionResult> GetFile(Guid feedbackId)
         {
             List<string> fileUrl = new List<string>();
-            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}//{this.Request.PathBase}";
             try
             {
                 string filePath = GetFilePath(feedbackId);
@@ -101,7 +133,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                     FileInfo[] fileInfos = fileInfo.GetFiles();
                     foreach (FileInfo f in fileInfos)
                     {
-                        string filename = fileInfo.Name;
+                        string filename = f.Name;
                         string dir = filePath + "\\" + filename;
                         if (System.IO.File.Exists(dir))
                         {
@@ -210,7 +242,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(response);
 
         }
-        [Authorize("Student, Lecturer, Casual Employee")]
+        //[Authorize("Student, Lecturer, Casual Employee")]
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
         {
@@ -225,7 +257,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(feedback);
         }
-
+        //[Authorize("Student, Lecturer, Casual Employee, Manager")]
         [HttpPut("Notify")]
         public async Task<IActionResult> NotifyFeedback(Guid feedbackId)
         {
@@ -233,51 +265,44 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedback);
         }
 
-        [Authorize("Task Employee, Manager")]
+        //[Authorize("Task Employee, Manager")]
         [HttpPut("RespondFeedback")]
         public async Task<IActionResult> ResponseFeedback(Guid feedbackId, string description)
         {
             var feedback = await this._ifeedback.RespondFeedback(feedbackId, description);
             return Ok(feedback);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("CloseFeedback")]
         public async Task<IActionResult> CloseFeedback(Guid feedbackId, string response)
         {
 
             return Ok(await _ifeedback.CloseFeedback(feedbackId, response));
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("AcceptFeedback")]
         public async Task<IActionResult> AcceptFeedback(Guid feedbackId, string response)
         {
             return Ok(await _ifeedback.AcceptFeedback(feedbackId, response));
         }
-
+        //[Authorize("Manager")]
         [HttpPut("CancelFeedback")]
         public async Task<IActionResult> CancelFeedback(Guid feedbackId, string response)
         {
             return Ok(await _ifeedback.CancelAcceptFeedback(feedbackId, response));
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("RejectFeedback")]
         public async Task<IActionResult> RejectFeedback(Guid feedbackId, string response)
         {
             return Ok(await _ifeedback.RejectFeedback(feedbackId, response));
         }
-
+        //[Authorize("Manager")]
         [HttpPut("UndoFeedback")]
         public async Task<IActionResult> UndoRejectFeedback(Guid feedbackId, string response)
         {
             return Ok(await _ifeedback.UndoRejectFeedback(feedbackId, response));
         }
-
-        //[HttpPut("ExpiredFeedback")]
-        //public async Task<IActionResult> ExpiredFeedback(Guid feedbackId)
-        //{
-
-        //    return Ok( _ifeedback.ExpiredFeedback(feedbackId));
-        //}
 
 
         [NonAction]

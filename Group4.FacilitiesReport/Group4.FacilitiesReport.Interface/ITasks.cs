@@ -11,6 +11,10 @@ namespace Group4.FacilitiesReport.Interface
         public Task<List<DTO.Task>> GetTaskByManagerId(string ManagerId);
         public Task<List<DTO.Task>> GetTaskByEmployeeId(string EmployeeId);
         public Task<List<DTO.Task>> GetTaskByFeedbackId(Guid FeebackId);
+        public Task<int> CountTaskClosed();
+        public Task<int> CountTaskClosedToday();
+        public Task<int> CountTaskDelivered();
+        public Task<int> CountTaskDeliveredToday();
         public Task<APIResponse> CreateTask(DTO.Task task);
         public Task<APIResponse> UpdateTaskNote(Guid Id, string Note);
         public Task<APIResponse> UpdateTaskResponse(Guid Id, string response);

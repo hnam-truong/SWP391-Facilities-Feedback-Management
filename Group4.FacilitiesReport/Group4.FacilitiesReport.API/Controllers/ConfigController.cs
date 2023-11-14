@@ -22,10 +22,11 @@ namespace Group4.FacilitiesReport.API.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Config(ConfigDTO config)
         {
             return Ok(await _config.Config(config.Variable, config.Value));
         }
+
     }
 }

@@ -22,7 +22,7 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
 
 
-        [HttpGet("GetAllLoca")]
+        [HttpGet("GetAllLocation")]
         public async Task<IActionResult> GetLocations()
         {
             var data = await _location.GetLocations();
@@ -83,6 +83,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpPut("EnableLocation")]
         public async Task<IActionResult> EnableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 0));
 
-        
+
     }
 }

@@ -20,34 +20,40 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
 
-        public UserController(IUser IUser, IMapper mapper,FacilitiesFeedbackManagement_SWP391Context context)
+        public UserController(IUser IUser, IMapper mapper, FacilitiesFeedbackManagement_SWP391Context context)
         {
             _iUser = IUser;
             _mapper = mapper;
             _context = context;
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserActive")]
         public async Task<IActionResult> CountUserActive()
         {
             int count = await _iUser.CountUsersActive();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserBanned")]
         public async Task<IActionResult> CountUserBanned()
         {
             int count = await _iUser.CountUsersBanned();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountUserProvideFb")]
         public async Task<IActionResult> CountUserProvideFb()
         {
             int count = await _iUser.CountUsersWhoProvidedFeedback();
             return Ok(count);
         }
-        [Authorize("Manager")]
+        [HttpGet("CountUserProvideFbToday")]
+        public async Task<IActionResult> CountUserProvideFbToday()
+        {
+            int count = await _iUser.CountUsersWhoProvidedFeedbackToday();
+            return Ok(count);
+        }
+        //[Authorize("Manager")]
         [HttpGet("AllUsers")]
         public async Task<IActionResult> GetAllUser()
         {
@@ -58,6 +64,7 @@ namespace API.Controllers
             }
             return Ok(users);
         }
+        //[Authorize("Manager")]
         [HttpGet("{UserId}")]
         public async Task<IActionResult> GetUserByUserId(string UserId)
         {
@@ -68,7 +75,7 @@ namespace API.Controllers
             }
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("Employee/{CateId}")]
         public async Task<IActionResult> GetEmployeeByCate(string CateId)
         {
@@ -79,7 +86,7 @@ namespace API.Controllers
             }
             return Ok(users);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("CountEmployeeTask/{CateId}")]
         public async Task<IActionResult> CountEmployeeTask(string CateId)
         {
@@ -91,21 +98,21 @@ namespace API.Controllers
             return Ok(data);
         }
 
-        
+
         [HttpGet("Login")]
         public async Task<IActionResult> Login(string Email, string Password)
         {
-            var user = await _iUser.Login(Email,Password);
+            var user = await _iUser.Login(Email, Password);
             if (user == null)
             {
                 return Unauthorized();
             }
-          
-            
+
+
             return Ok(user);
         }
 
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("UserProvideFb")]
         public async Task<IActionResult> GetUserProvideFeedbak()
         {
@@ -116,24 +123,24 @@ namespace API.Controllers
             }
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("AddUser")]
         public async Task<IActionResult> AddUser(string UserId, string Email, string Username, string Password, int RoleId)
         {
-            
+
 
             var user = await _iUser.AddUser(new User
             {
                 UserID = UserId,
                 Email = Email,
-                Username=Username,
+                Username = Username,
                 Password = Password,
                 RoleId = RoleId,
                 Status = "Active"
             });
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("AddCateByUserId")]
         public async Task<IActionResult> AddCateByUserId(string UserId, string CateId)
         {
@@ -141,7 +148,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        
+
         [HttpPut("UpdateUser/{UserId}")]
         public async Task<IActionResult> UpdateUser(string UserId, string UserName, string Email, string Password)
         {
@@ -154,21 +161,21 @@ namespace API.Controllers
             });
             return Ok(user);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("BannedUser")]
         public async Task<IActionResult> BannedUser(string UserId)
         {
             return Ok(await _iUser.UpdateStatus(UserId, 2));
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("Active")]
         public async Task<IActionResult> ActiveUser(string UserId)
         {
             return Ok(await _iUser.UpdateStatus(UserId, 0));
         }
-     
-        
-        
+
+
+
 
     }
 }

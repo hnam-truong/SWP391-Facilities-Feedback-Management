@@ -7,6 +7,8 @@ namespace Group4.FacilitiesReport.Interface
         public Task<List<DTO.Feedback>> GetFeedbackByUserId(string UserId);
         public Task<List<DTO.Feedback>> GetAllFeedBack();
         public Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate);
+        public Task<int> CountFeedbackClosedByDate();
+        public Task<int> CountFeedbackClosed();
         public Task<List<DTO.Feedback>> GetFeedbackByStatus(int status);
         public Task<List<DTO.Feedback>> GetFeedbackByLocation(string locationId);
         public Task<DTO.Feedback?> GetFeedback(Guid feedbackId);
@@ -24,5 +26,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<List<FeedbackGraphObject>> RecentGraphFeedback();
         public Task<List<FeedbackGraphObject>> MonthlyGraphFeedback();
         public Task<List<Feedback>> GetFeedbacksByCate(string id);
+        public Task<List<FeedbackGraphObject>> RecentUserCreateFeedback();
+        public Task<int> CountUserByDate(DateTime beginDate, DateTime endDate);
     }
 }

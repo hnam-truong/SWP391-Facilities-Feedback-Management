@@ -27,24 +27,29 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<int> CountUsersActive()
         {
-            return await AllUser().Where(f => f.Status == 0).CountAsync();
+            return await AllUser().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Active")).CountAsync();
         }
 
         public async Task<int> CountUsersBanned()
         {
-            return await AllUser().Where(f => f.Status == 2).CountAsync();
+            return await AllUser().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Banned")).CountAsync();
         }
 
         public async Task<int> CountUsersWhoProvidedFeedback()
         {
             return await AllUser().Where(f => f.TblFeedbacks.Any()).CountAsync();
         }
-       
+        public async Task<int> CountUsersWhoProvidedFeedbackToday()
+        {
+            var today = DateTime.Today;
+            return await AllUser().Where(f => f.TblFeedbacks.Any(feedback => feedback.DateTime.Date == today)).CountAsync();
+        }
+
         public async Task<List<EmployeeObject>> CountEmployeeTask(string CateId)
         {
             var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id.ToLower() == CateId.ToLower());
 
-            var employees = await _context.TblUsers.Include(u=>u.TblTaskEmployees.Where(t=>t.Status==0))
+            var employees = await _context.TblUsers.Include(u => u.TblTaskEmployees.Where(t => t.Status == 0))
                                             .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate))
                                             .ToListAsync();
             if (employees != null)
@@ -65,8 +70,8 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<User>> GetEmployeeByCate(string CateId)
         {
-            var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x=> x.Id==CateId);
-            var data = await _context.TblUsers.Include(u => u.Cates).Include(u => u.Role).Where(u => u.Role.Description=="Task Employee" && u.Cates.Contains(Cate)).ToListAsync();
+            var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id == CateId);
+            var data = await _context.TblUsers.Include(u => u.Cates).Include(u => u.Role).Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate)).ToListAsync();
             return _mapper.Map<List<TblUser>, List<User>>(data);
         }
 
@@ -91,7 +96,7 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return _response;
         }
-        
+
 
         public async Task<List<User>> GetUsersWhoProvidedFeedback()
         {
@@ -106,11 +111,11 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<User?> Login(string Email, string Password)
         {
-            
-            var _data = await AllUser().Include(u => u.Role).Where(f => f.Email.ToLower()==Email.ToLower() && f.Password.Equals(Password)).FirstOrDefaultAsync();
-            if (_data != null && _data.Status ==0)
+
+            var _data = await AllUser().Include(u => u.Role).Where(f => f.Email.ToLower() == Email.ToLower() && f.Password.Equals(Password)).FirstOrDefaultAsync();
+            if (_data != null && _data.Status == (int)Enum.Parse(typeof(DTO.Enums.UserStatus), "Active"))
             {
-                 return  _mapper.Map<TblUser, User>(_data);
+                return _mapper.Map<TblUser, User>(_data);
             }
             return null;
         }
@@ -138,9 +143,9 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<APIResponse> AddCateByUserId(string UserId, string CateId)
         {
             APIResponse response = new APIResponse();
-            var user = await _context.TblUsers.Where(u => u.UserId == UserId).Include(u=>u.Role).FirstOrDefaultAsync();
+            var user = await _context.TblUsers.Where(u => u.UserId == UserId).Include(u => u.Role).FirstOrDefaultAsync();
             var cate = await _context.TblCategoriesProblems.Where(u => u.Id.ToLower() == CateId.ToLower()).FirstOrDefaultAsync();
-            if(cate!=null && user!=null && user.Role.Description=="Task Employee")
+            if (cate != null && user != null && user.Role.Description == "Task Employee")
             {
                 user.Cates.Add(cate);
                 await _context.SaveChangesAsync();
