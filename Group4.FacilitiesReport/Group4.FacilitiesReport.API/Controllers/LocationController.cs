@@ -21,7 +21,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        
+
         [HttpGet("GetAllLocation")]
         public async Task<IActionResult> GetLocations()
         {
@@ -83,6 +83,6 @@ namespace Group4.FacilitiesReport.API.Controllers
         [HttpPut("EnableLocation")]
         public async Task<IActionResult> EnableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 0));
 
-        
+
     }
 }

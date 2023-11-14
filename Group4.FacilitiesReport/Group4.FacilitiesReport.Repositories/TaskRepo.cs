@@ -14,12 +14,16 @@ namespace Group4.FacilitiesReport.Repositories
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
         private readonly ILogger<TaskRepo> _logger;
+        private readonly IUser _user;
+        private readonly IConfig _config;
 
-        public TaskRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<TaskRepo> logger)
+        public TaskRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<TaskRepo> logger, IUser user, IConfig config)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _user = user;
+            _config = config;
         }
 
         private IQueryable<TblTask> AllTask() => _context.TblTasks;
@@ -63,7 +67,7 @@ namespace Group4.FacilitiesReport.Repositories
             var _data = await AllTask().Where(f => f.Id.Equals(Id)).FirstOrDefaultAsync();
             if (_data != null)
             {
-                _response = _mapper.Map<TblTask,DTO.Task>(_data);
+                _response = _mapper.Map<TblTask, DTO.Task>(_data);
             }
             return _response;
         }
@@ -79,6 +83,28 @@ namespace Group4.FacilitiesReport.Repositories
             return _response;
         }
 
+        public async Task<int> CountTaskClosed()
+        {
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed")).CountAsync();
+        }
+
+
+        public async Task<int> CountTaskClosedToday()
+        {
+
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed") && t.DateTime == DateTime.Today).CountAsync();
+        }
+
+        public async Task<int> CountTaskDelivered()
+        {
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered")).CountAsync();
+        }
+
+        public async Task<int> CountTaskDeliveredToday()
+        {
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered") && t.DateTime == DateTime.Today).CountAsync();
+        }
+
         public async Task<APIResponse> CreateTask(DTO.Task task)
         {
             APIResponse response = new APIResponse();
@@ -87,12 +113,22 @@ namespace Group4.FacilitiesReport.Repositories
 
             if (feedback != null && feedback.Status <= (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
             {
-                TblTask _task = _mapper.Map<DTO.Task, TblTask>(task);
-                await _context.TblTasks.AddAsync(_task);
-                feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing");
-                await _context.SaveChangesAsync();
-                response.ResponseCode = 200;
-                response.Result = task.Id.ToString();
+                var config = await _config.ValueOf("MaxTaskDelivered");
+                var count = _context.TblTasks.Where(t => t.EmployeeId == task.EmployeeId && t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered")).Count();
+                if (config != null && Convert.ToUInt32(config) > count)
+                {
+                    TblTask _task = _mapper.Map<DTO.Task, TblTask>(task);
+                    await _context.TblTasks.AddAsync(_task);
+                    feedback.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing");
+                    await _context.SaveChangesAsync();
+                    response.ResponseCode = 200;
+                    response.Result = task.Id.ToString();
+                }
+                else
+                {
+                    response.ResponseCode = 400;
+                    response.ErrorMessage = "Max Tasks!!!!";
+                }
             }
             else
             {
@@ -106,9 +142,9 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<APIResponse> TaskClosed(Guid Id)
         {
             APIResponse response = new APIResponse();
-            var _task = await _context.TblTasks.FirstOrDefaultAsync(t=>t.Id==Id);
-            if(_task!=null&&_task.Status== (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
-            response= await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"));
+            var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == Id);
+            if (_task != null && _task.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
+                response = await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"));
             else
             {
                 response.ResponseCode = 404;
@@ -182,10 +218,11 @@ namespace Group4.FacilitiesReport.Repositories
                         {
                             if (item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
                             {
-                               flag =false;
+                                flag = false;
                             }
                         }
-                        if (flag) {
+                        if (flag)
+                        {
                             fb.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Responded");
                         }
                         await _context.SaveChangesAsync();
@@ -249,6 +286,7 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return response;
         }
+
 
     }
 }

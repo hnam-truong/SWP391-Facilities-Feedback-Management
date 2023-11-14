@@ -33,7 +33,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(data);
         }
         //[Authorize("Manager")]
-        [HttpGet("Task/{TaskId}")]
+        [HttpGet("TaskID/{TaskId}")]
         public async Task<IActionResult> GetTaskByTaskId(Guid TaskId)
         {
             var task = await _tasks.GetTaskById(TaskId);
@@ -44,7 +44,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(task);
         }
         //[Authorize("Manager")]
-        [HttpGet("{ManagerId}")]
+        [HttpGet("ManagerID/{ManagerId}")]
         public async Task<IActionResult> GetTaskByManagerId(string ManagerId)
         {
             var task = await _tasks.GetTaskByManagerId(ManagerId);
@@ -55,7 +55,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(task);
         }
         //[Authorize("Manager, Task Employee")]
-        [HttpGet("{EmployeeId}")]
+        [HttpGet("EmployeeID/{EmployeeId}")]
         public async Task<IActionResult> GetTaskByEmployee(string EmployeeId)
         {
             var task = await _tasks.GetTaskByEmployeeId(EmployeeId);
@@ -66,7 +66,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(task);
         }
         //[Authorize("Manager")]
-        [HttpGet("{FeedbackId}")]
+        [HttpGet("FeedbackID/{FeedbackId}")]
         public async Task<IActionResult> GetTaskByfeedback(Guid FeedbackId)
         {
             var task = await _tasks.GetTaskByFeedbackId(FeedbackId);
@@ -76,12 +76,38 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(task);
         }
+        [HttpGet("CountTaskClosed")]
+        public async Task<IActionResult> CountTaskClosed()
+        {
+            int count = await _tasks.CountTaskClosed();
+            return Ok(count);
+        }
+
+        [HttpGet("CountTaskClosedToday")]
+        public async Task<IActionResult> CountTaskClosedToday()
+        {
+            int count = await _tasks.CountTaskClosedToday();
+            return Ok(count);
+        }
+        [HttpGet("CountTaskDelivered")]
+        public async Task<IActionResult> CountTaskDelivered()
+        {
+            int count = await _tasks.CountTaskDelivered();
+            return Ok(count);
+        }
+        [HttpGet("CountTaskDeliveredToday")]
+        public async Task<IActionResult> CountTaskDeliveredToday()
+        {
+            int count = await _tasks.CountTaskDeliveredToday();
+            return Ok(count);
+        }
+
 
         [HttpGet("GetFile")]
         public async Task<IActionResult> GetFile(Guid Id)
         {
             List<string> fileUrl = new List<string>();
-            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}//{this.Request.PathBase}";
             try
             {
                 string filePath = GetFilePath(Id);
@@ -91,7 +117,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                     FileInfo[] fileInfos = fileInfo.GetFiles();
                     foreach (FileInfo f in fileInfos)
                     {
-                        string filename = fileInfo.Name;
+                        string filename = f.Name;
                         string dir = filePath + "\\" + filename;
                         if (System.IO.File.Exists(dir))
                         {
@@ -230,12 +256,13 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
         //[Authorize("Manager")]
         [HttpPut("CancelTask")]
-        public async Task<IActionResult> TaskCancel(Guid Id) { 
-     
-            var task=await _tasks.GetTaskById(Id);
-            if (task != null&& task.Status=="Responded") return Ok(await _tasks.UpdateTaskStatus(Id, 3));
+        public async Task<IActionResult> TaskCancel(Guid Id)
+        {
+
+            var task = await _tasks.GetTaskById(Id);
+            if (task != null && task.Status == "Responded") return Ok(await _tasks.UpdateTaskStatus(Id, 3));
             else return NotFound();
-        
+
         }
         //[Authorize("Manager")]
         [HttpPut("CloseTask")]
@@ -296,8 +323,8 @@ namespace Group4.FacilitiesReport.API.Controllers
                         passcount + " File(s) uploaded. " +
                         errorcount + " File(s) fail.";
                 }
-                
-                
+
+
             }
             catch (Exception ex)
             {

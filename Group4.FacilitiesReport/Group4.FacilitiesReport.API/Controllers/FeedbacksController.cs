@@ -64,6 +64,18 @@ namespace Group4.FacilitiesReport.API.Controllers
             return Ok(feedbacks);
         }
         //[Authorize("Manager")]
+        [HttpGet("Cate/{CateId}")]
+        public async Task<IActionResult> GetFeedbackByCate(string CateId)
+        {
+            var feedbacks = await this._ifeedback.GetFeedbacksByCate(CateId);
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+            return Ok(feedbacks);
+        }
+
+        //[Authorize("Manager")]
         [HttpGet("Count")]
         public async Task<IActionResult> CountFeedback(string beginDate, string endDate)
         {
@@ -74,11 +86,44 @@ namespace Group4.FacilitiesReport.API.Controllers
                                       System.Globalization.CultureInfo.InvariantCulture));
             return Ok(count);
         }
+        [HttpGet("CountFeedbackClosedToday")]
+        public async Task<IActionResult> CountFeedbackClosedToday()
+        {
+            int count = await this._ifeedback.CountFeedbackClosedByDate();
+
+            return Ok(count);
+        }
+        [HttpGet("CountFeedbackClosed")]
+        public async Task<IActionResult> CountTaskClosed()
+        {
+            int count = await _ifeedback.CountFeedbackClosed();
+            return Ok(count);
+        }
+        //[Authorize("Manager")]
+        [HttpGet("CountLastWeek")]
+        public async Task<IActionResult> CountWeek()
+        {
+            var count = await this._ifeedback.RecentGraphFeedback();
+            return Ok(count);
+        }
+        //[Authorize("Manager")]
+        [HttpGet("CountLastYear")]
+        public async Task<IActionResult> CountYear()
+        {
+            var count = await this._ifeedback.MonthlyGraphFeedback();
+            return Ok(count);
+        }
+        [HttpGet("CountUser")]
+        public async Task<IActionResult> CountUser()
+        {
+            var count = await this._ifeedback.RecentUserCreateFeedback();
+            return Ok(count);
+        }
         [HttpGet("GetFile")]
         public async Task<IActionResult> GetFile(Guid feedbackId)
         {
             List<string> fileUrl = new List<string>();
-            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            string hostUrl = $"{this.Request.Scheme}://{this.Request.Host}//{this.Request.PathBase}";
             try
             {
                 string filePath = GetFilePath(feedbackId);
@@ -88,7 +133,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                     FileInfo[] fileInfos = fileInfo.GetFiles();
                     foreach (FileInfo f in fileInfos)
                     {
-                        string filename = fileInfo.Name;
+                        string filename = f.Name;
                         string dir = filePath + "\\" + filename;
                         if (System.IO.File.Exists(dir))
                         {
@@ -189,7 +234,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 DateTime = DateTime.Now,
                 Status = "Waiting",
             });
-            response.ResponseCode =msg.ResponseCode;
+            response.ResponseCode = msg.ResponseCode;
             response.ErrorMessage = msg.ErrorMessage;
             response.Result = "Feedback " + feedbackId + " create Successful!\n" +
                 passcount + " File(s) uploaded.\n" +

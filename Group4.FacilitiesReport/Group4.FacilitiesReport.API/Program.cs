@@ -29,6 +29,7 @@ namespace Group4.FacilitiesReport.API
             builder.Services.AddScoped<ILocation, LocationRepo>();
             builder.Services.AddScoped<ICate, CateRepo>();
             builder.Services.AddScoped<IFeedback, FeedbackRepo>();
+            builder.Services.AddScoped<IConfig, ConfigRepo>();
             //builder.Services.AddScoped<EmployeeObject, TblUser>();
             builder.Services.AddScoped<IRefreshHandler, RefresHandler>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -79,7 +80,7 @@ namespace Group4.FacilitiesReport.API
                     ClockSkew = TimeSpan.Zero,
                 };
             });
-            
+
             //              JwtSetting
             var _jwtSetting = builder.Configuration.GetSection("JwtSettings");
 
@@ -93,7 +94,7 @@ namespace Group4.FacilitiesReport.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            
+
 
             var app = builder.Build();
 

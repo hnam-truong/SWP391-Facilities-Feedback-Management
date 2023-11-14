@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Group4.FacilitiesReport.Repositories
 {
-    internal class ConfigRepo : IConfig
+    public class ConfigRepo : IConfig
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace Group4.FacilitiesReport.Repositories
             _mapper = mapper;
         }
 
-        public async Task<APIResponse> Config(string variable, object value)
+        public async Task<APIResponse> Config(string variable, string value)
         {
             APIResponse response = new APIResponse();
             var item = await _context.TblConfigs.FirstOrDefaultAsync(c => c.Variable == variable);
@@ -26,7 +26,7 @@ namespace Group4.FacilitiesReport.Repositories
                 item.Value = value;
                 await _context.SaveChangesAsync();
                 response.ResponseCode = 200;
-                response.Result = variable + ":" + value.ToString();
+                response.Result = item.Variable + ":" + item.Value;
             }
             return response;
         }
@@ -42,7 +42,7 @@ namespace Group4.FacilitiesReport.Repositories
             return response;
         }
 
-        public async Task<object> ValueOf(string variable)
+        public async Task<string> ValueOf(string variable)
         {
             var item = await _context.TblConfigs.FirstOrDefaultAsync(c => c.Variable == variable);
             if (item != null && item.Value != null)

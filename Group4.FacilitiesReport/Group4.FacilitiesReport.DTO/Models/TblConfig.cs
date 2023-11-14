@@ -5,8 +5,8 @@ namespace Group4.FacilitiesReport.DTO.Models
 {
     public partial class TblConfig
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public string? Variable { get; set; }
-        public object? Value { get; set; }
+        public string? Value { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace Group4.FacilitiesReport.Interface
     public interface IConfig
     {
         public Task<List<ConfigDTO>> GetConfig();
-        public Task<APIResponse> Config(string variable, object value);
-        public Task<object> ValueOf(string variable);
+        public Task<APIResponse> Config(string variable, string value);
+        public Task<string> ValueOf(string variable);
     }
 }

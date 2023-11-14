@@ -20,7 +20,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
 
-        public UserController(IUser IUser, IMapper mapper,FacilitiesFeedbackManagement_SWP391Context context)
+        public UserController(IUser IUser, IMapper mapper, FacilitiesFeedbackManagement_SWP391Context context)
         {
             _iUser = IUser;
             _mapper = mapper;
@@ -45,6 +45,12 @@ namespace API.Controllers
         public async Task<IActionResult> CountUserProvideFb()
         {
             int count = await _iUser.CountUsersWhoProvidedFeedback();
+            return Ok(count);
+        }
+        [HttpGet("CountUserProvideFbToday")]
+        public async Task<IActionResult> CountUserProvideFbToday()
+        {
+            int count = await _iUser.CountUsersWhoProvidedFeedbackToday();
             return Ok(count);
         }
         //[Authorize("Manager")]
@@ -92,17 +98,17 @@ namespace API.Controllers
             return Ok(data);
         }
 
-        
+
         [HttpGet("Login")]
         public async Task<IActionResult> Login(string Email, string Password)
         {
-            var user = await _iUser.Login(Email,Password);
+            var user = await _iUser.Login(Email, Password);
             if (user == null)
             {
                 return Unauthorized();
             }
-          
-            
+
+
             return Ok(user);
         }
 
@@ -121,13 +127,13 @@ namespace API.Controllers
         [HttpPost("AddUser")]
         public async Task<IActionResult> AddUser(string UserId, string Email, string Username, string Password, int RoleId)
         {
-            
+
 
             var user = await _iUser.AddUser(new User
             {
                 UserID = UserId,
                 Email = Email,
-                Username=Username,
+                Username = Username,
                 Password = Password,
                 RoleId = RoleId,
                 Status = "Active"
@@ -142,7 +148,7 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        
+
         [HttpPut("UpdateUser/{UserId}")]
         public async Task<IActionResult> UpdateUser(string UserId, string UserName, string Email, string Password)
         {
@@ -167,9 +173,9 @@ namespace API.Controllers
         {
             return Ok(await _iUser.UpdateStatus(UserId, 0));
         }
-     
-        
-        
+
+
+
 
     }
 }

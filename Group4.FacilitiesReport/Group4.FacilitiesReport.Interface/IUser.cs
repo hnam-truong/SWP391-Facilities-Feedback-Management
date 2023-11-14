@@ -17,6 +17,7 @@ namespace Group4.FacilitiesReport.Interface
         public Task<int> CountUsersActive();
         public Task<int> CountUsersBanned();
         public Task<int> CountUsersWhoProvidedFeedback();
+        public Task<int> CountUsersWhoProvidedFeedbackToday();
         public Task<List<EmployeeObject>> CountEmployeeTask(string CateId);
         public Task<User?> Login(string Email, string Password);
         public Task<APIResponse> UpdateStatus(string UserId, int Status);
