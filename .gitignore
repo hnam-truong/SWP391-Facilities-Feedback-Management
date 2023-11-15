@@ -1,9 +1,8 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
+.DS_Store
 
 # testing
 /coverage
@@ -22,13 +21,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-Group4.FacilitiesReport/Group4.FacilitiesReport.API/Logs/API_Log
-/Group4.FacilitiesReport/.vs/Group4.FacilitiesReport/FileContentIndex
-/Group4.FacilitiesReport/Group4.FacilitiesReport.DTO/obj/Debug/net7.0/Group4.FacilitiesReport.DTO.assets.cache
-*.cache
-/Group4.FacilitiesReport/Group4.FacilitiesReport.Interface/obj/Debug/net7.0/Group4.FacilitiesReport.Interface.assets.cache
-*.editorconfig
-*.cs
-/Group4.FacilitiesReport/Group4.FacilitiesReport.Repositories/obj/Debug/net7.0/Group4.FacilitiesReport.Repositories.assets.cache
-/Group4.FacilitiesReport/Group4.FacilitiesReport.API/obj/Debug/net7.0/Group4.FacilitiesReport.API.assets.cache
-/Group4.FacilitiesReport/Group4.FacilitiesReport.Interface/obj/Debug/net7.0/Group4.FacilitiesReport.Interface.AssemblyInfo.cs
+package-lock.json
+yarn.lock
+
+commit.sh
