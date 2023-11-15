@@ -1,0 +1,2 @@
+Description
+Welcome to my project's documentation. I'm Nam Truong, and this is where I'll be sharing my work, ideas, and creations with you. This project is an exploration of my interests and endeavors. Whether it's software, hardware, or art, you'll find a variety of projects and resources here.
