@@ -206,7 +206,7 @@ namespace Group4.FacilitiesReport.DTO.Models
                     .HasConstraintName("FK__tbl_Task__Employ__5DCAEF64");
 
                 entity.HasOne(d => d.Feedback)
-                    .WithMany(p => p.TblTask)
+                    .WithMany(p => p.Tasks)
                     .HasForeignKey(d => d.FeedbackId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__tbl_Task__Feedba__5CD6CB2B");

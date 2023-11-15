@@ -426,7 +426,6 @@ D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.AssemblyInfoInputs.cache
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.AssemblyInfo.cs
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.csproj.CoreCompileInputs.cache
-D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.MvcApplicationPartsAssemblyInfo.cs
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\Group4.FacilitiesReport.API.MvcApplicationPartsAssemblyInfo.cache
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\staticwebassets\msbuild.Group4.FacilitiesReport.API.Microsoft.AspNetCore.StaticWebAssets.props
 D:\code.Capstone\SWP391-Project\Group4.FacilitiesReport\Group4.FacilitiesReport.API\obj\Debug\net7.0\staticwebassets\msbuild.build.Group4.FacilitiesReport.API.props

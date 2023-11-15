@@ -7,7 +7,7 @@ namespace Group4.FacilitiesReport.DTO.Models
     {
         public TblFeedback()
         {
-            TblTask = new HashSet<TblTask>();
+            Tasks = new HashSet<TblTask>();
         }
 
         public Guid FeedbackId { get; set; }
@@ -25,6 +25,6 @@ namespace Group4.FacilitiesReport.DTO.Models
         public virtual TblCategoriesProblem Cate { get; set; } = null!;
         public virtual TblLocation Location { get; set; } = null!;
         public virtual TblUser User { get; set; } = null!;
-        public virtual ICollection<TblTask> TblTask { get; set; }
+        public virtual ICollection<TblTask> Tasks { get; set; }
     }
 }
