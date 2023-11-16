@@ -23,7 +23,7 @@ namespace Group4.FacilitiesReport.Repositories
             _logger = logger;
             _config = config;
         }
-        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks).ThenInclude(t=>t.Employee)
+        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks).ThenInclude(t=>t.Employee).Include(f => f.Tasks).ThenInclude(t => t.Manager)
                     .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).OrderByDescending(f => f.Notify).ThenBy(f => f.DateTime);
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {

@@ -89,7 +89,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Casual Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",

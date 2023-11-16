@@ -56,7 +56,7 @@ export default function MaxFeedback() {
     return (
         <div>
             <FormControl sx={{ m: 1, width: '25ch', mt: 5 }} variant="outlined">
-                <label>Max Feedback for each Category in each Room </label>
+                <label>Max Feedback for each Category in each Location </label>
                 <OutlinedInput
                     id="outlined-adornment"
                     endAdornment={<InputAdornment position="end">Task</InputAdornment>}

@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PropTypes from 'prop-types';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -26,7 +27,9 @@ const StyledContainer = styled(Container)`
     padding: '64px',
   }
 `;
-
+StyledContainer.propTypes = {
+    children: PropTypes.node,
+};
 const StyledSelect = styled(Select)(() => ({
     width: '100%',
     borderRadius: '12px',
@@ -76,7 +79,7 @@ const StyledForm = styled('form')(() => ({
     backgroundColor: '#fff',
     borderRadius: '8px',
     padding: '24px',
-    boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+    // boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
 }));
 
 const StyledRow = styled(Box)(() => ({
@@ -131,7 +134,6 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     const [showModal, setShowModal] = useState(false);
     const [roomOptions, setRoomOptions] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
-    const [dateTime, setDateTime] = useState(new Date().toLocaleString());
     const [selectedImages, setSelectedImages] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [filteredRoomOptions, setFilteredRoomOptions] = useState([]);
@@ -141,6 +143,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [images, setImages] = useState([]);
     const [note, setNote] = useState('');
+    const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
 
     const isProcessing = selectedFeedback.status === "Processing";
     const isWaiting = selectedFeedback.status === "Waiting";
@@ -211,83 +214,52 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     useEffect(() => { if (formState.errors.file) setSelectedImages(null); }, [formState.errors.file]);
 
     const onSubmit = async (data) => {
-        const { Title, MoreDetails } = data;
-        const { value: campus = '' } = selectedCampus || {};
-        const { value: room = '' } = selectedRoom || {};
-        const { value: category = '' } = selectedCategory || {};
 
-        const formData = new FormData();
-        formData.set('Campus', campus);
-        formData.set('Room', room);
-        formData.set('Category', category);
-        formData.set('Title', Title);
-        formData.set('MoreDetails', MoreDetails);
-        formData.set('status', 'Open');
-        // if (selectedImages) {
-        //   formData.set('image', selectedImages);
-        // }
-        if (selectedImages && selectedImages.length) {
-            selectedImages.forEach((image, index) => {
-                formData.append('fileCollection', image.file, image.file.name);
-            });
+        //Đổi trạng thái feedback to Processing
+        try {
+            var option = {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({}),
+            };
+            const response = await fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + selectedFeedback.feedbackId + "&response=" + selectedFeedback.feedbackId, option);
+            const data = await response.text();
+            console.log("Data received:", data);
+            // Handle the data received from the server
+        } catch (error) {
+            console.error("Error: " + error.message);
         }
+
+        //Giao task
         try {
             const response = await fetch("https://localhost:7157/CreateTask?"
                 + "FeedbackId=" + selectedFeedback.feedbackId
                 + "&EmployeeId=" + selectedEmployee.value
                 + "&ManagerId=" + localStorage.getItem('userID')
                 + "&Note=" + note,
-                { method: 'POST', body: formData });
+                { method: 'POST' });
             const responseData = await response.json();
             console.log(responseData);
+            if (responseData.responseCode === 400) {
+                setErrorNotificationMessage(responseData.errorMessage);
+                setShowErrorNotification(true);
+            } else if (responseData.responseCode === 200) {
+                // Notify when the report is created successfully
+                setShowSuccessNotification(true);
 
-            handleAcceptReport(selectedFeedback.feedbackId)
-            // Notify when the report is created successfully
-            setShowSuccessNotification(true);
-            setShowModal(false);
-
-            // window.location.reload();
+                window.location.reload();
+            }
         } catch (error) {
             console.error(error);
+            setErrorNotificationMessage("An error occurred while sending Task.");
             setShowErrorNotification(true);
         }
     };
 
-    const handleFileChange = (event) => {
-        const fileArray = Array.from(event.target.files).map((file) => {
-            return {
-                file,
-                preview: URL.createObjectURL(file)
-            };
-        });
-        setSelectedImages((prevImages) => prevImages.concat(fileArray));
-    };
 
-    // Cleanup the object URLs after using them
-    useEffect(() => {
-        return () => {
-            selectedImages.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [selectedImages]);
-    const handleImageClick = (image) => {
-        setPreviewUrl(image);
-        setShowModal(true);
-    };
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDateTime(new Date().toLocaleString());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const handleCampusChange = (selectedOption) => {
-        setSelectedCampus(selectedOption);
-
-        // Enable Room selection when a Campus is chosen
-        setRoomDisabled(false);
-    };
-
-    const handleAcceptReport = (feedbackId) => {
+    const handleAcceptReport = (feedbackId, response) => {
         var option = {
             method: 'PUT',
             headers: {
@@ -298,19 +270,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
         fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
             .then((response) => { response.text() })
             .then((data) => {
-                setFeedbacks((prevFeedbacks) =>
-                    prevFeedbacks.map((prevFeedback) =>
-                        prevFeedback.feedbackId === feedbackId
-                            ? { ...prevFeedback, status: "Processing" }
-                            : prevFeedback
-                    )
-                );
-                // Find the feedback and set it to selectedFeedback
-                const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
-                setSelectedFeedback(selectedFeedback);
-                setDialogOpen(true);
-                console.log(selectedFeedback)
-                console.log('Setting dialogOpen to true');
+
             })
             .catch((error) => {
                 console.error("Error: " + error.message);
@@ -352,11 +312,11 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
                 <div>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
+                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
                 </div>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>Title</Typography>
-                    <Typography variant="body1" style={{ fontSize: '1.5rem' }}>{selectedFeedback.title}</Typography>
+                    <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1.2rem' }}>Title</Typography>
+                    <Typography variant="body1" mb={3} style={{ fontSize: '1.5rem' }}>{selectedFeedback.title}</Typography>
                 </div>
                 <StyledRow>
                     <div>
@@ -376,11 +336,11 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
 
                 </StyledRow>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>More Details</Typography>
+                    <Typography variant="h5" fontWeight="medium" mt={3} mb={1} style={{ fontSize: '1.2rem' }}>More Details</Typography>
                     <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.description}</Typography>
                 </div>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1}>Images</Typography>
+                    <Typography variant="h5" fontWeight="medium" mt={3} mb={1}>Images</Typography>
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '2px', overflow: 'auto', maxHeight: '400px' }}>
                         {images.map((image, index) => (
                             <Box key={index} sx={{ cursor: 'pointer', width: '120px', height: '120px' }} onClick={() => handleImageClick(image)}>
@@ -391,7 +351,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                 </div>
                 {((localStorage.getItem('userRole') == "Manager") && (isWaiting || isProcessing || isResponded)) && (
                     <div>
-                        <Typography variant="h6" fontWeight="medium" mb={1}>Assign to Employee</Typography>
+                        <Typography variant="h6" fontWeight="medium" mt={3} mb={1}>Assign to Employee</Typography>
                         <StyledSelect
                             name="Employee"
                             id="Employee"
@@ -401,16 +361,6 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                             required
                             isSearchable
                         />
-                        <Typography variant="h5" fontWeight="medium" mb={1} mt={3} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
-                        {selectedFeedback.tasks.map((task) => (
-
-                            <div key={task.taskId}>
-                                <Typography style={{ fontSize: '1rem' }}>Name:{task.employee.username}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
-                            </div>
-                        ))}
                     </div>
                 )}
 
@@ -426,24 +376,34 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                             value={note}
                             onChange={handleNoteChange}
                         />
+
+                        <Typography variant="h5" fontWeight="medium" mb={1} mt={6} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
+                        {selectedFeedback.tasks
+                            .filter(task => task.status !== "Cancelled" && task.status !== "Removed")
+                            .map((task) => (
+                                <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
+                                    <Typography style={{ fontSize: '1rem' }}>Manager name: {task.manager.username}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Name: {task.employee.username}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
+                                </div>
+                            )
+                            )}
+
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                             <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Task</StyledButton>
                         </Box>
                     </div>
                 )}
             </StyledForm>
-            {showModal && (
-                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
-                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
-                </StyledModal>
-            )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
                     icon="check"
                     title="Success"
                     content="Task sent successfully"
-                    // dateTime={new Date().toLocaleString()}
+                    dateTime=""
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
                     close={() => setShowSuccessNotification(false)}
@@ -453,8 +413,9 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                 <MDSnackbar
                     color="error"
                     icon="warning"
+                    dateTime=""
                     title="Error"
-                    content="An error occurred while sending Task."
+                    content={errorNotificationMessage}
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}

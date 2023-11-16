@@ -334,21 +334,24 @@ export default function data() {
             } variant="gradient"
             size="sm"
           />
-          {/* {feedback.status === "Processing" && (
-            <div className="hover-content">
-              {feedback.tasks
-                .filter((task) => task.employee && task.employee.username)
-                .map((task) => (
-                  <p key={task.id}>
-                    {task.employee.username || 'Unknown Employee'}
-                  </p>
-                ))
-              }
-            </div>
-          )} */}
+
         </MDBox>
       ),
-      time: <Time day={feedback.dateTime} />,
+      time: (
+        <>
+          <Time day={feedback.dateTime} />
+          <Dialog
+            open={showHelperFunction}
+            onClose={() => setShowHelperFunction(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+
+            maxWidth="80vw" // Make the dialog take up 80% of the viewport width
+            PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} />
+          </Dialog>
+        </>
+      ),
       action: (() => {
         switch (feedback.status) {
           case "Waiting":
@@ -364,16 +367,6 @@ export default function data() {
                     Reject
                   </MDTypography>
                 </IconButton>
-                <Dialog
-                  open={showHelperFunction}
-                  onClose={() => setShowHelperFunction(false)}
-                  BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-
-                  maxWidth="80vw" // Make the dialog take up 80% of the viewport width
-                  PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
-                >
-                  <HelperFunction selectedFeedback={selectedFeedback} />
-                </Dialog>
               </div>
             );
           case "Processing":

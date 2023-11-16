@@ -138,3 +138,17 @@ D:\Project\Feedback-Facilities\Back-API\Group4.FacilitiesReport\Group4.Facilitie
 D:\Project\Feedback-Facilities\Back-API\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.pdb
 D:\Project\Feedback-Facilities\Back-API\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.genruntimeconfig.cache
 D:\Project\Feedback-Facilities\Back-API\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\ref\Group4.FacilitiesReport.DTO.dll
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.deps.json
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.runtimeconfig.json
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.dll
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\bin\Debug\net7.0\Group4.FacilitiesReport.DTO.pdb
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.csproj.AssemblyReference.cache
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.AssemblyInfoInputs.cache
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.AssemblyInfo.cs
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.csproj.CoreCompileInputs.cache
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.dll
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\refint\Group4.FacilitiesReport.DTO.dll
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.pdb
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\Group4.FacilitiesReport.DTO.genruntimeconfig.cache
+D:\Project\Feedback-Facilities\Back-end\Group4.FacilitiesReport\Group4.FacilitiesReport.DTO\obj\Debug\net7.0\ref\Group4.FacilitiesReport.DTO.dll
