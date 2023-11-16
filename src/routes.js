@@ -12,8 +12,14 @@ import EmployeeTask from "layouts/employee/my-task";
 import Error404 from "layouts/error/error404";
 import SystemHandler from "layouts/system-handler";
 
+
+// ...
+
+
+
 // @mui icons
 import Icon from "@mui/material/Icon";
+import EmployeeTaskManager from "layouts/user/my-task";
 
 const userRole = localStorage.getItem("userRole");
 const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -47,13 +53,14 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    name: "Employee Task",
+    key: "employee-task",
+    icon: <Icon fontSize="small">task</Icon>,
+    route: "/employee-task",
+    component: <EmployeeTaskManager />,
     roles: ["Manager"],
   },
+
   {
     type: "collapse",
     name: "Categories",
@@ -70,7 +77,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
-    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",
@@ -79,7 +86,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",
@@ -88,8 +95,9 @@ const routes = [
     icon: <Icon fontSize="small">task</Icon>,
     route: "/my-tasks",
     component: <EmployeeTask />,
-    roles: ["Task Employee", "Manager"]
+    roles: ["Task Employee"]
   },
+
   {
     type: "collapse",
     name: "System Handler",
@@ -97,7 +105,7 @@ const routes = [
     icon: <Icon fontSize="small">settings</Icon>,
     route: "/system-handler",
     component: <SystemHandler />,
-    roles: ["System Handler", "Manager"]
+    roles: ["System Handler"]
   },
   {
     type: "collapse",

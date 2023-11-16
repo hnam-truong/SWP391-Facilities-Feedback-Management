@@ -2,11 +2,8 @@
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import HelperFunction from "./HelperFunction";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
+import ReactDOM from 'react-dom';
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -18,149 +15,25 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles((theme) => ({
-  dialog: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // This makes the dialog transparent
-  },
-  paper: {
-    width: '70%', // This makes the dialog 70% of the screen width
-    maxHeight: '70%', // This makes the dialog 70% of the screen height
-  },
-}));
+import Dialog from '@material-ui/core/Dialog';
+import HelperFunction from "./HelperFunction";
 
 
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
-  const [showHelperFunction, setShowHelperFunction] = useState(false);
+  const [cateFilter, setCateFilter] = useState("All");
+  const [authorFilter, setAuthorFilter] = useState("All");
+  const [timeExpireFilter, setTimeExpireFilter] = useState("All");
   const [categories, setCategories] = useState([]);
-  const [showForm, setShowForm] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [showHelperFunction, setShowHelperFunction] = useState(false);
 
   const handleHelperFunctionClick = (feedback) => {
     setSelectedFeedback(feedback);
     setShowHelperFunction(true);
   };
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-
-
-  const handleRejectReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Rejected" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Rejected" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-    setOpen(true); // Show the popup
-  }
-
-  const RespondForm = () => {
-    const classes = useStyles(); // Add this line
-    const handleClose = () => {
-      setOpen(false);
-    };
-  };
-  // useEffect(() => {
-  //   if (selectedFeedback) {
-  //     fetchEmployees(selectedFeedback.cate.id);
-  //   }
-  // }, [selectedFeedback]);
-  useEffect(() => {
-    // Define the URL of your API endpoint to fetch categories
-    const categoriesUrl = "https://localhost:7157/api/Cate/GetAllCate";
-
-    // Make a GET request to fetch categories
-    fetch(categoriesUrl)
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []);
-
-  useEffect(() => {
-    // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
-
-    // Make a GET request to your API endpoint
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => setFeedbacks(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
-  const fetchData = (filterType, filterValue) => {
-    let apiUrl;
-
-    if (filterValue === "All") {
-      apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
-    } else {
-      apiUrl = `https://localhost:7157/api/Feedbacks/${filterType}?${filterType}=${filterValue}`;
-    }
-
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => setFeedbacks(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  };
-
-
-  const handleStatusChange = (event) => {
-    const status = event.target.value;
-    setStatusFilter(status);
-    fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
-  };
-
-
-
-  const handleCancelReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Waiting" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/CancelFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Waiting" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-    setShowForm(true);
-  }
 
   const handleAcceptReport = (feedbackId) => {
     var option = {
@@ -190,9 +63,113 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-    setShowForm(true);
+  };
 
+  const handleRejectReport = (feedbackId) => {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Rejected" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Rejected" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+    setOpen(true); // Show the popup
   }
+
+  const RespondForm = () => {
+    const handleClose = () => {
+      setOpen(false);
+    };
+  }
+
+
+  useEffect(() => {
+    // Define the URL of your API endpoint to fetch categories
+    const categoriesUrl = "https://localhost:7157/api/Cate/GetAllCate";
+
+    // Make a GET request to fetch categories
+    fetch(categoriesUrl)
+      .then((response) => response.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching categories:", error));
+  }, []);
+
+  useEffect(() => {
+    // Define the URL of your API endpoint
+    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+
+    // Make a GET request to your API endpoint
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setFeedbacks(data))
+      .catch((error) => console.error("Error fetching data:", error));
+
+  }, [feedbacks.feedbackId]);
+
+  const fetchData = (filterType, filterValue) => {
+    let apiUrl;
+
+    if (filterValue === "All") {
+      apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+    } else {
+      apiUrl = `https://localhost:7157/api/Feedbacks/${filterType}?${filterType}=${filterValue}`;
+    }
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setFeedbacks(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  };
+
+  const handleCateChange = (event) => {
+    const catLoc = event.target.value;
+    setCateFilter(catLoc);
+    fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
+  };
+
+  const handleStatusChange = (event) => {
+    const status = event.target.value;
+    setStatusFilter(status);
+    fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
+  };
+
+  const handleCancelReport = (feedbackId) => {
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Waiting" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/CancelFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Waiting" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+  };
 
   const handleCloseReport = (feedbackId) => {
     var option = {
@@ -216,19 +193,35 @@ export default function data() {
       .catch((error) => {
         console.error("Error: " + error.message);
       });
-    setShowForm(true);
-  }
-
+  };
 
   const handleTaskReport = (feedbackId) => {
-    // ... (existing code)
-    // Set showForm to true when the Task button is clicked
-    setShowForm(true);
-  }
+    var option = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: "Processing" }),
+    };
+    fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+      .then((response) => { response.text() })
+      .then((data) => {
+        setFeedbacks((prevFeedbacks) =>
+          prevFeedbacks.map((prevFeedback) =>
+            prevFeedback.feedbackId === feedbackId
+              ? { ...prevFeedback, status: "Processing" }
+              : prevFeedback
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error: " + error.message);
+      });
+  };
 
   const handleNoti = (feedbackId) => {
     fetch(
-      `/Feedbacks/Notify?feedbackId=` + feedbackId,
+      `https://localhost:7157/api/Feedbacks/Notify?feedbackId=` + feedbackId,
       {
         method: "PUT",
         headers: {
@@ -274,7 +267,7 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day, expire }) => {
+  const Time = ({ day }) => {
     // Create a new Date object
     const date = new Date(day);
 
@@ -299,10 +292,11 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter((feedback) =>
       (feedback.status === "Waiting" || feedback.status === "Processing" || feedback.status === "Responded") &&
-      (statusFilter === "All" || feedback.status === statusFilter)
+      (statusFilter === "All" || feedback.status === statusFilter) &&
+      (cateFilter === "All" || feedback.cate.description === cateFilter)
     )
     .sort((a, b) => {
-      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+      return b.notify - a.notify || new Date(b.dateTime) - new Date(a.dateTime);
     })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
@@ -316,7 +310,14 @@ export default function data() {
       ),
 
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <Link><h4 style={{ color: 'blue' }}>{feedback.title}</h4></Link>,
+      title:
+        <div>
+          <IconButton onClick={() => { handleHelperFunctionClick(feedback); }}>
+            <MDTypography>
+              <h6>{feedback.title}</h6>
+            </MDTypography>
+          </IconButton>
+        </div>,
       cate: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1} className="status-cell">
@@ -333,15 +334,27 @@ export default function data() {
             } variant="gradient"
             size="sm"
           />
+          {/* {feedback.status === "Processing" && (
+            <div className="hover-content">
+              {feedback.tasks
+                .filter((task) => task.employee && task.employee.username)
+                .map((task) => (
+                  <p key={task.id}>
+                    {task.employee.username || 'Unknown Employee'}
+                  </p>
+                ))
+              }
+            </div>
+          )} */}
         </MDBox>
       ),
-      time: <Time day={feedback.dateTime} /*expire="48 hours"*/ />,
+      time: <Time day={feedback.dateTime} />,
       action: (() => {
         switch (feedback.status) {
           case "Waiting":
             return (
               <div>
-                <IconButton onClick={() => { handleAcceptReport(feedback.feedbackId); handleHelperFunctionClick(feedback); }}>
+                <IconButton onClick={() => { handleHelperFunctionClick(feedback) }}>
                   <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
                     Accept
                   </MDTypography>
@@ -351,8 +364,6 @@ export default function data() {
                     Reject
                   </MDTypography>
                 </IconButton>
-
-
                 <Dialog
                   open={showHelperFunction}
                   onClose={() => setShowHelperFunction(false)}
@@ -373,7 +384,6 @@ export default function data() {
                     Cancel
                   </MDTypography>
                 </IconButton>
-
               </div>
             );
           case "Responded":
@@ -384,12 +394,11 @@ export default function data() {
                     Close
                   </MDTypography>
                 </IconButton>
-                <IconButton onClick={() => handleTaskReport(feedback.feedbackId)}>
+                {/* <IconButton onClick={() => { handleHelperFunctionClick(feedback); handleTaskReport(feedback.feedbackId) }}>
                   <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
                     Task
                   </MDTypography>
-                </IconButton>
-
+                </IconButton> */}
               </div>
             );
         }
@@ -399,7 +408,7 @@ export default function data() {
 
   return {
     columns: [
-      { Header: (<RespondForm />), accessor: "star", align: "center", width: "0%" },
+      { Header: (<RespondForm />), accessor: "star", align: "center", width: "0%", },
       { Header: "author", accessor: "author", align: "left" },
       {
         Header: "title",
@@ -408,7 +417,22 @@ export default function data() {
       },
       {
         Header: (
-          "cat/loc"
+          <span>
+            cate/loc:{" "}
+            <Select
+              value={cateFilter}
+              onChange={handleCateChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate.id} value={cate.description}>
+                  {cate.description}
+                </MenuItem>
+              ))}
+            </Select>
+          </span>
         ),
         accessor: "cate",
         align: "left",
@@ -433,7 +457,7 @@ export default function data() {
         accessor: "status",
         align: "center",
       },
-      { Header: "time/expire", accessor: "time", align: "center" },
+      { Header: "day/time", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
 
     ],
@@ -441,5 +465,4 @@ export default function data() {
     rows: feedbackRows,
 
   };
-
 }

@@ -174,9 +174,9 @@ function Basic() {
                 textAlign="center"
                 ml={-1}
                 mt={3}>
-                
+                or
               </MDBox>
-              {/* <GoogleLogin
+              <GoogleLogin
                 clientId="YOUR_GOOGLE_CLIENT_ID"
                 render={(renderProps) => (
                   <button
@@ -191,7 +191,7 @@ function Basic() {
                 onSuccess={onSuccess}
                 onFailure={onFailure}
                 cookiePolicy={'single_host_origin'}
-              /> */}
+              />
             </MDBox>
           </MDBox>
         </MDBox>

@@ -7,6 +7,9 @@ import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
+import axios from 'axios';
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 const StyledContainer = styled(Container)(() => ({
   display: 'flex',
@@ -43,7 +46,7 @@ const StyledRow = styled(Box)(() => ({
 const StyledSelect = styled(Select)(() => ({
   width: '100%',
   borderRadius: '12px',
-  zIndex: 1000,
+  zIndex: 999,
   '& .MuiSelect-root': {
     padding: '16px',
     borderColor: '#ccc',
@@ -136,34 +139,35 @@ const StyledImage = styled('img')(() => ({
 const Create = React.memo(() => {
   const { register, handleSubmit, formState, setValue } = useForm();
   const [selectedCampus, setSelectedCampus] = useState(null);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [roomOptions, setRoomOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
   const [selectedImages, setSelectedImages] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [filteredRoomOptions, setFilteredRoomOptions] = useState([]);
-  const [roomDisabled, setRoomDisabled] = useState(true);
+  const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
+  const [locationDisabled, setLocationDisabled] = useState(true);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showErrorNotification, setShowErrorNotification] = useState(false);
+  const [errorNotificationMessage, setErrorNotificationMessage] = useState("An error occurred while sending the report.");
 
   const campusOptions = useMemo(() => [{ value: 'FPTU HCM', label: 'FPTU HCM' }, { value: 'NVH', label: 'NVH' }], []);
 
   useEffect(() => {
-    const fetchRoomOptions = async () => {
+    const fetchLocationOptions = async () => {
       try {
         const response = await fetch('https://localhost:7157/api/Location/GetAllLocation');
         const data = await response.json();
-        const options = data.map((room) => ({ value: room.locationId, label: room.locationId }));
+        const options = data.map((location) => ({ value: location.locationId, label: location.locationId }));
 
         const filteredOptions = selectedCampus?.value === 'NVH'
-          ? options.filter((room) => room.label.startsWith('NVH'))
-          : options.filter((room) => !room.label.startsWith('NVH'));
+          ? options.filter((location) => location.label.startsWith('NVH'))
+          : options.filter((location) => !location.label.startsWith('NVH'));
 
-        setRoomOptions(options);
-        setFilteredRoomOptions(filteredOptions);
+        setLocationOptions(options);
+        setFilteredLocationOptions(filteredOptions);
       } catch (error) {
         console.error(error);
       }
@@ -181,7 +185,7 @@ const Create = React.memo(() => {
     };
 
     fetchCategoryOptions();
-    fetchRoomOptions();
+    fetchLocationOptions();
   }, [selectedCampus]);
 
 
@@ -190,69 +194,65 @@ const Create = React.memo(() => {
   const onSubmit = async (data) => {
     const { Title, MoreDetails } = data;
     const { value: campus = '' } = selectedCampus || {};
-    const { value: room = '' } = selectedRoom || {};
+    const { value: location = '' } = selectedLocation || {};
     const { value: category = '' } = selectedCategory || {};
 
     const formData = new FormData();
     formData.set('Campus', campus);
-    formData.set('Room', room);
+    formData.set('Location', location);
     formData.set('Category', category);
     formData.set('Title', Title);
     formData.set('MoreDetails', MoreDetails);
-    formData.set('status', 'Open');
-    // if (selectedImages) {
-    //   formData.set('image', selectedImages);
-    // }
-    if (selectedImages && selectedImages.length) {
-      selectedImages.forEach((image, index) => {
-        formData.append('fileCollection', image.file, image.file.name);
-      });
-    }
+   // If selectedImages is an array of File objects
+   if (selectedImages && selectedImages.length) {
+    selectedImages.forEach((image) => {
+      console.log('Appending file:', image); // Log file being appended
+      formData.append('fileCollection', image);
+    });
+  }
+
     try {
-      const response = await fetch("https://localhost:7157/api/Feedbacks/Create?"
-        + "userId=" + localStorage.getItem('userID')
-        + "&title=" + Title
-        + "&description=" + MoreDetails
-        + "&cateId=" + category
-        + "&locatoinId=" + room,
-
-        { method: 'POST', body: formData });
-      const responseData = await response.json();
-      console.log(responseData);
-     
-      // Notify when the report is created successfully
-      setShowSuccessNotification(true);
-
-      // Clear all form data
-      setSelectedCampus(null);
-      setSelectedRoom(null);
-      setSelectedCategory(null);
-      setValue('Title', '');
-      setValue('MoreDetails', '');
-      // setSelectedImages([]);
-      setPreviewUrl(null);
+      const response = await axios.post("https://localhost:7157/api/Feedbacks/Create", formData, {
+        params: {
+          userId: localStorage.getItem('userID'),
+          title: Title,
+          description: MoreDetails,
+          cateId: category,
+          locatoinId: location,
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        
+      });
+    
+      if (response.data.responseCode === 400) {
+        setErrorNotificationMessage("Type of Feedback is already exist in this location");
+        setShowErrorNotification(true);
+      } else if (response.data.responseCode === 200) {
+        setShowSuccessNotification(true);
+        setSelectedCampus(null);
+        setSelectedLocation(null);
+        setSelectedCategory(null);
+        setValue('Title', '');
+        setValue('MoreDetails', '');
+        setSelectedImages([]);
+        setPreviewUrl(null);
+      } else {
+        setErrorNotificationMessage("An error occurred while sending the report.");
+        setShowErrorNotification(true);
+      }
     } catch (error) {
       console.error(error);
+      setErrorNotificationMessage("An error occurred while sending the report.");
       setShowErrorNotification(true);
     }
   };
 
   const handleFileChange = (event) => {
-    const fileArray = Array.from(event.target.files).map((file) => {
-      return {
-        file,
-        preview: URL.createObjectURL(file)
-      };
-    });
-    setSelectedImages((prevImages) => prevImages.concat(fileArray));
+    const files = Array.from(event.target.files);
+    setSelectedImages(files);
   };
-
-  // Cleanup the object URLs after using them
-  useEffect(() => {
-    return () => {
-      selectedImages.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [selectedImages]);
   const handleImageClick = (image) => {
     setPreviewUrl(image);
     setShowModal(true);
@@ -267,14 +267,16 @@ const Create = React.memo(() => {
   const handleCampusChange = (selectedOption) => {
     setSelectedCampus(selectedOption);
 
-    // Enable Room selection when a Campus is chosen
-    setRoomDisabled(false);
+    // Enable Location selection when a Campus is chosen
+    setLocationDisabled(false);
   };
 
   return (
+    <DashboardLayout>
+      <DashboardNavbar />
     <StyledContainer>
       <StyledBackButton startIcon={<ArrowBackIcon />} onClick={() => window.history.back()}>Back</StyledBackButton>
-      <Typography variant="h4" fontWeight="bold" mb={4}>Report an Issue</Typography>
+      <Typography variant="h4" fontWeight="bold" mb={2}>CREATE NEW REPORT</Typography>
       <Typography variant="h6" fontWeight="medium" mb={1}>{dateTime}</Typography>
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -302,21 +304,21 @@ const Create = React.memo(() => {
             />
           </div>
           <div>
-            <Typography variant="h6" fontWeight="medium" mb={1}>Room</Typography>
+            <Typography variant="h6" fontWeight="medium" mb={1}>Location</Typography>
             <StyledSelect
-              name="Room"
-              id="Room"
-              options={filteredRoomOptions}
-              value={selectedRoom}
-              onChange={setSelectedRoom}
-              isDisabled={roomDisabled} // Disable Room selection when roomDisabled is true
+              name="Location"
+              id="Location"
+              options={filteredLocationOptions}
+              value={selectedLocation}
+              onChange={setSelectedLocation}
+              isDisabled={locationDisabled} // Disable Location selection when locationDisabled is true
               required
               isSearchable
               styles={{
                 control: (provided) => ({
                   ...provided,
-                  borderColor: formState.errors.Room ? '#f44336' : provided.borderColor,
-                  '&:hover': { borderColor: formState.errors.Room ? '#f44336' : provided.borderColor },
+                  borderColor: formState.errors.Location ? '#f44336' : provided.borderColor,
+                  '&:hover': { borderColor: formState.errors.Location ? '#f44336' : provided.borderColor },
                 }),
               }}
             />
@@ -342,16 +344,19 @@ const Create = React.memo(() => {
           />
         </div>
         <div>
-          <Typography variant="h6" fontWeight="medium" mb={1}>Images</Typography>
-          <input type="file" name="file" onChange={handleFileChange} multiple />
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
-            {selectedImages.map((selectedImage, index) => (
-              <Box key={index} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
-                <img key={index} src={selectedImage.preview} alt="Preview" style={{ width: '100%', height: '100%' }} />
-              </Box>
-            ))}
-          </Box>
-        </div>
+  <Typography variant="h6" fontWeight="medium" mb={1}>Images</Typography>
+  <input type="file" name="file" onChange={handleFileChange} multiple />
+  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
+    {selectedImages.map((selectedImage, index) => {
+      const objectUrl = URL.createObjectURL(selectedImage);
+      return (
+        <Box key={index} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
+          <img src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+        </Box>
+      );
+    })}
+  </Box>
+</div>
         <Box sx={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', marginTop: '16px' }}><StyledButton type="submit" variant="contained">Send Report</StyledButton></Box>
       </StyledForm>
       {showModal && (
@@ -376,13 +381,14 @@ const Create = React.memo(() => {
           color="error"
           icon="warning"
           title="Error"
-          content="An error occurred while sending the report."
+          content={errorNotificationMessage}
           open={showErrorNotification}
           onClose={() => setShowErrorNotification(false)}
           close={() => setShowErrorNotification(false)}
         />
       )}
     </StyledContainer>
+    </DashboardLayout>
   );
 });
 

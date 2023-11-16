@@ -98,16 +98,16 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day, expire }) => {
+  const Time = ({ day }) => {
     // Create a new Date object
     const date = new Date(day);
-  
+
     // Format the date as DD/MM/YY
     const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
-  
+
     // Format the time as HH:MM
     const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  
+
     return (
       <MDBox lineHeight={1} textAlign="left">
         <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
@@ -122,7 +122,7 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter((feedback) => feedback.status === "Closed" || feedback.status === "Rejected" || feedback.status === "Expired")
     .sort((a, b) => {
-      return b.notify - a.notify || new Date(a.dateTime) - new Date(b.dateTime);
+      return b.notify - a.notify || new Date(b.dateTime) - new Date(a.dateTime);
     })
     .map((feedback) => ({
       star: feedback.notify === 0 ? (
@@ -182,7 +182,7 @@ export default function data() {
       { Header: "title", accessor: "title", align: "left" },
       { Header: "cat/loc", accessor: "info", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "time", accessor: "time", align: "center" },
+      { Header: "day/time", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 

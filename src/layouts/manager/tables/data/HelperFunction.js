@@ -6,6 +6,9 @@ import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+
 const StyledContainer = styled(Container)`
   display: 'flex',
   flexDirection: 'column',
@@ -23,6 +26,46 @@ const StyledContainer = styled(Container)`
     padding: '64px',
   }
 `;
+
+const StyledSelect = styled(Select)(() => ({
+    width: '100%',
+    borderRadius: '12px',
+
+    '& .MuiSelect-root': {
+        padding: '16px',
+        borderColor: '#ccc',
+        boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.2)',
+    },
+    '& .MuiInputBase-input': {
+        fontSize: '16px',
+        color: '#333',
+    },
+    '& .MuiInput-underline': {
+        '&:before, &:after': {
+            borderBottom: 'none',
+        },
+        '&:hover:not(.Mui-disabled):before, &:hover:not(.Mui-disabled):after': {
+            borderBottom: 'none',
+        },
+        '&.Mui-error:after, &.Mui-error:hover:not(.Mui-disabled):before, &.Mui-error:hover:not(.Mui-disabled):after': {
+            borderBottomColor: '#f44336',
+        },
+    },
+    '& .MuiSelect-menu': {
+        maxHeight: '200px',
+        backgroundColor: '#fff',
+        borderRadius: '12px',
+        boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.2)',
+        animation: 'expandMenu 0.2s ease-in-out',
+    },
+    '& .MuiSelect-menu-list': {
+        padding: '8px',
+    },
+    '& .MuiListItem-root:hover': {
+        backgroundColor: '#f5f5f5',
+    },
+}));
+
 const StyledForm = styled('form')(() => ({
     display: 'flex',
     flexDirection: 'column',
@@ -83,8 +126,8 @@ const StyledImage = styled('img')(() => ({
 const HelperFunction = React.memo(({ selectedFeedback }) => {
     const { register, handleSubmit, formState, setValue } = useForm();
     const [selectedCampus, setSelectedCampus] = useState(null);
-    const [selectedRoom, setSelectedRoom] = useState(     null    );
-    const [selectedCategory, setSelectedCategory] = useState(  null);
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [roomOptions, setRoomOptions] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
@@ -95,22 +138,42 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     const [roomDisabled, setRoomDisabled] = useState(true);
     const [showSuccessNotification, setShowSuccessNotification] = useState(false);
     const [showErrorNotification, setShowErrorNotification] = useState(false);
-    const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-
     const [images, setImages] = useState([]);
+    const [note, setNote] = useState('');
+
+    const isProcessing = selectedFeedback.status === "Processing";
+    const isWaiting = selectedFeedback.status === "Waiting";
+    const isResponded = selectedFeedback.status === "Responded";
+
+    const handleEmployeeChange = (selectedOption) => {
+        setSelectedEmployee(selectedOption);
+    };
+    const [employeesOptions, setEmployeesOptions] = useState([]);
 
     useEffect(() => {
-        fetch(`https://localhost:7157/api/User/CountEmployeeTask/${selectedFeedback.cateId}`)
-            .then(response => response.json())
-            .then(data => setEmployees(data));
+        const fetchEmployeeOptions = async () => {
+            try {
+                const response = await fetch(`https://localhost:7157/api/User/CountEmployeeTask/${selectedFeedback.cateId}`);
+                const data = await response.json();
+                const options = data.map((employee) => ({ value: employee.userID, label: employee.username }));
+
+                setEmployeesOptions(options);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchEmployeeOptions();
     }, [selectedFeedback.cateId]);
+
     useEffect(() => {
         fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`)
             .then(response => response.json())
             .then(data => setImages(data));
     }, [selectedFeedback.feedbackId]);
 
+    
     useEffect(() => {
         const fetchRoomOptions = async () => {
             try {
@@ -163,28 +226,23 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
         // if (selectedImages) {
         //   formData.set('image', selectedImages);
         // }
-        if (selectedImages && selectedImages.length) {
-            selectedImages.forEach((image, index) => {
-                formData.append('fileCollection', image.file, image.file.name);
-            });
-        }
+        
         try {
-            const response = await fetch("https://localhost:7157/api/Feedbacks/Update?"
-                + "feedbackId=" + selectedFeedback.feedbackId
-                + "&userId=" + selectedFeedback.userId
-                + "&title=" + Title
-                + "&description=" + MoreDetails
-                + "&cateId=" + category
-                + "&locatoinId=" + room,
-
-                { method: 'PUT', body: formData });
+            const response = await fetch("https://localhost:7157/CreateTask?"
+                + "FeedbackId=" + selectedFeedback.feedbackId
+                + "&EmployeeId=" + selectedEmployee.value
+                + "&ManagerId=" + localStorage.getItem('userID')
+                + "&Note=" + note,
+                { method: 'POST', body: formData });
             const responseData = await response.json();
             console.log(responseData);
 
+            handleAcceptReport(selectedFeedback.feedbackId)
             // Notify when the report is created successfully
             setShowSuccessNotification(true);
             setShowModal(false);
 
+            // window.location.reload();
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
@@ -225,6 +283,61 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
         setRoomDisabled(false);
     };
 
+    const handleAcceptReport = (feedbackId) => {
+        var option = {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: "Processing" }),
+        };
+        fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+            .then((response) => { response.text() })
+            .then((data) => {
+                setFeedbacks((prevFeedbacks) =>
+                    prevFeedbacks.map((prevFeedback) =>
+                        prevFeedback.feedbackId === feedbackId
+                            ? { ...prevFeedback, status: "Processing" }
+                            : prevFeedback
+                    )
+                );
+                // Find the feedback and set it to selectedFeedback
+                const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
+                setSelectedFeedback(selectedFeedback);
+                setDialogOpen(true);
+                console.log(selectedFeedback)
+                console.log('Setting dialogOpen to true');
+            })
+            .catch((error) => {
+                console.error("Error: " + error.message);
+            });
+    }
+
+    const handleNoteChange = (event) => {
+        setNote(event.target.value);
+    };
+
+    const Time = ({ day }) => {
+        // Create a new Date object
+        const date = new Date(day);
+
+        // Format the date as DD/MM/YY
+        const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
+
+        // Format the time as HH:MM
+        const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+        return (
+            <MDBox lineHeight={1} textAlign="left">
+                <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+                    {formattedDate}
+                </MDTypography>
+                <MDTypography variant="caption">
+                    {formattedTime}
+                </MDTypography>
+            </MDBox>
+        );
+    };
     return (
         <StyledContainer sx={{
             width: '80vw', // Make the container take up 80% of the viewport width
@@ -234,31 +347,33 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
         }}>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
-              
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} align="center" style={{ fontSize: '1.5rem' }}>Title</Typography>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>{selectedFeedback.title}</Typography>
+                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
+                </div>
+                <div>
+                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>Title</Typography>
+                    <Typography variant="body1" style={{ fontSize: '1.5rem' }}>{selectedFeedback.title}</Typography>
                 </div>
                 <StyledRow>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Campus</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Campus</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1rem' }}>
                             {selectedFeedback.locationId.startsWith('NVH') ? 'NVH' : 'FPTU HCM'}
                         </Typography>
                     </div>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Room</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>{selectedFeedback.locationId}</Typography>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Room</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.locationId}</Typography>
                     </div>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Category</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>{selectedFeedback.cate.description}</Typography>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Category</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.cate.description}</Typography>
                     </div>
 
                 </StyledRow>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>More Details</Typography>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>{selectedFeedback.description}</Typography>
+                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>More Details</Typography>
+                    <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.description}</Typography>
                 </div>
                 <div>
                     <Typography variant="h5" fontWeight="medium" mb={1}>Images</Typography>
@@ -270,17 +385,47 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                         ))}
                     </Box>
                 </div>
-                <div>
-        <Typography variant="h5" fontWeight="medium" mb={1}>Assign to Employee</Typography>
-        <select value={selectedEmployee} onChange={e => setSelectedEmployee(e.target.value)}>
-            {employees.map((employee, index) => (
-                <option key={index} value={employee.userId}>{employee.username}</option>
-            ))}
-        </select>
-    </div>
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-        <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Report</StyledButton>
-    </Box>
+                {((localStorage.getItem('userRole') == "Manager") && (isWaiting || isProcessing || isResponded)) && (
+                    <div>
+                        <Typography variant="h6" fontWeight="medium" mb={1}>Assign to Employee</Typography>
+                        <StyledSelect
+                            name="Employee"
+                            id="Employee"
+                            options={employeesOptions}
+                            value={selectedEmployee}
+                            onChange={handleEmployeeChange} // You need to define this function
+                            required
+                            isSearchable
+                        />
+                        <Typography variant="h5" fontWeight="medium" mb={1} mt={3} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
+                        {selectedFeedback.tasks.map((task) => (
+                            
+                            <div key={task.taskId}>
+                                <Typography style={{ fontSize: '1rem' }}>Name:{task.employee.username}</Typography>
+                                <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
+                                <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
+                                <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
+                            </div>
+                        ))} 
+                    </div>
+                )}
+
+                {localStorage.getItem('userRole') === "Manager" && (isWaiting || isProcessing || isResponded) && (
+                    <div>
+                        <Typography variant="h6" fontWeight="medium" mt={2} mb={-0.5}>Note to Employee</Typography>
+                        <TextField
+                            fullWidth
+                            id="note"
+                            label="Note"
+                            variant="standard"
+                            value={note}
+                            onChange={handleNoteChange}
+                        />
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                            <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Task</StyledButton>
+                        </Box>
+                    </div>
+                )}
             </StyledForm>
             {showModal && (
                 <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
@@ -292,7 +437,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                     color="success"
                     icon="check"
                     title="Success"
-                    content="Report sent successfully"
+                    content="Task sent successfully"
                     // dateTime={new Date().toLocaleString()}
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
@@ -304,7 +449,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                     color="error"
                     icon="warning"
                     title="Error"
-                    content="An error occurred while sending the report."
+                    content="An error occurred while sending Task."
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}

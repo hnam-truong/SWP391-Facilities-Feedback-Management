@@ -102,11 +102,15 @@ export default function App() {
       }
 
       if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+        // Use a unique identifier as the key
+        const key = route.key || route.route;
+
+        return <Route exact path={route.route} element={route.component} key={key} />;
       }
 
       return null;
     });
+
 
   const configsButton = (
     <MDBox

@@ -56,20 +56,20 @@ export default function CateTable() {
                 </MDTypography>
             </MDBox>
         ),
-        action: (
-            <IconButton onClick={() => handleDeleteCate(cate.id)}>
-                <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
-                    Delete
-                </MDTypography>
-            </IconButton>
-        ),
+        // action: (
+        //     <IconButton onClick={() => handleDeleteCate(cate.id)}>
+        //         <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+        //             Delete
+        //         </MDTypography>
+        //     </IconButton>
+        // ),
     }));
 
     return {
         columns: [
             { Header: "Category ID", accessor: "cateID", align: "center" },
             { Header: "Description", accessor: "description", align: "left" },
-            { Header: "action", accessor: "action", align: "center" },
+            // { Header: "action", accessor: "action", align: "center" },
         ],
 
         rows: cateRows,

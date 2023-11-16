@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Modal from '@mui/material/Modal';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import red from '@material-ui/core/colors/red';
+import blue from '@material-ui/core/colors/blue';
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -14,11 +16,13 @@ import Dialog from '@mui/material/Dialog';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
+import HelperFunction from "layouts/manager/tables/data/HelperFunction";
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   // Add this line to create a new state variable
   const [selectedFeedback, setSelectedFeedback] = useState(null);
-  // Modify your handleEditClick function to update the selectedFeedback state
+  const [showHelperFunction, setShowHelperFunction] = useState(false);
+
   const handleEditClick = (feedback) => {
     setSelectedFeedback(feedback);
     setShowUpdateReport(true); // show the UpdateReport component
@@ -40,33 +44,50 @@ export default function data() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-
+  const handleHelperFunctionClick = (feedback) => {
+    setSelectedFeedback(feedback);
+    setShowHelperFunction(true);
+  };
 
   const handleRemoveReport = (feedbackId) => {
-    var option = {
-      method: 'DELETE',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Removed" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Removed" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
+   
+  confirmAlert({
+  customUI: ({ onClose }) => {
+    return (
+      <div style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
+        
+        <p style={{ color: '#666' }}>You want to delete this feedback</p>
+        <button onClick={onClose} style={{ backgroundColor: blue[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', marginRight: '10px' }}>No</button>
+        <button onClick={() => {
+            
+            var option = {
+              method: 'DELETE',
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status: "Removed" }),
+            };
+            fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
+              .then((response) => { response.text() })
+              .then((data) => {
+                setFeedbacks((prevFeedbacks) =>
+                  prevFeedbacks.map((prevFeedback) =>
+                    prevFeedback.feedbackId === feedbackId
+                      ? { ...prevFeedback, status: "Removed" }
+                      : prevFeedback
+                  )
+                );
+              })
+              .catch((error) => {
+                console.error("Error: " + error.message);
+              });
+            onClose();
+        }} style={{ backgroundColor: red[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px' }}>Yes</button>
+      </div>
+    );
   }
-
-
+});
+  };
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={0} lineHeight={1}>
@@ -110,12 +131,20 @@ export default function data() {
   };
 
   const feedbackRows = feedbacks
+    .filter(feedback => feedback.status !== "Removed")
     .sort((a, b) => {
       new Date(a.dateTime) - new Date(b.dateTime);
     })
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <Link><h4>{feedback.title}</h4></Link>,
+      title:
+        <div>
+          <IconButton onClick={() => { handleHelperFunctionClick(feedback); }}>
+            <MDTypography>
+              <h6>{feedback.title}</h6>
+            </MDTypography>
+          </IconButton>
+        </div>,
       info: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
@@ -180,6 +209,16 @@ export default function data() {
                     >
                       <UpdateReport selectedFeedback={selectedFeedback} />
                     </Dialog>
+                    <Dialog
+                      open={showHelperFunction}
+                      onClose={() => setShowHelperFunction(false)}
+                      BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+
+                      maxWidth="80vw" // Make the dialog take up 80% of the viewport width
+                      PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
+                    >
+                      <HelperFunction selectedFeedback={selectedFeedback} />
+                    </Dialog>
                   </MDBox>
                 );
             }
@@ -196,7 +235,7 @@ export default function data() {
       { Header: "title", accessor: "title", align: "left" },
       { Header: "cat/loc", accessor: "info", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "time/expire", accessor: "time", align: "center" },
+      { Header: "day/time", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 
