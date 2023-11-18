@@ -17,7 +17,7 @@ namespace Group4.FacilitiesReport.Repositories
         private readonly IUser _user;
         private readonly IConfig _config;
 
-        public TaskRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<TaskRepo> logger,IUser user,IConfig config)
+        public TaskRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<TaskRepo> logger, IUser user, IConfig config)
         {
             _context = context;
             _mapper = mapper;
@@ -30,6 +30,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<DTO.Task>> GetTasks()
         {
+            _logger.LogInformation("Begin Get Task");
             List<DTO.Task> _response = new List<DTO.Task>();
             var _data = await _context.TblTasks.ToListAsync();
             if (_data != null)
@@ -41,6 +42,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<DTO.Task>> GetTaskByManagerId(string ManagerId)
         {
+            _logger.LogInformation("Begin Get Task by Manager ID");
             List<DTO.Task> _response = new List<DTO.Task>();
             var _data = await AllTask().Where(f => f.ManagerId.Equals(ManagerId)).ToListAsync();
             if (_data != null)
@@ -52,6 +54,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<DTO.Task>> GetTaskByEmployeeId(string EmployeeId)
         {
+            _logger.LogInformation("Begin Get Task by Employee ID");
             List<DTO.Task> _response = new List<DTO.Task>();
             var _data = await AllTask().Include(u => u.Manager).Where(f => f.EmployeeId.Equals(EmployeeId)).ToListAsync();
             if (_data != null)
@@ -63,17 +66,19 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<DTO.Task> GetTaskById(Guid Id)
         {
+            _logger.LogInformation("Begin Get Task by Task ID");
             DTO.Task _response = new DTO.Task();
             var _data = await AllTask().Where(f => f.Id.Equals(Id)).FirstOrDefaultAsync();
             if (_data != null)
             {
-                _response = _mapper.Map<TblTask,DTO.Task>(_data);
+                _response = _mapper.Map<TblTask, DTO.Task>(_data);
             }
             return _response;
         }
 
         public async Task<List<DTO.Task>> GetTaskByFeedbackId(Guid FeebackId)
         {
+            _logger.LogInformation("Begin Get Task by Task ID");
             List<DTO.Task> _response = new List<DTO.Task>();
             var _data = await AllTask().Where(f => f.FeedbackId.Equals(FeebackId)).ToListAsync();
             if (_data != null)
@@ -85,38 +90,37 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<int> CountTaskClosed()
         {
-            return await AllTask().Where(t => t.Status== (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed")).CountAsync();
+            _logger.LogInformation("Begin Count Task Closed");
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed")).CountAsync();
         }
 
 
         public async Task<int> CountTaskClosedToday()
         {
-            
-            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed")&&t.DateTime==DateTime.Today).CountAsync();
+            _logger.LogInformation("Begin Count Task Closed Today");
+            return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed") && t.DateTime == DateTime.Today).CountAsync();
         }
 
         public async Task<int> CountTaskDelivered()
         {
+            _logger.LogInformation("Begin Count Task Delivered");
             return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered")).CountAsync();
         }
 
         public async Task<int> CountTaskDeliveredToday()
         {
+            _logger.LogInformation("Begin Count Task Delivered Today");
             return await AllTask().Where(t => t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered") && t.DateTime == DateTime.Today).CountAsync();
         }
 
         public async Task<APIResponse> CreateTask(DTO.Task task)
         {
+            _logger.LogInformation("Begin Create Task");
             APIResponse response = new APIResponse();
             var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(x => x.FeedbackId.Equals(task.FeedbackId));
             var employee = await _context.TblUsers.Include(e => e.Cates).FirstOrDefaultAsync(x => x.UserId.ToLower().Equals(task.EmployeeId.ToLower()));
-            var item = _context.TblUsers.Include(u => u.TblTaskEmployees).FirstOrDefault(u => u.UserId == task.EmployeeId) ;
 
-            if (item.TblTaskEmployees.Any(t => t.FeedbackId == task.FeedbackId && t.Status == 0)) {
-                response.ResponseCode = 400;
-                response.ErrorMessage = "This employee is handling this feedback!";
-            }
-            else if (feedback != null && (feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") || feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Responded")) && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
+            if (feedback != null && feedback.Status <= (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
             {
                 var config = await _config.ValueOf("MaxTaskDelivered");
                 var count = _context.TblTasks.Where(t => t.EmployeeId == task.EmployeeId && t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered")).Count();
@@ -132,7 +136,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 400;
-                    response.ErrorMessage = "This employee too busy!";
+                    response.ErrorMessage = "Max Tasks!!!!";
                 }
             }
             else
@@ -146,10 +150,11 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> TaskClosed(Guid Id)
         {
+            _logger.LogInformation("Begin Close Task");
             APIResponse response = new APIResponse();
-            var _task = await _context.TblTasks.FirstOrDefaultAsync(t=>t.Id==Id);
-            if(_task!=null&&_task.Status== (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
-            response= await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"));
+            var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == Id);
+            if (_task != null && _task.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
+                response = await UpdateTaskStatus(Id, (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"));
             else
             {
                 response.ResponseCode = 404;
@@ -161,6 +166,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> TaskCancel(Guid Id)
         {
+            _logger.LogInformation("Begin Cancel Task");
             APIResponse response = new APIResponse();
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == Id);
             if (_task != null && _task.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Closed"))
@@ -175,6 +181,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> UpdateTaskNote(Guid Id, string Note)
         {
+            _logger.LogInformation("Begin Update Task");
             APIResponse response = new APIResponse();
             try
             {
@@ -204,7 +211,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> UpdateTaskResponse(Guid Id, string response)
         {
-
+            _logger.LogInformation("Begin Response Task");
             APIResponse _response = new APIResponse();
             try
             {
@@ -223,10 +230,11 @@ namespace Group4.FacilitiesReport.Repositories
                         {
                             if (item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
                             {
-                               flag =false;
+                                flag = false;
                             }
                         }
-                        if (flag) {
+                        if (flag)
+                        {
                             fb.Status = (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Responded");
                         }
                         await _context.SaveChangesAsync();
@@ -245,12 +253,14 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _response.ResponseCode = 400;
                 _response.ErrorMessage = "Response failed!!";
+                _logger.LogError(ex.Message, ex);
             }
             return _response;
         }
 
         public async Task<APIResponse> DeleteTask(Guid id)
         {
+            _logger.LogInformation("Begin Delete Task");
             APIResponse response = new APIResponse();
             var _task = await _context.TblTasks.FirstOrDefaultAsync(t => t.Id == id);
             if (_task != null && _task.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered"))
@@ -265,6 +275,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> UpdateTaskStatus(Guid Id, int status)
         {
+            _logger.LogInformation("Begin Update Status of Task");
             APIResponse response = new APIResponse();
             try
             {
@@ -291,7 +302,7 @@ namespace Group4.FacilitiesReport.Repositories
             return response;
         }
 
-        
+
     }
 }
 

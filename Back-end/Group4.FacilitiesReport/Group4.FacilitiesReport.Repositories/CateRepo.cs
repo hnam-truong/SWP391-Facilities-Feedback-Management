@@ -3,6 +3,7 @@ using Group4.FacilitiesReport.DTO;
 using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Group4.FacilitiesReport.Repositories
 {
@@ -10,17 +11,20 @@ namespace Group4.FacilitiesReport.Repositories
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<CateRepo> _logger;
 
-        public CateRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper)
+        public CateRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<CateRepo> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
         private IQueryable<TblCategoriesProblem> AllCate() => _context.TblCategoriesProblems;
 
 
         public async Task<List<Category>> GetCategories()
         {
+            _logger.LogInformation("Begin Get Categories");
             List<Category> _response = new List<Category>();
             var _data = await _context.TblCategoriesProblems.ToListAsync();
             if (_data != null)
@@ -32,6 +36,8 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<Category> GetCategoryById(string CategoryId)
         {
+
+            _logger.LogInformation("Begin Get Category by ID");
             Category _response = new Category();
             var _data = await AllCate().Where(f => f.Id.ToLower().Equals(CategoryId.ToLower())).FirstOrDefaultAsync();
             if (_data != null)
@@ -43,6 +49,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> AddCate(Category category)
         {
+            _logger.LogInformation("Begin Add Category");
             APIResponse _response = new APIResponse();
             try
             {
@@ -62,6 +69,7 @@ namespace Group4.FacilitiesReport.Repositories
         }
         public async Task<APIResponse> UpdateCategory(Category category)
         {
+            _logger.LogInformation("Begin Update Category");
             APIResponse response = new APIResponse();
             try
             {
@@ -91,6 +99,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> DeleteCate(string CateId)
         {
+            _logger.LogInformation("Begin Delete Category");
             APIResponse _response = new APIResponse();
             try
             {
