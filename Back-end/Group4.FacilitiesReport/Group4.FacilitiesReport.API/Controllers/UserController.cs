@@ -147,6 +147,7 @@ namespace API.Controllers
             var user = await _iUser.AddCateByUserId(UserId, CateId);
             return Ok(user);
         }
+        
 
         
         [HttpPut("UpdateUser/{UserId}")]

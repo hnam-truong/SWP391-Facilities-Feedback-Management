@@ -15,24 +15,15 @@ namespace Group4.FacilitiesReport.Repositories
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
-<<<<<<< HEAD
+        private readonly ILogger<UserRepo> _logger;
         private readonly IConfig _config;
 
-        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, IConfig config)
-        {
-            _context = context;
-            _mapper = mapper;
-            _config = config;
-
-=======
-        private readonly ILogger<UserRepo> _logger;
-
-        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<UserRepo> logger)
+        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, ILogger<UserRepo> logger, IConfig config)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
->>>>>>> d2af9389a3457a77b5e7a5c0a395875356ebbec8
+            _config = config;
         }
         private IQueryable<TblUser> AllUser() => _context.TblUsers;
 
@@ -67,15 +58,10 @@ namespace Group4.FacilitiesReport.Repositories
         {
             _logger.LogInformation("Begin Count Task Employee Having");
             var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id.ToLower() == CateId.ToLower());
-<<<<<<< HEAD
-            var value = await _config.ValueOf("MaxTaskDelivered");
-            var employees = await _context.TblUsers.Include(u=>u.TblTaskEmployees.Where(t=>t.Status==0))
-                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate) && u.TblTaskEmployees.Where(t => t.Status == 0).Count() < Convert.ToInt32(value))
-=======
 
+            var value = await _config.ValueOf("MaxTaskDelivered");
             var employees = await _context.TblUsers.Include(u => u.TblTaskEmployees.Where(t => t.Status == 0))
-                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate))
->>>>>>> d2af9389a3457a77b5e7a5c0a395875356ebbec8
+                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate) && u.TblTaskEmployees.Where(t => t.Status == 0).Count() < Convert.ToInt32(value))
                                             .ToListAsync();
             if (employees != null)
             {
@@ -191,8 +177,7 @@ namespace Group4.FacilitiesReport.Repositories
             return response;
         }
 
-
-
+  
         public async Task<APIResponse> UpdateUser(User User)
         {
             _logger.LogInformation("Begin Update User");
