@@ -9,7 +9,6 @@ import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PropTypes from 'prop-types';
-import PropTypes from 'prop-types';
 
 const StyledContainer = styled(Container)`
   display: 'flex',

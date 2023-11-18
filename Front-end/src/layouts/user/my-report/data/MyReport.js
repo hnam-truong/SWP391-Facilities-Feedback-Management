@@ -15,6 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import Dialog from '@mui/material/Dialog';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 import HelperFunction from "layouts/manager/tables/data/HelperFunction";
 export default function data() {
@@ -56,8 +57,8 @@ export default function data() {
           <div style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
 
             <p style={{ color: '#666' }}>Do you want to delete this feedback?</p>
-            <button onClick={onClose} style={{ backgroundColor: blue[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', marginRight: '10px' }}>Back</button>
-            <button onClick={() => {
+            <Button onClick={onClose}>Back</Button>
+            <Button color="error" onClick={() => {
               var option = {
                 method: 'DELETE',
                 headers: {
@@ -81,7 +82,9 @@ export default function data() {
                 });
               onClose();
               window.location.reload();
-            }} style={{ backgroundColor: red[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px' }}>Remove</button>
+            }}>
+              Remove
+            </Button>
           </div>
         );
       }
