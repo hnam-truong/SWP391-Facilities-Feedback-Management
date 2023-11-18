@@ -26,7 +26,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("{CateId}")]
         public async Task<IActionResult> GetCateByCateId(string CateId)
         {
@@ -37,7 +37,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(category);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("Create")]
         public async Task<IActionResult> CreateCate(string Id, string Des)
         {
@@ -48,7 +48,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("UpdateCate")]
         public async Task<IActionResult> UpdateCate(string CateId, string Des)
         {
@@ -59,7 +59,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(cate);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(string CateId)
         {

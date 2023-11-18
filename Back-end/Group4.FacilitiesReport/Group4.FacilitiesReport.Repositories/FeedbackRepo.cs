@@ -23,20 +23,27 @@ namespace Group4.FacilitiesReport.Repositories
             _logger = logger;
             _config = config;
         }
+<<<<<<< HEAD
         private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks).ThenInclude(t=>t.Employee).Include(f => f.Tasks).ThenInclude(t => t.Manager)
+=======
+        private IQueryable<TblFeedback> AllFeedback() => _context.TblFeedbacks.Include(f => f.Location).Include(f => f.Tasks).ThenInclude(t => t.Employee)
+>>>>>>> d2af9389a3457a77b5e7a5c0a395875356ebbec8
                     .Include(f => f.User).ThenInclude(u => u.Role).Include(f => f.Cate).OrderByDescending(f => f.Notify).ThenBy(f => f.DateTime);
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {
+            _logger.LogInformation("Begin Count Feedback by Date");
             return await AllFeedback().Where(f => f.DateTime.Date >= beginDate.Date && f.DateTime.Date <= endDate.Date).CountAsync();
         }
         public async Task<int> CountFeedbackClosedByDate()
-           
+
         {
+            _logger.LogInformation("Begin Count Feedback Closed by Date");
             var today = DateTime.Today;
-            return await AllFeedback().Where(f => f.DateTime.Date == today.Date &&f.Status== (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
+            return await AllFeedback().Where(f => f.DateTime.Date == today.Date && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
         }
         public async Task<int> CountFeedbackClosed()
         {
+            _logger.LogInformation("Begin Count Feedback by Date");
             return await AllFeedback().Where(f => f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
         }
 
@@ -45,7 +52,7 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse _response = new APIResponse();
             var exist = await CheckExistence(feedback.LocationId, feedback.CateId);
 
-            if (exist&&feedback.Status == "Waiting" || feedback.Status =="Processing")
+            if (exist && feedback.Status == "Waiting" || feedback.Status == "Processing")
             {
                 _response.ResponseCode = 400;
                 _response.ErrorMessage = "Type of Feedback is already exist";
@@ -53,10 +60,6 @@ namespace Group4.FacilitiesReport.Repositories
             }
             else
             {
-               int count= _context.TblFeedbacks.Where(f => f.LocationId == feedback.LocationId &&( f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting") || f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing"))).Count();
-                var config = await _config.ValueOf("MaxFeedbackPerLocation");
-                if (config != null && Convert.ToUInt32(config) > count)
-                {
                     try
                     {
                         this._logger.LogInformation("Create Begins");
@@ -72,25 +75,20 @@ namespace Group4.FacilitiesReport.Repositories
                         _response.ErrorMessage = ex.Message;
                         this._logger.LogError(ex.Message, ex);
                     }
-                }
-                else
-                {
-                    _response.ResponseCode = 400;
-                    _response.ErrorMessage = "Max Feedback!!!!";
-                }
             }
 
             return _response;
         }
-            
-            
-        
+
+
+
 
         public async Task<APIResponse> RespondFeedback(Guid feedbackId, string response)
         {
             APIResponse _response = new APIResponse();
             try
             {
+                _logger.LogInformation("Begin Responsd Feedback");
                 TblFeedback? _feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
                 if (_feedback != null)
                 {
@@ -111,12 +109,14 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _response.ResponseCode = 400;
                 _response.ErrorMessage = ex.Message;
+                _logger.LogError(ex.Message, ex);
             }
             return _response;
         }
 
         public async Task<List<Feedback>> GetAllFeedBack()
         {
+            _logger.LogInformation("Begin Get All Feedbacks");
             List<Feedback> _response = new List<Feedback>();
             var _data = await AllFeedback().ToListAsync();
             if (_data != null)
@@ -128,6 +128,8 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<Feedback?> GetFeedback(Guid feedbackId)
         {
+            _logger.LogInformation("Begin Get Feedback by Id");
+
             Feedback? _response = null;
             var _data = await AllFeedback().Where(f => f.FeedbackId.Equals(feedbackId)).FirstOrDefaultAsync();
             if (_data != null)
@@ -139,6 +141,8 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<Feedback>> GetFeedbackByUserId(string UserId)
         {
+            _logger.LogInformation("Begin Get Feedback by UserId");
+
             List<Feedback> _response = new List<Feedback>();
             var _data = await AllFeedback().Where(f => f.UserId.ToLower().Equals(UserId.ToLower())).ToListAsync();
             if (_data != null)
@@ -153,6 +157,7 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse _response = new APIResponse();
             try
             {
+                _logger.LogInformation("Begin Notify Feedback");
                 TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
                 if (feedback != null)
                 {
@@ -173,17 +178,18 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _response.ResponseCode = 400;
                 _response.Result = ex.Message;
-
+                _logger.LogError(ex.Message, ex);
             }
             return _response;
         }
 
         public async Task<APIResponse> RemoveFeedback(Guid feedbackId)
         {
+            _logger.LogInformation("Begin Remove Feedback");
             APIResponse response = new APIResponse();
             var _feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(t => t.FeedbackId == feedbackId);
             if (_feedback != null && _feedback.Status == 0)
-                response = await UpdateFeedbackStatus(feedbackId,6);
+                response = await UpdateFeedbackStatus(feedbackId, 6);
             else
             {
                 response.ResponseCode = 404;
@@ -198,6 +204,7 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse _response = new APIResponse();
             try
             {
+                _logger.LogInformation("Begin Update Feedback");
                 TblFeedback? _feedback = await AllFeedback().SingleOrDefaultAsync(f => f.FeedbackId.Equals(feedback.FeedbackId));
                 if (_feedback != null && _feedback.Status == 0)
                 {
@@ -226,6 +233,7 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _response.ResponseCode = 400;
                 _response.ErrorMessage = ex.Message;
+                _logger.LogError(ex.Message, ex);
             }
             return _response;
         }
@@ -235,6 +243,7 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse _response = new APIResponse();
             try
             {
+                _logger.LogInformation("Begin Update Status of Feedback");
                 TblFeedback? feedback = await this._context.TblFeedbacks.FindAsync(feedbackId);
                 if (feedback != null)
                 {
@@ -254,7 +263,7 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _response.ResponseCode = 400;
                 _response.Result = ex.Message;
-
+                _logger.LogError(ex.Message, ex);
             }
             return _response;
 
@@ -262,6 +271,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<Feedback>> GetFeedbackByStatus(int status)
         {
+            _logger.LogInformation("Begin Get Feedback by Status");
             List<Feedback> _response = new List<Feedback>();
             var _data = await AllFeedback().Where(f => f.Status == status).ToListAsync();
             if (_data != null)
@@ -273,6 +283,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<List<Feedback>> GetFeedbackByLocation(string locationId)
         {
+            _logger.LogInformation("Begin Get Feedback by Location");
             List<Feedback> _response = new List<Feedback>();
             var _data = await AllFeedback().Where(f => f.LocationId.ToLower() == locationId.ToLower() && f.Status < 3 && DateTime.Now.Subtract(f.DateTime).TotalDays < 7).ToListAsync();
             if (_data != null)
@@ -284,6 +295,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> AcceptFeedback(Guid feedbackId, string response)
         {
+            _logger.LogInformation("Begin Accept Feedback");
             var item = await GetFeedback(feedbackId);
             if (item != null && item.Status == "Waiting")
             {
@@ -295,6 +307,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> RejectFeedback(Guid feedbackId, string response)
         {
+            _logger.LogInformation("Begin Reject Feedback");
             var item = await GetFeedback(feedbackId);
             if (item != null && item.Status == "Waiting")
             {
@@ -306,17 +319,19 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> CancelAcceptFeedback(Guid feedbackId, string response)
         {
+            _logger.LogInformation("Begin Cancel Feedback");
             var item = await GetFeedback(feedbackId);
             if (item != null && item.Status == "Processing")
             {
                 await RespondFeedback(feedbackId, response);
                 var list = _context.TblTasks.Where(t => t.FeedbackId == feedbackId).ToListAsync();
                 if (list != null)
-                    foreach (var task in await list) {
+                    foreach (var task in await list)
+                    {
                         task.Status = (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled");
                         await _context.SaveChangesAsync();
                     }
-                        
+
 
                 return await UpdateFeedbackStatus(feedbackId, (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting"));
             }
@@ -326,6 +341,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> UndoRejectFeedback(Guid feedbackId, string response)
         {
+            _logger.LogInformation("Begin Undo Reject Feedback");
             var item = await GetFeedback(feedbackId);
             if (item != null && item.Status == "Rejected")
             {
@@ -338,6 +354,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<APIResponse> CloseFeedback(Guid feedbackId, string response)
         {
+            _logger.LogInformation("Begin Close Feedback");
             var item = await GetFeedback(feedbackId);
             if (item != null && item.Status == "Responded")
             {
@@ -358,6 +375,7 @@ namespace Group4.FacilitiesReport.Repositories
 
         public async Task<bool> CheckExistence(string locationId, string cateId)
         {
+            _logger.LogInformation("Begin Check Exist Feedback");
             var exists = await _context.TblFeedbacks.AnyAsync(f => f.LocationId == locationId && f.CateId == cateId);
             return exists;
         }
@@ -397,6 +415,7 @@ namespace Group4.FacilitiesReport.Repositories
         //}
         public async Task<List<FeedbackGraphObject>> RecentGraphFeedback()
         {
+            _logger.LogInformation("Begin Recent Graph");
             var now = DateTime.Now.Date.AddDays(-6);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i <= 6; i++)
@@ -406,10 +425,11 @@ namespace Group4.FacilitiesReport.Repositories
             }
             return list;
         }
-        
+
 
         public async Task<List<FeedbackGraphObject>> MonthlyGraphFeedback()
         {
+            _logger.LogInformation("Begin Monthly Graph");
             var now = DateTime.Now.AddMonths(-11);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i < 12; i++)
@@ -427,11 +447,13 @@ namespace Group4.FacilitiesReport.Repositories
         }
         public async Task<List<Feedback>> GetFeedbacksByCate(string id)
         {
+            _logger.LogInformation("Begin Get Feedback by Category");
             var list = await AllFeedback().Where(f => f.CateId == id).ToListAsync();
             return _mapper.Map<List<Feedback>>(list);
         }
         public async Task<List<FeedbackGraphObject>> RecentUserCreateFeedback()
         {
+            _logger.LogInformation("Begin Recent USer Create Feedback");
             var now = DateTime.Now.Date.AddDays(-6);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i <= 6; i++)
@@ -443,6 +465,7 @@ namespace Group4.FacilitiesReport.Repositories
         }
         public async Task<int> CountUserByDate(DateTime beginDate, DateTime endDate)
         {
+            _logger.LogInformation("Begin Count User By Date");
             var count = await _context.TblUsers.Include(u => u.TblFeedbacks).Where(u => u.TblFeedbacks.Where(f => f.DateTime > beginDate && f.DateTime < endDate).Count() != 0).CountAsync();
             return count;
         }

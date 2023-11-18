@@ -32,7 +32,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(data);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("LocationEnable")]
         public async Task<IActionResult> GetLocationEnable()
         {
@@ -43,7 +43,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(loca);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("LocationDisable")]
         public async Task<IActionResult> GetLocationDisable()
         {
@@ -54,7 +54,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(loca);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpGet("{LocationId}")]
         public async Task<IActionResult> GetLocationbyLocationId(string LocationId)
         {
@@ -65,7 +65,7 @@ namespace Group4.FacilitiesReport.API.Controllers
             }
             return Ok(loca);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPost("AddLocation")]
         public async Task<IActionResult> AddLocation(string LocationId, string Disable)
         {
@@ -76,10 +76,10 @@ namespace Group4.FacilitiesReport.API.Controllers
             });
             return Ok(location);
         }
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("DisableLocation")]
         public async Task<IActionResult> DisableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 1));
-        [Authorize("Manager")]
+        //[Authorize("Manager")]
         [HttpPut("EnableLocation")]
         public async Task<IActionResult> EnableLocation(string LocationId) => Ok(await _location.StatusLocation(LocationId, 0));
 

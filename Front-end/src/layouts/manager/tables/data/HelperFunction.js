@@ -9,6 +9,7 @@ import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -27,6 +28,9 @@ const StyledContainer = styled(Container)`
     padding: '64px',
   }
 `;
+StyledContainer.propTypes = {
+    children: PropTypes.node,
+};
 StyledContainer.propTypes = {
     children: PropTypes.node,
 };
@@ -78,6 +82,7 @@ const StyledForm = styled('form')(() => ({
     backgroundColor: '#fff',
     borderRadius: '8px',
     padding: '24px',
+    // boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
     // boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
 }));
 
@@ -384,6 +389,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                 <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
                 <div>
                     <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
+                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
                 </div>
                 <div>
                     <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1.2rem' }}>Title</Typography>
@@ -524,11 +530,6 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                 )}
                 <br />
             </StyledForm>
-            {showModal && (
-                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
-                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
-                </StyledModal>
-            )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
@@ -546,7 +547,9 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                     color="error"
                     icon="warning"
                     dateTime=""
+                    dateTime=""
                     title="Error"
+                    content={errorNotificationMessage}
                     content={errorNotificationMessage}
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}

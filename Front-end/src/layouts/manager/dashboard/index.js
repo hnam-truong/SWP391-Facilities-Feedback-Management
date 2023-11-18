@@ -254,7 +254,15 @@ function Dashboard() {
                 <ReportsLineChart
                   color="success"
                   title="Reports in the last 12 months"
+<<<<<<< HEAD
                   description=""
+=======
+                  description={
+                    <>
+
+                    </>
+                  }
+>>>>>>> d2af9389a3457a77b5e7a5c0a395875356ebbec8
                   date="updated 4 min ago"
                   chart={reportOfYear}
                 />

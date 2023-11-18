@@ -350,6 +350,7 @@ export default function data() {
         <>
           <Time day={feedback.dateTime} />
           <Dialog
+<<<<<<< HEAD
             open={showPopupAccept}
             onClose={() => setShowPopupAccept(false)}
             BackdropProps={{ style: { backgroundColor: 'transparent' } }}
@@ -383,6 +384,16 @@ export default function data() {
             PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
           >
             <HelperFunction selectedFeedback={selectedFeedback} action={"Close"} />
+=======
+            open={showHelperFunction}
+            onClose={() => setShowHelperFunction(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+
+            maxWidth="80vw" // Make the dialog take up 80% of the viewport width
+            PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} />
+>>>>>>> d2af9389a3457a77b5e7a5c0a395875356ebbec8
           </Dialog>
         </>
       ),
