@@ -6,6 +6,7 @@ import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { MenuItem } from '@material-ui/core';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
+import Gallery from 'react-photo-gallery';
 import MDSnackbar from "components/MDSnackbar";
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -118,10 +119,13 @@ const StyledImage = styled('img')(() => ({
     maxHeight: '100%',
 }));
 
-const PopUpTask = React.memo(({ feedbackId }) => {
+const PopUpTask = React.memo(({ task }) => {
+
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [selectedFeedback, setselectedFeedback] = useState(null);
-    const { handleSubmit } = useForm();
- 
+
+    // Add this state variable to hold the selected files
+    const [selectedFiles, setSelectedFiles] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
     const [dateTime, setDateTime] = useState(new Date().toLocaleString());
@@ -135,56 +139,79 @@ const PopUpTask = React.memo(({ feedbackId }) => {
     const handleEmployeeChange = (selectedOption) => {
         setSelectedEmployee(selectedOption);
     };
-    const [employeesOptions, setEmployeesOptions] = useState([]);
+ 
     const [images, setImages] = useState([]);
+    const handleFileChange = (event) => {
+        const newSelectedFiles = Array.from(event.target.files);
+        if (images.length + newSelectedFiles.length > 5) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Your feedback cannot have more than 5 images.',
+            });
+            return;
+        }
+
+        setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
+
+        const newSelectedImages = newSelectedFiles.map((file) => ({
+            src: URL.createObjectURL(file),
+            width: 1,
+            height: 1,
+        }));
+        setImages([...images, ...newSelectedImages]);
+    };
 
     useEffect(() => {
         const fetchFeedback = async () => {
-          try {
-            const response = await fetch(`https://localhost:7157/api/Feedbacks/Id/${feedbackId}`);
-            const data = await response.json();
-            setselectedFeedback(data);
-            console.log(selectedFeedback);
-            setIsDataFetched(true); // Set isDataFetched to true after successful fetch
-            
-          } catch (error) {
-            console.error(error);
-          }
+            try {
+                const response = await fetch(`https://localhost:7157/api/Feedbacks/Id/${task.feedbackId}`);
+                const data = await response.json();
+                setselectedFeedback(data);
+            } catch (error) {
+                console.error(error);
+            }
         };
-      
-        if (feedbackId ) { // Only fetch data if feedbackId is truthy and data has not been fetched yet
-          fetchFeedback();
+
+        if (task && task.feedbackId) { // Add null check for task
+            fetchFeedback();
         }
-      }, [feedbackId]); // Add isDataFetched to the dependency array
+    }, [task]); // Depend on task instead of task.feedbackId
 
 
 
-  useEffect(() => {
-    if (selectedFeedback) {
-      fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`)
-        .then(response => response.json())
-        .then(data => setImages(data));
-    }
-  }, [selectedFeedback]);
-
-
+    useEffect(() => {
+        if (selectedFeedback) {
+            fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`)
+                .then(response => response.json())
+                .then(data => setImages(data));
+        }
+    }, [selectedFeedback]);
 
     const onSubmit = async (data) => {
+        const { respondMessage } = data;
+        console.log('respondMessage:', respondMessage); // Check the value of respondMessage
+        console.log('task.id:', task.id); // Check the value of task.id
 
         const formData = new FormData();
 
+        formData.set('Response', respondMessage);
+        selectedFiles.forEach((file) => {
+            formData.append('fileCollection', file, file.name);
+        });
+        console.log(selectedFiles);
+        if (images.length + selectedFiles.length > 5) {
+            toast.error("Cannot add more than 5 images.");
+            return;
+        }
 
         try {
-            const response = await fetch("https://localhost:7157/CreateTask?"
-                + "feedbackId=" + selectedFeedback
-                + "&employeeId=" + selectedEmployee.value
-                + "&managerId=" + localStorage.getItem("userID")
-                + "&note=" + "siuuu"
-                ,
-                { method: 'POST', body: formData });
+            const response = await fetch(`https://localhost:7157/api/Task/UpdateTaskResponse?Id=${task.id}&Response=${encodeURIComponent(respondMessage)}`, {
+                method: 'PUT',
+                body: formData
+            });
             const responseData = await response.json();
             console.log(responseData);
-            console.log(selectedEmployee)
             // Notify when the report is created successfully
             setShowSuccessNotification(true);
             setShowModal(false);
@@ -228,61 +255,66 @@ const PopUpTask = React.memo(({ feedbackId }) => {
                 <div>
                     <Typography variant="h5" fontWeight="medium" mb={1} align="center" style={{ fontSize: '1.5rem' }}>Title</Typography>
                     <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-  {selectedFeedback && selectedFeedback.title}
-</Typography>
+                        {selectedFeedback && selectedFeedback.title}
+                    </Typography>
                 </div>
                 <StyledRow>
-  <div>
-    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Campus</Typography>
-    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-      {selectedFeedback && selectedFeedback.locationId}
-    </Typography>
-  </div>
-  <div>
-    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Room</Typography>
-    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-      {selectedFeedback && selectedFeedback.locationId}
-    </Typography>
-  </div>
-  <div>
-    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Category</Typography>
-    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-      {selectedFeedback && selectedFeedback.cate && selectedFeedback.cate.description}
-    </Typography>
-  </div>
-</StyledRow>
-<div>
-  <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>More Details</Typography>
-  <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-    {selectedFeedback && selectedFeedback.description}
-  </Typography>
-</div>
-                {/* <div>
+                    <div>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Campus</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                            {selectedFeedback && selectedFeedback.locationId}
+                        </Typography>
+                    </div>
+                    <div>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Room</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                            {selectedFeedback && selectedFeedback.locationId}
+                        </Typography>
+                    </div>
+                    <div>
+                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Category</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                            {selectedFeedback && selectedFeedback.cate && selectedFeedback.cate.description}
+                        </Typography>
+                    </div>
+                </StyledRow>
+                <div>
+                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>More Details</Typography>
+                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+                        {selectedFeedback && selectedFeedback.description}
+                    </Typography>
+                </div>
+                <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Response Message</Typography>
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    name="respondMessage"
+                    {...register('respondMessage')}
+                />
+                <div>
                     <Typography variant="h5" fontWeight="medium" mb={1}>Images</Typography>
-                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '2px', overflow: 'auto', maxHeight: '400px' }}>
-                        {images.map((image, index) => (
-                            <Box key={index} sx={{ cursor: 'pointer', width: '120px', height: '120px' }} onClick={() => handleImageClick(image)}>
-                                <img key={index} src={image} alt="Preview" style={{ width: '100%', height: '100%' }} />
-                            </Box>
-                        ))}
-                    </Box>
-                </div> */}
+                    <input type="file" accept="image/*" multiple onChange={handleFileChange} />
+                    <Gallery photos={selectedImages} />
+                </div>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Report</StyledButton>
-                </Box>
+
+                    <StyledButton
+                        variant="contained"
+                        style={{ fontSize: '1.2rem', padding: '10px 20px', marginLeft: '10px' }}
+                        onClick={handleSubmit(onSubmit)} // Add this line
+                    >
+                        Responded Task
+                    </StyledButton>             
+                       </Box>
             </StyledForm>
-            {showModal && (
-                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
-                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
-                </StyledModal>
-            )}
+
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
                     icon="check"
                     title="Success"
                     content="Report sent successfully"
-                    // dateTime={new Date().toLocaleString()}
+                    dateTime={new Date().toLocaleString()}
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
                     close={() => setShowSuccessNotification(false)}
@@ -301,6 +333,8 @@ const PopUpTask = React.memo(({ feedbackId }) => {
             )}
         </StyledContainer>
     );
-});
+},
+
+);
 
 export default PopUpTask;

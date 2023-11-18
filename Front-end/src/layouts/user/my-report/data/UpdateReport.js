@@ -8,7 +8,8 @@ import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
 import ReactPhotoGallery from 'react-photo-gallery';
 import Swal from 'sweetalert2';
-import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 const StyledContainer = styled(Container)`
   display: 'flex',
   flexDirection: 'column',
