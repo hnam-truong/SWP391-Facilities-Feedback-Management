@@ -56,10 +56,6 @@ namespace Group4.FacilitiesReport.Repositories
             }
             else
             {
-                int count = _context.TblFeedbacks.Where(f => f.LocationId == feedback.LocationId && (f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Waiting") || f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing"))).Count();
-                var config = await _config.ValueOf("MaxFeedbackPerLocation");
-                if (config != null && Convert.ToUInt32(config) > count)
-                {
                     try
                     {
                         this._logger.LogInformation("Create Begins");
@@ -75,12 +71,6 @@ namespace Group4.FacilitiesReport.Repositories
                         _response.ErrorMessage = ex.Message;
                         this._logger.LogError(ex.Message, ex);
                     }
-                }
-                else
-                {
-                    _response.ResponseCode = 400;
-                    _response.ErrorMessage = "Max Feedback!!!!";
-                }
             }
 
             return _response;
