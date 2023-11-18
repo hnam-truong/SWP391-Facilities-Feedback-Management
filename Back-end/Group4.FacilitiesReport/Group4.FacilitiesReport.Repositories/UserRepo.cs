@@ -14,11 +14,14 @@ namespace Group4.FacilitiesReport.Repositories
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
         private readonly IMapper _mapper;
+        private readonly IConfig _config;
 
-        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper)
+        public UserRepo(FacilitiesFeedbackManagement_SWP391Context context, IMapper mapper, IConfig config)
         {
             _context = context;
             _mapper = mapper;
+            _config = config;
+
         }
         private IQueryable<TblUser> AllUser() => _context.TblUsers;
 
@@ -48,9 +51,9 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<List<EmployeeObject>> CountEmployeeTask(string CateId)
         {
             var Cate = await _context.TblCategoriesProblems.FirstOrDefaultAsync(x => x.Id.ToLower() == CateId.ToLower());
-
+            var value = await _config.ValueOf("MaxTaskDelivered");
             var employees = await _context.TblUsers.Include(u=>u.TblTaskEmployees.Where(t=>t.Status==0))
-                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate))
+                                            .Where(u => u.Role.Description == "Task Employee" && u.Cates.Contains(Cate) && u.TblTaskEmployees.Where(t => t.Status == 0).Count() < Convert.ToInt32(value))
                                             .ToListAsync();
             if (employees != null)
             {

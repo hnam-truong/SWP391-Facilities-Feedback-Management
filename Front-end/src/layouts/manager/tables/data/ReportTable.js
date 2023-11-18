@@ -23,78 +23,87 @@ export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
   const [cateFilter, setCateFilter] = useState("All");
-  const [authorFilter, setAuthorFilter] = useState("All");
-  const [timeExpireFilter, setTimeExpireFilter] = useState("All");
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
-  const [showHelperFunction, setShowHelperFunction] = useState(false);
+  const [showPopupAccept, setShowPopupAccept] = useState(false);
+  const [showPopupReject, setShowPopupReject] = useState(false);
+  const [showPopupCancel, setShowPopupCancel] = useState(false);
+  const [showPopupClose, setShowPopupClose] = useState(false);
 
-  const handleHelperFunctionClick = (feedback) => {
+  const handleShowPopupAccept = (feedback) => {
     setSelectedFeedback(feedback);
-    setShowHelperFunction(true);
+    setShowPopupAccept(true);
   };
 
-  const handleAcceptReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Processing" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Processing" }
-              : prevFeedback
-          )
-        );
-        // Find the feedback and set it to selectedFeedback
-        const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
-        setSelectedFeedback(selectedFeedback);
-        setDialogOpen(true);
-        console.log(selectedFeedback)
-        console.log('Setting dialogOpen to true');
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
+  const handleShowPopupReject = (feedback) => {
+    setSelectedFeedback(feedback);
+    setShowPopupReject(true);
   };
 
-  const handleRejectReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Rejected" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Rejected" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-    setOpen(true); // Show the popup
-  }
+  const handleShowPopupCancel = (feedback) => {
+    setSelectedFeedback(feedback);
+    setShowPopupCancel(true);
+  };
 
-  const RespondForm = () => {
-    const handleClose = () => {
-      setOpen(false);
-    };
-  }
+  const handleShowPopupClose = (feedback) => {
+    setSelectedFeedback(feedback);
+    setShowPopupClose(true);
+  };
+
+  // const handleAcceptReport = (feedbackId) => {
+  //   var option = {
+  //     method: 'PUT',
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ status: "Processing" }),
+  //   };
+  //   fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
+  //     .then((response) => { response.text() })
+  //     .then((data) => {
+  //       setFeedbacks((prevFeedbacks) =>
+  //         prevFeedbacks.map((prevFeedback) =>
+  //           prevFeedback.feedbackId === feedbackId
+  //             ? { ...prevFeedback, status: "Processing" }
+  //             : prevFeedback
+  //         )
+  //       );
+  //       // Find the feedback and set it to selectedFeedback
+  //       const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
+  //       setSelectedFeedback(selectedFeedback);
+  //       setDialogOpen(true);
+  //       console.log(selectedFeedback)
+  //       console.log('Setting dialogOpen to true');
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error: " + error.message);
+  //     });
+  // };
+
+
+  // const handleRejectReport = (feedbackId) => {
+  //   var option = {
+  //     method: 'PUT',
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ status: "Rejected" }),
+  //   };
+  //   fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
+  //     .then((response) => { response.text() })
+  //     .then((data) => {
+  //       setFeedbacks((prevFeedbacks) =>
+  //         prevFeedbacks.map((prevFeedback) =>
+  //           prevFeedback.feedbackId === feedbackId
+  //             ? { ...prevFeedback, status: "Rejected" }
+  //             : prevFeedback
+  //         )
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error: " + error.message);
+  //     });
+  // }
 
 
   useEffect(() => {
@@ -312,7 +321,7 @@ export default function data() {
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
       title:
         <div>
-          <IconButton onClick={() => { handleHelperFunctionClick(feedback); }}>
+          <IconButton onClick={() => { handleShowPopupAccept(feedback); }}>
             <MDTypography>
               <h6>{feedback.title}</h6>
             </MDTypography>
@@ -334,52 +343,75 @@ export default function data() {
             } variant="gradient"
             size="sm"
           />
-          {/* {feedback.status === "Processing" && (
-            <div className="hover-content">
-              {feedback.tasks
-                .filter((task) => task.employee && task.employee.username)
-                .map((task) => (
-                  <p key={task.id}>
-                    {task.employee.username || 'Unknown Employee'}
-                  </p>
-                ))
-              }
-            </div>
-          )} */}
+
         </MDBox>
       ),
-      time: <Time day={feedback.dateTime} />,
+      time: (
+        <>
+          <Time day={feedback.dateTime} />
+          <Dialog
+            open={showPopupAccept}
+            onClose={() => setShowPopupAccept(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} action={"Accept"} /> {/*also Task*/}
+          </Dialog>
+
+          <Dialog
+            open={showPopupReject}
+            onClose={() => setShowPopupReject(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} action={"Reject"} />
+          </Dialog>
+
+          <Dialog
+            open={showPopupCancel}
+            onClose={() => setShowPopupCancel(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} action={"Cancel"} />
+          </Dialog>
+
+          <Dialog
+            open={showPopupClose}
+            onClose={() => setShowPopupClose(false)}
+            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
+          >
+            <HelperFunction selectedFeedback={selectedFeedback} action={"Close"} />
+          </Dialog>
+        </>
+      ),
       action: (() => {
         switch (feedback.status) {
           case "Waiting":
             return (
               <div>
-                <IconButton onClick={() => { handleHelperFunctionClick(feedback) }}>
+                <IconButton onClick={() => { handleShowPopupAccept(feedback) }}>
                   <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
                     Accept
                   </MDTypography>
                 </IconButton>
-                <IconButton onClick={() => handleRejectReport(feedback.feedbackId)}>
+                <IconButton onClick={() => { handleShowPopupReject(feedback) }}>
                   <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
                     Reject
                   </MDTypography>
                 </IconButton>
-                <Dialog
-                  open={showHelperFunction}
-                  onClose={() => setShowHelperFunction(false)}
-                  BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-
-                  maxWidth="80vw" // Make the dialog take up 80% of the viewport width
-                  PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
-                >
-                  <HelperFunction selectedFeedback={selectedFeedback} />
-                </Dialog>
               </div>
             );
           case "Processing":
             return (
               <div>
-                <IconButton onClick={() => handleCancelReport(feedback.feedbackId)}>
+                <IconButton onClick={() => { handleShowPopupAccept(feedback) }}>
+                  <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
+                    Task
+                  </MDTypography>
+                </IconButton>
+                <IconButton onClick={() => { handleShowPopupCancel(feedback) }}>
                   <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
                     Cancel
                   </MDTypography>
@@ -389,16 +421,16 @@ export default function data() {
           case "Responded":
             return (
               <div>
-                <IconButton onClick={() => handleCloseReport(feedback.feedbackId)}>
+                <IconButton onClick={() => { handleShowPopupClose(feedback) }}>
                   <MDTypography component="a" variant="caption" color="info" fontWeight="medium">
                     Close
                   </MDTypography>
                 </IconButton>
-                {/* <IconButton onClick={() => { handleHelperFunctionClick(feedback); handleTaskReport(feedback.feedbackId) }}>
+                <IconButton onClick={() => { handleShowPopupAccept(feedback) }}>
                   <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
                     Task
                   </MDTypography>
-                </IconButton> */}
+                </IconButton>
               </div>
             );
         }
@@ -408,7 +440,7 @@ export default function data() {
 
   return {
     columns: [
-      { Header: (<RespondForm />), accessor: "star", align: "center", width: "0%", },
+      { Header: "", accessor: "star", align: "center", width: "0%", },
       { Header: "author", accessor: "author", align: "left" },
       {
         Header: "title",
@@ -440,7 +472,7 @@ export default function data() {
       {
         Header: (
           <span>
-            status:{" "}
+            status:{""}
             <Select
               value={statusFilter}
               onChange={handleStatusChange}

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { Container, Box, Typography, Button, TextField } from '@mui/material';
@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import PropTypes from 'prop-types';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -19,14 +20,16 @@ const StyledContainer = styled(Container)`
   padding: '24px',
   
   @media (min-width: 768px) {
-    padding: '48px',
+    padding: '24px',
   }
 
   @media (min-width: 1024px) {
     padding: '64px',
   }
 `;
-
+StyledContainer.propTypes = {
+    children: PropTypes.node,
+};
 const StyledSelect = styled(Select)(() => ({
     width: '100%',
     borderRadius: '12px',
@@ -72,14 +75,13 @@ const StyledForm = styled('form')(() => ({
     justifyContent: 'space-between',
     height: '100vh', // make the form take up the full viewport height
     width: '100%',
-    maxWidth: '800px',
     backgroundColor: '#fff',
     borderRadius: '8px',
     padding: '24px',
-    boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+    // boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
 }));
 
-const StyledRow = styled(Box)(() => ({
+const StyledRow3 = styled(Box)(() => ({
     display: 'grid',
     gridTemplateColumns: '1fr 1fr 1fr',
     gridGap: '40px',
@@ -89,16 +91,63 @@ const StyledRow = styled(Box)(() => ({
     },
 }));
 
+const StyledRow2 = styled(Box)(() => ({
+    display: 'grid',
+    gridTemplateColumns: '1fr 2.3fr',
+    gridGap: '40px',
+    width: '100%',
+    '@media (min-width: 768px)': {
+        gridTemplateColumns: '1fr 2.3fr',
+    },
+}));
+
 
 const StyledButton = styled(Button)(() => ({
     width: '100%',
     borderRadius: '8px',
     padding: '8px',
-    backgroundColor: 'bg-gradient-to-r from-pink-500 to-yellow-500',
     color: '#fff',
     transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        backgroundColor: 'bg-gradient-to-r from-yellow-500 to-pink-500',
+        transform: 'scale(1.05)',
+    },
+}));
+
+const StyledRejectButton = styled(Button)(() => ({
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    backgroundColor: 'red',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+        backgroundColor: 'red',
+        transform: 'scale(1.05)',
+    },
+}));
+
+const StyledCancelButton = styled(Button)(() => ({
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    backgroundColor: 'black',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+        backgroundColor: 'black',
+        transform: 'scale(1.05)',
+    },
+}));
+
+const StyledCloseButton = styled(Button)(() => ({
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    backgroundColor: 'green',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+        backgroundColor: 'green',
         transform: 'scale(1.05)',
     },
 }));
@@ -118,29 +167,25 @@ const StyledModal = styled(motion.div)(() => ({
     overflow: 'hidden',
 }));
 
+
 const StyledImage = styled('img')(() => ({
     maxWidth: '100%',
     maxHeight: '100%',
 }));
 
-const HelperFunction = React.memo(({ selectedFeedback }) => {
-    const { register, handleSubmit, formState, setValue } = useForm();
-    const [selectedCampus, setSelectedCampus] = useState(null);
-    const [selectedRoom, setSelectedRoom] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+const HelperFunction = React.memo(({ selectedFeedback, action }) => {
+    const { handleSubmit } = useForm();
     const [showModal, setShowModal] = useState(false);
-    const [roomOptions, setRoomOptions] = useState([]);
-    const [categoryOptions, setCategoryOptions] = useState([]);
-    const [dateTime, setDateTime] = useState(new Date().toLocaleString());
-    const [selectedImages, setSelectedImages] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
-    const [filteredRoomOptions, setFilteredRoomOptions] = useState([]);
-    const [roomDisabled, setRoomDisabled] = useState(true);
     const [showSuccessNotification, setShowSuccessNotification] = useState(false);
     const [showErrorNotification, setShowErrorNotification] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [images, setImages] = useState([]);
+    const [employeesOptions, setEmployeesOptions] = useState([]);
+    const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
+    const [sucessNotificationMessage, setSucessNotificationMessage] = useState("");
     const [note, setNote] = useState('');
+    const [userResponse, setUserResponse] = useState("");
 
     const isProcessing = selectedFeedback.status === "Processing";
     const isWaiting = selectedFeedback.status === "Waiting";
@@ -149,7 +194,7 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     const handleEmployeeChange = (selectedOption) => {
         setSelectedEmployee(selectedOption);
     };
-    const [employeesOptions, setEmployeesOptions] = useState([]);
+
 
     useEffect(() => {
         const fetchEmployeeOptions = async () => {
@@ -173,152 +218,139 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
             .then(data => setImages(data));
     }, [selectedFeedback.feedbackId]);
 
-
-    useEffect(() => {
-        const fetchRoomOptions = async () => {
-            try {
-                const response = await fetch('https://localhost:7157/api/Location/GetAllLocation');
-                const data = await response.json();
-                const options = data.map((room) => ({ value: room.locationId, label: room.locationId }));
-
-                const filteredOptions = selectedCampus?.value === 'NVH'
-                    ? options.filter((room) => room.label.startsWith('NVH'))
-                    : options.filter((room) => !room.label.startsWith('NVH'));
-
-                setRoomOptions(options);
-                setFilteredRoomOptions(filteredOptions);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        const fetchCategoryOptions = async () => {
-            try {
-                const response = await fetch('https://localhost:7157/api/Cate/GetAllCate');
-                const data = await response.json();
-                const options = data.map((category) => ({ value: category.id, label: category.description }));
-                setCategoryOptions(options);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchCategoryOptions();
-        fetchRoomOptions();
-    }, [selectedCampus]);
-
-
-    useEffect(() => { if (formState.errors.file) setSelectedImages(null); }, [formState.errors.file]);
-
     const onSubmit = async (data) => {
-        const { Title, MoreDetails } = data;
-        const { value: campus = '' } = selectedCampus || {};
-        const { value: room = '' } = selectedRoom || {};
-        const { value: category = '' } = selectedCategory || {};
+        switch (action) {
+            case "Accept":
+                try {
+                    var option = {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    };
+                    const response = await fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + selectedFeedback.feedbackId + "&response=" + userResponse, option);
+                    const data = await response.text();
+                    console.log("Data received:", data);
+                    // Handle the data received from the server
+                } catch (error) {
+                    console.error("Error: " + error.message);
+                }
 
-        const formData = new FormData();
-        formData.set('Campus', campus);
-        formData.set('Room', room);
-        formData.set('Category', category);
-        formData.set('Title', Title);
-        formData.set('MoreDetails', MoreDetails);
-        formData.set('status', 'Open');
-        // if (selectedImages) {
-        //   formData.set('image', selectedImages);
-        // }
-        if (selectedImages && selectedImages.length) {
-            selectedImages.forEach((image, index) => {
-                formData.append('fileCollection', image.file, image.file.name);
-            });
-        }
-        try {
-            const response = await fetch("https://localhost:7157/CreateTask?"
-                + "FeedbackId=" + selectedFeedback.feedbackId
-                + "&EmployeeId=" + selectedEmployee.value
-                + "&ManagerId=" + localStorage.getItem('userID')
-                + "&Note=" + note,
-                { method: 'POST', body: formData });
-            const responseData = await response.json();
-            console.log(responseData);
+                //Giao task
+                try {
+                    const response = await fetch("https://localhost:7157/CreateTask?"
+                        + "FeedbackId=" + selectedFeedback.feedbackId
+                        + "&EmployeeId=" + selectedEmployee.value
+                        + "&ManagerId=" + localStorage.getItem('userID')
+                        + "&Note=" + note,
+                        { method: 'POST' });
+                    const responseData = await response.json();
+                    console.log(responseData);
+                    if (responseData.responseCode === 400) {
+                        setErrorNotificationMessage(responseData.errorMessage);
+                        setShowErrorNotification(true);
+                    } else if (responseData.responseCode === 200) {
+                        // Notify when the report is created successfully
+                        setSucessNotificationMessage("Task sent successfully!");
+                        setShowSuccessNotification(true);
 
-            handleAcceptReport(selectedFeedback.feedbackId)
-            // Notify when the report is created successfully
-            setShowSuccessNotification(true);
-            setShowModal(false);
+                        window.location.reload();
+                    }
+                } catch (error) {
+                    console.error(error);
+                    setErrorNotificationMessage("An error occurred while sending Task!");
+                    setShowErrorNotification(true);
+                }
+                break;
 
-            // window.location.reload();
-        } catch (error) {
-            console.error(error);
-            setShowErrorNotification(true);
+            case "Reject":
+                try {
+                    var option = {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    };
+                    const response = await fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + selectedFeedback.feedbackId + "&response=" + userResponse, option);
+                    const data = await response.text();
+                    console.log("Data received:", data);
+                    // Handle the data received from the server
+                    setSucessNotificationMessage("This Report is Rejected!");
+                    setShowSuccessNotification(true);
+
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error: " + error.message);
+                }
+                break;
+
+            case "Cancel":
+                try {
+                    var option = {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    };
+                    const response = await fetch("https://localhost:7157/api/Feedbacks/CancelFeedback?feedbackId=" + selectedFeedback.feedbackId + "&response=" + userResponse, option);
+                    const data = await response.text();
+                    console.log("Data received:", data);
+                    // Handle the data received from the server
+                    setSucessNotificationMessage("This Report is Cancelled!");
+                    setShowSuccessNotification(true);
+
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error: " + error.message);
+                }
+                break;
+
+            case "Close":
+                try {
+                    var option = {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    };
+                    const response = await fetch("https://localhost:7157/api/Feedbacks/CloseFeedback?feedbackId=" + selectedFeedback.feedbackId + "&response=" + userResponse, option);
+                    const data = await response.text();
+                    console.log("Data received:", data);
+                    // Handle the data received from the server
+                    setSucessNotificationMessage("This Report is Closed!");
+                    setShowSuccessNotification(true);
+
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error: " + error.message);
+                }
+                break;
         }
     };
 
-    const handleFileChange = (event) => {
-        const fileArray = Array.from(event.target.files).map((file) => {
-            return {
-                file,
-                preview: URL.createObjectURL(file)
-            };
-        });
-        setSelectedImages((prevImages) => prevImages.concat(fileArray));
+    const handleNoteChange = (event) => {
+        if (note === "") {
+            setNote(event.target.value.trim());
+        } else {
+            setNote(event.target.value);
+        }
     };
 
-    // Cleanup the object URLs after using them
-    useEffect(() => {
-        return () => {
-            selectedImages.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [selectedImages]);
+    const handleResponseChange = (event) => {
+        if (userResponse === "") {
+            setUserResponse(event.target.value.trim());
+        } else {
+            setUserResponse(event.target.value);
+        }
+    };
+
     const handleImageClick = (image) => {
         setPreviewUrl(image);
         setShowModal(true);
-    };
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDateTime(new Date().toLocaleString());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const handleCampusChange = (selectedOption) => {
-        setSelectedCampus(selectedOption);
-
-        // Enable Room selection when a Campus is chosen
-        setRoomDisabled(false);
-    };
-
-    const handleAcceptReport = (feedbackId) => {
-        var option = {
-            method: 'PUT',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: "Processing" }),
-        };
-        fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-            .then((response) => { response.text() })
-            .then((data) => {
-                setFeedbacks((prevFeedbacks) =>
-                    prevFeedbacks.map((prevFeedback) =>
-                        prevFeedback.feedbackId === feedbackId
-                            ? { ...prevFeedback, status: "Processing" }
-                            : prevFeedback
-                    )
-                );
-                // Find the feedback and set it to selectedFeedback
-                const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
-                setSelectedFeedback(selectedFeedback);
-                setDialogOpen(true);
-                console.log(selectedFeedback)
-                console.log('Setting dialogOpen to true');
-            })
-            .catch((error) => {
-                console.error("Error: " + error.message);
-            });
-    }
-
-    const handleNoteChange = (event) => {
-        setNote(event.target.value);
     };
 
     const Time = ({ day }) => {
@@ -344,43 +376,53 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
     };
     return (
         <StyledContainer sx={{
-            width: '80vw', // Make the container take up 80% of the viewport width
-            maxWidth: '80vw', // Limit the maximum width of the container to 80% of the viewport width
-            mx: 'auto', // Center the container horizontally
-            px: { xs: 2, sm: 3, md: 4 }, // Add horizontal padding that increases with the screen size
+            width: '80vw', 
+            mx: 'auto', 
+            px: { xs: 2, sm: 3, md: 4 },
         }}>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
                 <div>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
+                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
                 </div>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>Title</Typography>
-                    <Typography variant="body1" style={{ fontSize: '1.5rem' }}>{selectedFeedback.title}</Typography>
+                    <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1.2rem' }}>Title</Typography>
+                    <Typography variant="body1" fontWeight="bold" mb={4} style={{ fontSize: '1.5rem' }}>{selectedFeedback.title}</Typography>
                 </div>
-                <StyledRow>
+                <StyledRow3>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Campus</Typography>
+                        <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1rem' }}>Campus</Typography>
                         <Typography variant="body1" style={{ fontSize: '1rem' }}>
                             {selectedFeedback.locationId.startsWith('NVH') ? 'NVH' : 'FPTU HCM'}
                         </Typography>
                     </div>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Room</Typography>
+                        <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1rem' }}>Room</Typography>
                         <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.locationId}</Typography>
                     </div>
                     <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1rem' }}>Category</Typography>
+                        <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1rem' }}>Category</Typography>
                         <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.cate.description}</Typography>
                     </div>
 
-                </StyledRow>
+                </StyledRow3>
+                <StyledRow2 mt={3} >
+                    <div>
+                        <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1rem' }}>Status</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.status}</Typography>
+                    </div>
+                    <div>
+                        <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1rem' }}>Response</Typography>
+                        <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.response}</Typography>
+                    </div>
+
+                </StyledRow2>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.2rem' }}>More Details</Typography>
+                    <Typography variant="h5" fontWeight="medium" mt={4} mb={1} style={{ fontSize: '1.2rem' }}>More Details</Typography>
                     <Typography variant="body1" style={{ fontSize: '1rem' }}>{selectedFeedback.description}</Typography>
                 </div>
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1}>Images</Typography>
+                    <Typography variant="h5" fontWeight="medium" mt={4} mb={1}>Images</Typography>
                     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '2px', overflow: 'auto', maxHeight: '400px' }}>
                         {images.map((image, index) => (
                             <Box key={index} sx={{ cursor: 'pointer', width: '120px', height: '120px' }} onClick={() => handleImageClick(image)}>
@@ -389,9 +431,27 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                         ))}
                     </Box>
                 </div>
-                {((localStorage.getItem('userRole') == "Manager") && (isWaiting || isProcessing || isResponded)) && (
+                {localStorage.getItem('userRole') === "Manager" && (isWaiting || isProcessing || isResponded) && (
                     <div>
-                        <Typography variant="h6" fontWeight="medium" mb={1}>Assign to Employee</Typography>
+                        <Typography variant="h6" fontWeight="medium" mt={5} mb={1}>Send response to Reporter</Typography>
+                        <TextField
+                            multiline
+                            rows={3}
+                            inputProps={{ maxLength: 300 }}
+                            required
+                            fullWidth
+                            id="response"
+                            label="Response"
+                            variant="filled"
+                            value={userResponse}
+                            onChange={handleResponseChange}
+                        />
+                    </div>
+                )}
+
+                {((localStorage.getItem('userRole') == "Manager") && (isWaiting || isProcessing || isResponded) && action === "Accept") && (
+                    <div>
+                        <Typography variant="h6" fontWeight="medium" mt={6} mb={1}>Assign to Employee</Typography>
                         <StyledSelect
                             name="Employee"
                             id="Employee"
@@ -401,36 +461,68 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                             required
                             isSearchable
                         />
-                        <Typography variant="h5" fontWeight="medium" mb={1} mt={3} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
-                        {selectedFeedback.tasks.map((task) => (
-
-                            <div key={task.taskId}>
-                                <Typography style={{ fontSize: '1rem' }}>Name:{task.employee.username}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
-                                <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
-                            </div>
-                        ))}
                     </div>
                 )}
 
-                {localStorage.getItem('userRole') === "Manager" && (isWaiting || isProcessing || isResponded) && (
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded) && action === "Accept") && (
                     <div>
-                        <Typography variant="h6" fontWeight="medium" mt={2} mb={-0.5}>Note to Employee</Typography>
+                        <Typography variant="h6" fontWeight="medium" mt={2} mb={1}>Note to Employee</Typography>
                         <TextField
+                            inputProps={{ maxLength: 100 }}
                             required
                             fullWidth
                             id="note"
                             label="Note"
-                            variant="standard"
+                            variant="outlined"
                             value={note}
                             onChange={handleNoteChange}
                         />
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+
+                        <Typography variant="h5" fontWeight="medium" mb={1} mt={6} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
+                        {selectedFeedback.tasks
+                            .filter(task => task.status !== "Cancelled" && task.status !== "Removed")
+                            .map((task) => (
+                                <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
+                                    <Typography style={{ fontSize: '1rem' }}>Manager name: {task.manager.username}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Employee name: {task.employee.username}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
+                                    <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
+                                </div>
+                            )
+                            )}
+
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
                             <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Task</StyledButton>
+                        </Box>
+
+                    </div>
+                )}
+
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded) && action === "Reject") && (
+                    <div>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+                            <StyledRejectButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Reject Report</StyledRejectButton>
                         </Box>
                     </div>
                 )}
+
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded) && action === "Cancel") && (
+                    <div>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+                            <StyledCancelButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Cancel Report</StyledCancelButton>
+                        </Box>
+                    </div>
+                )}
+
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded) && action === "Close") && (
+                    <div>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+                            <StyledCloseButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Close Report</StyledCloseButton>
+                        </Box>
+                    </div>
+                )}
+                <br />
             </StyledForm>
             {showModal && (
                 <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
@@ -441,9 +533,9 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                 <MDSnackbar
                     color="success"
                     icon="check"
+                    dateTime=""
                     title="Success"
-                    content="Task sent successfully"
-                    // dateTime={new Date().toLocaleString()}
+                    content={sucessNotificationMessage}
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
                     close={() => setShowSuccessNotification(false)}
@@ -453,8 +545,9 @@ const HelperFunction = React.memo(({ selectedFeedback }) => {
                 <MDSnackbar
                     color="error"
                     icon="warning"
+                    dateTime=""
                     title="Error"
-                    content="An error occurred while sending Task."
+                    content={errorNotificationMessage}
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}

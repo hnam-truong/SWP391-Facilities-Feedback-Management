@@ -11,10 +11,10 @@ import UserReport from "layouts/user/my-report";
 import EmployeeTask from "layouts/employee/my-task";
 import Error404 from "layouts/error/error404";
 import SystemHandler from "layouts/system-handler";
+import EmployeeTaskManager from "layouts/manager/employee-task";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import EmployeeTaskManager from "layouts/user/my-task";
 
 const userRole = localStorage.getItem("userRole");
 const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -80,7 +80,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
-    roles: ["Student", "Lecturer", "Casual Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",
@@ -89,7 +89,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Casual Employee"],
+    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
   },
   {
     type: "collapse",

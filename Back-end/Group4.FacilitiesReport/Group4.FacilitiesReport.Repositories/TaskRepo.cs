@@ -110,8 +110,13 @@ namespace Group4.FacilitiesReport.Repositories
             APIResponse response = new APIResponse();
             var feedback = await _context.TblFeedbacks.FirstOrDefaultAsync(x => x.FeedbackId.Equals(task.FeedbackId));
             var employee = await _context.TblUsers.Include(e => e.Cates).FirstOrDefaultAsync(x => x.UserId.ToLower().Equals(task.EmployeeId.ToLower()));
-            
-            if (feedback != null && feedback.Status <= (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
+            var item = _context.TblUsers.Include(u => u.TblTaskEmployees).FirstOrDefault(u => u.UserId == task.EmployeeId) ;
+
+            if (item.TblTaskEmployees.Any(t => t.FeedbackId == task.FeedbackId && t.Status == 0)) {
+                response.ResponseCode = 400;
+                response.ErrorMessage = "This employee is handling this feedback!";
+            }
+            else if (feedback != null && (feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Processing") || feedback.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Responded")) && employee != null && employee.Cates.Any(c => c.Id.ToLower() == feedback.CateId.ToLower()))
             {
                 var config = await _config.ValueOf("MaxTaskDelivered");
                 var count = _context.TblTasks.Where(t => t.EmployeeId == task.EmployeeId && t.Status == (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Delivered")).Count();
@@ -127,7 +132,7 @@ namespace Group4.FacilitiesReport.Repositories
                 else
                 {
                     response.ResponseCode = 400;
-                    response.ErrorMessage = "Max Tasks!!!!";
+                    response.ErrorMessage = "This employee too busy!";
                 }
             }
             else

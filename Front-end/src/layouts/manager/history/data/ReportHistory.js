@@ -14,9 +14,19 @@ import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 
+import HelperFunction from "layouts/manager/tables/data/HelperFunction";
+import Dialog from '@material-ui/core/Dialog';
+
 export default function data() {
-  const badgeContent = "waiting"; // Replace this with the actual badge content
   const [feedbacks, setFeedbacks] = useState([]);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [showHelperFunction, setShowHelperFunction] = useState(false);
+
+  const handleHelperFunctionClick = (feedback) => {
+    setSelectedFeedback(feedback);
+    setShowHelperFunction(true);
+  };
+
   useEffect(() => {
     // Define the URL of your API endpoint
     const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
@@ -135,7 +145,14 @@ export default function data() {
         </div>
       ),
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
-      title: <h4>{feedback.title}</h4>,
+      title:
+        <div>
+          <IconButton onClick={() => { handleHelperFunctionClick(feedback); }}>
+            <MDTypography>
+              <h6>{feedback.title}</h6>
+            </MDTypography>
+          </IconButton>
+        </div>,
       info: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
@@ -157,7 +174,17 @@ export default function data() {
           })()}
         </MDBox>
       ),
-      time: <Time day={feedback.dateTime} />,
+      time: <>
+        <Time day={feedback.dateTime} />
+        <Dialog
+          open={showHelperFunction}
+          onClose={() => setShowHelperFunction(false)}
+          BackdropProps={{ style: { backgroundColor: 'transparent' } }}
+          PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }}
+        >
+          <HelperFunction selectedFeedback={selectedFeedback} />
+        </Dialog>
+      </>,
       action: feedback.status === "Rejected" ? (
         <div>
           <IconButton onClick={() => handleUndoReport(feedback.feedbackId)}>

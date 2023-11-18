@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Feedback-Facilities\\Back-API\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {}
+    "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Feedback-Facilities\\Back-API\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+    "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Feedback-Facilities\\Back-API\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectUniqueName": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "projectName": "Group4.FacilitiesReport.DTO",
-        "projectPath": "D:\\Project\\Feedback-Facilities\\Back-API\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
+        "projectPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Feedback-Facilities\\Back-API\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
+        "outputPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",

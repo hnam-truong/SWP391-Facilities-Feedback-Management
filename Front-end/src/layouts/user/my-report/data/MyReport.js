@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Modal from '@mui/material/Modal';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import red from '@material-ui/core/colors/red';
+import blue from '@material-ui/core/colors/blue';
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -48,29 +50,43 @@ export default function data() {
   };
 
   const handleRemoveReport = (feedbackId) => {
-    var option = {
-      method: 'DELETE',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Removed" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Removed" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-  }
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
 
+            <p style={{ color: '#666' }}>Do you want to delete this feedback?</p>
+            <button onClick={onClose} style={{ backgroundColor: blue[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', marginRight: '10px' }}>Back</button>
+            <button onClick={() => {
+              var option = {
+                method: 'DELETE',
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status: "Removed" }),
+              };
+              fetch("https://localhost:7157/api/Feedbacks/RemoveFeedback/" + feedbackId, option)
+                .then((response) => { response.text() })
+                .then((data) => {
+                  setFeedbacks((prevFeedbacks) =>
+                    prevFeedbacks.map((prevFeedback) =>
+                      prevFeedback.feedbackId === feedbackId
+                        ? { ...prevFeedback, status: "Removed" }
+                        : prevFeedback
+                    )
+                  );
+                })
+                .catch((error) => {
+                  console.error("Error: " + error.message);
+                });
+              onClose();
+              window.location.reload();
+            }} style={{ backgroundColor: red[500], color: '#fff', border: 'none', padding: '10px', borderRadius: '5px' }}>Remove</button>
+          </div>
+        );
+      }
+    });
+  };
 
   const Author = ({ name, user }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -117,7 +133,7 @@ export default function data() {
   const feedbackRows = feedbacks
     .filter(feedback => feedback.status !== "Removed")
     .sort((a, b) => {
-      new Date(a.dateTime) - new Date(b.dateTime);
+      return new Date(b.dateTime) - new Date(a.dateTime);
     })
     .map((feedback) => ({
       author: <Author name={feedback.user.username} user={feedback.user.role.description} />,
@@ -171,7 +187,7 @@ export default function data() {
 
                 return (
                   <MDBox>
-                    <a href='#updateReport' id='openPopUp' onClick={() => handleEditClick(feedback)}>
+                    <a onClick={() => handleEditClick(feedback)}>
                       <IconButton>
                         <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
                           Edit
@@ -186,17 +202,15 @@ export default function data() {
                     <Dialog
                       open={showUpdateReport}
                       onClose={() => setShowUpdateReport(false)}
-                      BackdropProps={{ style: { backgroundColor: 'transparent' } }}
                       fullScreen={fullScreen}
-                      maxWidth="80vw" // Set the maximum width to 80% of the viewport width
-                      PaperProps={{ style: { maxHeight: '95vh' } }} // Set the maximum height to 80% of the viewport height
+                      maxWidth="80vw"
+                      PaperProps={{ style: { maxHeight: '95vh' } }}
                     >
                       <UpdateReport selectedFeedback={selectedFeedback} />
                     </Dialog>
                     <Dialog
                       open={showHelperFunction}
                       onClose={() => setShowHelperFunction(false)}
-                      BackdropProps={{ style: { backgroundColor: 'transparent' } }}
 
                       maxWidth="80vw" // Make the dialog take up 80% of the viewport width
                       PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width

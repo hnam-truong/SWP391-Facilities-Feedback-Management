@@ -4,9 +4,11 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
+import ReactPhotoGallery from 'react-photo-gallery';
+import Swal from 'sweetalert2';
+import { useLocation } from 'react-router-dom';
 const StyledContainer = styled(Container)`
   display: 'flex',
   flexDirection: 'column',
@@ -127,7 +129,9 @@ const StyledImage = styled('img')(() => ({
     maxHeight: '100%',
 }));
 
+
 const UpdateReport = React.memo(({ selectedFeedback }) => {
+
     const { register, handleSubmit, formState, setValue } = useForm();
     const [selectedCampus, setSelectedCampus] = useState(null);
     const [selectedRoom, setSelectedRoom] = useState(
@@ -146,7 +150,14 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const [roomDisabled, setRoomDisabled] = useState(true);
     const [showSuccessNotification, setShowSuccessNotification] = useState(false);
     const [showErrorNotification, setShowErrorNotification] = useState(false);
-    const [showUpdateReport, setShowUpdateReport] = useState(false);
+    const [images, setImages] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
+
+    useEffect(() => {
+        const initialCampus = selectedRoom.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
+        setSelectedCampus(initialCampus);
+    }, []);
 
     const campusOptions = useMemo(() => [{ value: 'FPTU HCM', label: 'FPTU HCM' }, { value: 'NVH', label: 'NVH' }], []);
 
@@ -199,14 +210,14 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
         formData.set('Title', Title);
         formData.set('MoreDetails', MoreDetails);
         formData.set('status', 'Open');
-        // if (selectedImages) {
-        //   formData.set('image', selectedImages);
-        // }
-        if (selectedImages && selectedImages.length) {
-            selectedImages.forEach((image, index) => {
-                formData.append('fileCollection', image.file, image.file.name);
-            });
+        selectedFiles.forEach((file) => {
+            formData.append('fileCollection', file, file.name);
+        });
+        if (images.length + selectedFiles.length > 5) {
+            toast.error("Cannot add more than 5 images.");
+            return;
         }
+
         try {
             const response = await fetch("https://localhost:7157/api/Feedbacks/Update?"
                 + "feedbackId=" + selectedFeedback.feedbackId
@@ -219,58 +230,62 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 { method: 'PUT', body: formData });
             const responseData = await response.json();
             console.log(responseData);
-
             // Notify when the report is created successfully
             setShowSuccessNotification(true);
             setShowModal(false);
-            //   setShowUpdateReport(false);
-            //   setShowSuccessNotification(false);
-            //   setShowErrorNotification(false);
-            // // Clear all form data
-            // setSelectedCampus(null);
-            // setSelectedRoom(null);
-            // setSelectedCategory(null);
-            // setValue('Title', '');
-            // setValue('MoreDetails', '');
-            // setSelectedImages([]);
-            // setPreviewUrl(null);
+
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
         }
     };
-
-    const handleFileChange = (event) => {
-        const fileArray = Array.from(event.target.files).map((file) => {
-            return {
-                file,
-                preview: URL.createObjectURL(file)
-            };
-        });
-        setSelectedImages((prevImages) => prevImages.concat(fileArray));
-    };
-
-    // Cleanup the object URLs after using them
     useEffect(() => {
-        return () => {
-            selectedImages.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [selectedImages]);
-    const handleImageClick = (image) => {
-        setPreviewUrl(image);
-        setShowModal(true);
+        const apiUrl = `https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`;
+        fetch(apiUrl)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Fetched images:", data); // Log the fetched data to the console
+
+                const fetchedImages = data.map((imageUrl) => ({
+                    src: imageUrl, // 'imageUrl' is a URL of an image
+                    width: 1,
+                    height: 1,
+                }));
+                setImages(fetchedImages);
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+    }, [selectedFeedback.feedbackId]);
+    const handleFileChange = (event) => {
+        const newSelectedFiles = Array.from(event.target.files);
+        if (images.length + newSelectedFiles.length > 5) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Your feedback cannot have more than 5 images.',
+            });
+            return;
+        }
+
+        setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
+
+        const newSelectedImages = newSelectedFiles.map((file) => ({
+            src: URL.createObjectURL(file),
+            width: 1,
+            height: 1,
+        }));
+        setImages([...images, ...newSelectedImages]);
     };
+
     useEffect(() => {
         const interval = setInterval(() => {
             setDateTime(new Date().toLocaleString());
         }, 1000);
         return () => clearInterval(interval);
     }, []);
-
     const handleCampusChange = (selectedOption) => {
         setSelectedCampus(selectedOption);
+        setSelectedRoom(null);
 
-        // Enable Room selection when a Campus is chosen
         setRoomDisabled(false);
     };
 
@@ -287,7 +302,18 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 <Typography variant="h6" fontWeight="medium" mb={1}>{dateTime}</Typography>
                 <div>
                     <Typography variant="h6" fontWeight="medium" mb={1}>Title</Typography>
-                    <StyledTextField type="text" name="Title" label="Title" defaultValue={selectedFeedback.title} inputProps={{ maxLength: 40 }} {...register('Title', { required: true, maxLength: 40 })} error={formState.errors.Title} helperText={formState.errors.Title && 'Title is required'} />
+                    <StyledTextField
+                        type="text"
+                        name="Title"
+                        defaultValue={selectedFeedback.title.toUpperCase()}
+                        inputProps={{
+                            maxLength: 40,
+                            style: { fontSize: '1.2rem', height: '80%' } // Increase the font size
+                        }}
+                        {...register('Title', { required: true, maxLength: 40 })}
+                        error={formState.errors.Title}
+                        helperText={formState.errors.Title && 'Title is required'}
+                    />
                 </div>
                 <StyledRow>
                     <div>
@@ -303,6 +329,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                             styles={{
                                 control: (provided) => ({
                                     ...provided,
+                                    width: 200, // Set a fixed width
                                     borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor,
                                     '&:hover': { borderColor: formState.errors.Campus ? '#f44336' : provided.borderColor },
                                 }),
@@ -317,7 +344,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                             options={filteredRoomOptions}
                             value={selectedRoom}
                             onChange={setSelectedRoom}
-                            isDisabled={roomDisabled} // Disable Room selection when roomDisabled is true
+
                             required
                             isSearchable
                             styles={{
@@ -339,7 +366,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                     <StyledTextField
                         type="text"
                         name="MoreDetails"
-                        label="More Details"
+                        // label="More Details"
                         inputProps={{ maxLength: 300 }}
                         {...register('MoreDetails', { required: true, maxLength: 300 })}
                         error={formState.errors.MoreDetails}
@@ -352,15 +379,11 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                     />
                 </div>
                 <div>
-                    <Typography variant="h6" fontWeight="medium" mb={1}>Images</Typography>
-                    <input type="file" name="file" onChange={handleFileChange} multiple />
-                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
-                        {selectedImages.map((selectedImage, index) => (
-                            <Box key={index} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
-                                <img key={index} src={selectedImage.preview} alt="Preview" style={{ width: '100%', height: '100%' }} />
-                            </Box>
-                        ))}
-                    </Box>
+                    <Typography variant="h6" fontWeight="medium" mb={1}>
+                        Images
+                    </Typography>
+                    <input type="file" onChange={handleFileChange} multiple />
+                    <ReactPhotoGallery photos={images} />
                 </div>
                 <Box sx={{
                     gridColumn: '1 / -1',
@@ -375,8 +398,16 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
             </StyledForm>
             {showModal && (
                 <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
-                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
-                </StyledModal>
+                    <StyledImage
+                        src={previewUrl}
+                        alt="Preview"
+                        sx={{
+                            maxWidth: '30%',
+                            maxHeight: '30%',
+                            borderRadius: '8px',
+                            objectFit: 'cover', // Add this line to make the image fit within its container
+                        }}
+                    />                </StyledModal>
             )}
             {showSuccessNotification && (
                 <MDSnackbar
