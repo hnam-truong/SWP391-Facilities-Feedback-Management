@@ -1,6 +1,7 @@
 ﻿using Group4.FacilitiesReport.DTO.Models;
 using Group4.FacilitiesReport.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
 namespace Group4.FacilitiesReport.Repositories
@@ -8,13 +9,16 @@ namespace Group4.FacilitiesReport.Repositories
     public class RefresHandler : IRefreshHandler
     {
         private readonly FacilitiesFeedbackManagement_SWP391Context _context;
+        private readonly ILogger<RefresHandler> _logger;
 
-        public RefresHandler(FacilitiesFeedbackManagement_SWP391Context context)
+        public RefresHandler(FacilitiesFeedbackManagement_SWP391Context context, ILogger<RefresHandler> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<string> GenerateToken(string userId)
         {
+            _logger.LogInformation("Begin Generate Token");
             var randomNumber = new byte[32];
             using (var randomNumberGenerator = RandomNumberGenerator.Create())
             {
