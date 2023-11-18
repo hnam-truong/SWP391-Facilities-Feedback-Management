@@ -547,9 +547,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                     color="error"
                     icon="warning"
                     dateTime=""
-                    dateTime=""
                     title="Error"
-                    content={errorNotificationMessage}
                     content={errorNotificationMessage}
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
