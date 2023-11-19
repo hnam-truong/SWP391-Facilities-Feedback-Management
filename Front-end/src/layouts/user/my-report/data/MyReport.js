@@ -13,6 +13,8 @@ import UpdateReport from "./UpdateReport";
 //MUI
 import IconButton from "@mui/material/IconButton";
 import Dialog from '@mui/material/Dialog';
+import Zoom from '@material-ui/core/Zoom';
+import { Modal } from 'react-overlays';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -202,24 +204,80 @@ export default function data() {
                         Remove
                       </MDTypography>
                     </IconButton>
-                    <Dialog
-                      open={showUpdateReport}
-                      onClose={() => setShowUpdateReport(false)}
-                      fullScreen={fullScreen}
-                      maxWidth="80vw"
-                      PaperProps={{ style: { maxHeight: '95vh' } }}
-                    >
-                      <UpdateReport selectedFeedback={selectedFeedback} />
-                    </Dialog>
-                    <Dialog
-                      open={showHelperFunction}
-                      onClose={() => setShowHelperFunction(false)}
-
-                      maxWidth="80vw" // Make the dialog take up 80% of the viewport width
-                      PaperProps={{ style: { maxHeight: '95vh', width: '40vw' } }} // Make the dialog take up 80% of the viewport height and width
-                    >
-                      <HelperFunction selectedFeedback={selectedFeedback} />
-                    </Dialog>
+                  {selectedFeedback === feedback && (
+  <Modal show={showUpdateReport} onHide={() => setShowUpdateReport(false)}>
+    <div 
+      onClick={() => setShowUpdateReport(false)} 
+      style={{ 
+        zIndex: 1000,
+        overflowY: 'auto', 
+        position: 'fixed', 
+        top: 0, 
+        right: 0, 
+        bottom: 0, 
+        left: 0, 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center' 
+      }}
+    >
+      <Zoom in={showUpdateReport} timeout={2000}>
+        <div 
+          onClick={(e) => e.stopPropagation()} 
+          style={{ 
+            backgroundColor: 'white', 
+            padding: '20px', 
+            borderRadius: '8px', 
+            maxWidth: '90%', 
+            maxHeight: '90%', 
+            overflowY: 'auto'
+          }}
+        >
+          <button onClick={() => setShowUpdateReport(false)}>Close</button>
+          <UpdateReport selectedFeedback={selectedFeedback} />
+        </div>
+      </Zoom>
+    </div>
+  </Modal>
+)}
+{selectedFeedback === feedback && (
+  <Modal show={showHelperFunction} onHide={() => setShowHelperFunction(false)}>
+    <div 
+      onClick={() => setShowHelperFunction(false)} 
+      style={{ 
+        zIndex: 1000,
+        overflowY: 'auto', 
+        position: 'fixed', 
+        top: 0, 
+        right: 0, 
+        bottom: 0, 
+        left: 0, 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center' 
+      }}
+    >
+      <Zoom in={showHelperFunction} timeout={2000}>
+        <div 
+          onClick={(e) => e.stopPropagation()} 
+          style={{ 
+            backgroundColor: 'white', 
+            padding: '20px', 
+            borderRadius: '8px', 
+            maxWidth: '90%', 
+            maxHeight: '90%', 
+            overflowY: 'auto'
+          }}
+        >
+          <button onClick={() => setShowHelperFunction(false)}>Close</button>
+          <HelperFunction selectedFeedback={selectedFeedback} />
+        </div>
+      </Zoom>
+    </div>
+  </Modal>
+)}
                   </MDBox>
                 );
             }

@@ -9,6 +9,7 @@ import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PropTypes from 'prop-types';
+import { red, grey, green } from '@material-ui/core/colors';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -105,57 +106,45 @@ const StyledRow2 = styled(Box)(() => ({
     },
 }));
 
-
 const StyledButton = styled(Button)(() => ({
-    width: '100%',
-    borderRadius: '8px',
-    padding: '8px',
-    color: '#fff',
-    transition: 'all 0.2s ease-in-out',
+    // ... other styles ...
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
     '&:hover': {
+        background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
         transform: 'scale(1.05)',
     },
 }));
 
 const StyledRejectButton = styled(Button)(() => ({
-    width: '100%',
-    borderRadius: '8px',
-    padding: '8px',
-    backgroundColor: 'red',
-    color: '#fff',
-    transition: 'all 0.2s ease-in-out',
+    // ... other styles ...
+    background: 'linear-gradient(45deg, #dc3545 30%, #c82333 90%)',
+    color: 'white',
     '&:hover': {
-        backgroundColor: 'red',
+        background: 'linear-gradient(45deg, #c82333 30%, #dc3545 90%)',
         transform: 'scale(1.05)',
     },
 }));
 
 const StyledCancelButton = styled(Button)(() => ({
-    width: '100%',
-    borderRadius: '8px',
-    padding: '8px',
-    backgroundColor: 'black',
-    color: '#fff',
-    transition: 'all 0.2s ease-in-out',
+    // ... other styles ...
+    background: 'linear-gradient(45deg, #6c757d 30%, #5a6268 90%)',
+    color: 'white',
     '&:hover': {
-        backgroundColor: 'black',
+        background: 'linear-gradient(45deg, #5a6268 30%, #6c757d 90%)',
         transform: 'scale(1.05)',
     },
 }));
 
 const StyledCloseButton = styled(Button)(() => ({
-    width: '100%',
-    borderRadius: '8px',
-    padding: '8px',
-    backgroundColor: 'green',
-    color: '#fff',
-    transition: 'all 0.2s ease-in-out',
+    // ... other styles ...
+    background: 'linear-gradient(45deg, #28a745 30%, #218838 90%)',
+    color: 'white',
     '&:hover': {
-        backgroundColor: 'green',
+        background: 'linear-gradient(45deg, #218838 30%, #28a745 90%)',
         transform: 'scale(1.05)',
     },
 }));
-
 const StyledModal = styled(motion.div)(() => ({
     position: 'fixed',
     top: '50%',
@@ -380,8 +369,8 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
     };
     return (
         <StyledContainer sx={{
-            width: '80vw', 
-            mx: 'auto', 
+            width: '80vw',
+            mx: 'auto',
             px: { xs: 2, sm: 3, md: 4 },
         }}>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>

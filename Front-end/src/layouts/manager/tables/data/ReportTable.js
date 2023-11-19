@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import ReactDOM from 'react-dom';
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -17,7 +15,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import HelperFunction from "./HelperFunction";
-
+import Zoom from '@material-ui/core/Zoom';
+import { Modal } from 'react-overlays';
 
 export default function data() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -50,60 +49,58 @@ export default function data() {
     setShowPopupClose(true);
   };
 
-  // const handleAcceptReport = (feedbackId) => {
-  //   var option = {
-  //     method: 'PUT',
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ status: "Processing" }),
-  //   };
-  //   fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-  //     .then((response) => { response.text() })
-  //     .then((data) => {
-  //       setFeedbacks((prevFeedbacks) =>
-  //         prevFeedbacks.map((prevFeedback) =>
-  //           prevFeedback.feedbackId === feedbackId
-  //             ? { ...prevFeedback, status: "Processing" }
-  //             : prevFeedback
-  //         )
-  //       );
-  //       // Find the feedback and set it to selectedFeedback
-  //       const selectedFeedback = feedbacks.find(feedback => feedback.feedbackId === feedbackId);
-  //       setSelectedFeedback(selectedFeedback);
-  //       setDialogOpen(true);
-  //       console.log(selectedFeedback)
-  //       console.log('Setting dialogOpen to true');
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error: " + error.message);
-  //     });
-  // };
-
-
-  // const handleRejectReport = (feedbackId) => {
-  //   var option = {
-  //     method: 'PUT',
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ status: "Rejected" }),
-  //   };
-  //   fetch("https://localhost:7157/api/Feedbacks/RejectFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option) //chỉnh response
-  //     .then((response) => { response.text() })
-  //     .then((data) => {
-  //       setFeedbacks((prevFeedbacks) =>
-  //         prevFeedbacks.map((prevFeedback) =>
-  //           prevFeedback.feedbackId === feedbackId
-  //             ? { ...prevFeedback, status: "Rejected" }
-  //             : prevFeedback
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error: " + error.message);
-  //     });
-  // }
+  const FeedbackModal = ({ show, handleClose, action }) => (
+    <Modal show={show} onHide={handleClose}>
+      <div
+        onClick={handleClose}
+        style={{
+          zIndex: 1000,
+          overflowY: 'auto',
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+       <Zoom
+  in={show}
+  style={{ transitionDelay: show ? '0ms' : '500ms' }}
+>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              maxWidth: '50%',
+              maxHeight: '80%',
+              overflowY: 'auto'
+            }}
+          >
+            <button
+              onClick={handleClose}
+              style={{
+                fontSize: '1.5em',
+                fontWeight: 'bold',
+                color: '#333',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              &times;
+            </button>
+            <HelperFunction selectedFeedback={selectedFeedback} action={action} />
+          </div>
+        </Zoom>
+      </div>
+    </Modal>
+  );
 
 
   useEffect(() => {
@@ -349,41 +346,14 @@ export default function data() {
       time: (
         <>
           <Time day={feedback.dateTime} />
-          <Dialog
-            open={showPopupAccept}
-            onClose={() => setShowPopupAccept(false)}
-            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
-          >
-            <HelperFunction selectedFeedback={selectedFeedback} action={"Accept"} /> {/*also Task*/}
-          </Dialog>
-
-          <Dialog
-            open={showPopupReject}
-            onClose={() => setShowPopupReject(false)}
-            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
-          >
-            <HelperFunction selectedFeedback={selectedFeedback} action={"Reject"} />
-          </Dialog>
-
-          <Dialog
-            open={showPopupCancel}
-            onClose={() => setShowPopupCancel(false)}
-            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
-          >
-            <HelperFunction selectedFeedback={selectedFeedback} action={"Cancel"} />
-          </Dialog>
-
-          <Dialog
-            open={showPopupClose}
-            onClose={() => setShowPopupClose(false)}
-            BackdropProps={{ style: { backgroundColor: 'transparent' } }}
-            PaperProps={{ style: { maxHeight: '95vh', width: '60vw' } }}
-          >
-            <HelperFunction selectedFeedback={selectedFeedback} action={"Close"} />
-          </Dialog>
+          {selectedFeedback === feedback && (
+            <>
+              <FeedbackModal show={showPopupAccept} handleClose={() => setShowPopupAccept(false)} action="Accept" selectedFeedback={selectedFeedback} />
+              <FeedbackModal show={showPopupReject} handleClose={() => setShowPopupReject(false)} action="Reject" selectedFeedback={selectedFeedback} />
+              <FeedbackModal show={showPopupCancel} handleClose={() => setShowPopupCancel(false)} action="Cancel" selectedFeedback={selectedFeedback} />
+              <FeedbackModal show={showPopupClose} handleClose={() => setShowPopupClose(false)} action="Close" selectedFeedback={selectedFeedback} />
+            </>
+          )}
         </>
       ),
       action: (() => {
