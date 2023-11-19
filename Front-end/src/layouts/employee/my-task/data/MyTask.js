@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Popup from 'reactjs-popup';
 import PopUpTask from "./PopUpTask";
 import Zoom from '@material-ui/core/Zoom';
 import { Modal } from 'react-overlays';
@@ -10,19 +8,15 @@ import { Modal } from 'react-overlays';
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
+
 
 //MUI
 import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
 
 export default function data() {
-  const badgeContent = "waiting"; // Replace this with the actual badge content
   const [tasks, setTasks] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [renderTask, setRenderTask] = useState(null); // New state variable
   const getColor = (username) => {
     let hash = 0;
     for (let i = 0; i < username.length; i++) {
@@ -48,7 +42,7 @@ export default function data() {
   const handleClickOpen = (task) => {
     setSelectedTask(task);
     console.log(task); // This will log the feedbackId of the clicked task
-    
+
     setOpen(true);
   };
   const handleClose = () => {
@@ -72,6 +66,9 @@ export default function data() {
   };
 
   const taskRows = tasks
+    .sort((a, b) => {
+      return new Date(b.dateTime) - new Date(a.dateTime);
+    })
     .map((task) => ({
       manager: (
         <MDBox alignItems="center">
@@ -85,19 +82,33 @@ export default function data() {
           </MDTypography>
         </MDBox>
       ),
+      note: (
+        <MDBox alignItems="center">
+          <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+            {task.note}
+          </MDTypography>
+        </MDBox>
+      ),
       status: (
         <MDBox ml={-1} className="status-cell">
           <MDBadge
             badgeContent={task.status}
             color={
               task.status === 'Cancelled' ? 'error' :
-              task.status === 'Expired' ? 'secondary' :
-              task.status === 'Responded' ? 'warning' :
-              task.status === 'Delivered' ? 'lightblue' : 'light'
+                task.status === 'Expired' ? 'secondary' :
+                  task.status === 'Responded' ? 'warning' :
+                    task.status === 'Delivered' ? 'lightblue' : 'dark'
             }
             variant="gradient"
             size="sm"
           />
+        </MDBox>
+      ),
+      responsed: (
+        <MDBox alignItems="center">
+          <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+            {task.responsed}
+          </MDTypography>
         </MDBox>
       ),
       time: (
@@ -107,61 +118,76 @@ export default function data() {
           </MDTypography>
         </MDBox>
       ),
-      action: (
+      action:
+      task.status === "Delivered" ? (
         <div>
           <IconButton onClick={() => handleClickOpen(task)}>
             <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
               Respond
             </MDTypography>
           </IconButton>
-      
+
           {selectedTask === task && (
-  <Modal show={open} onHide={handleClose}>
-    <div 
-      onClick={handleClose} 
-      style={{ 
-        zIndex: 1000,
-        overflowY: 'auto', 
-        position: 'fixed', 
-        top: 0, 
-        right: 0, 
-        bottom: 0, 
-        left: 0, 
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      }}
-    >
-  <Zoom in={open} timeout={2000}>
-        <div 
-          onClick={(e) => e.stopPropagation()} 
-          style={{ 
-            backgroundColor: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            maxWidth: '90%', 
-            maxHeight: '90%', 
-            overflowY: 'auto'
-          }}
-        >
-          <button onClick={handleClose}>Close</button>
-          <PopUpTask task={selectedTask} />
+            <Modal show={open} onHide={handleClose}>
+              <div
+                onClick={handleClose}
+                style={{
+                  zIndex: 1000,
+                  overflowY: "auto",
+                  position: "fixed",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Zoom in={open} timeout={500}>
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      backgroundColor: "white",
+                      padding: "20px",
+                      borderRadius: "8px",
+                      width: "50%",
+                      height: "80%",
+                      overflowY: "auto",
+                    }}
+                  >
+                    <button
+                      onClick={handleClose}
+                      style={{
+                        fontSize: "1.5em",
+                        fontWeight: "bold",
+                        color: "#333",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      &times;
+                    </button>
+                    <PopUpTask task={selectedTask} />
+                  </div>
+                </Zoom>
+              </div>
+            </Modal>
+          )}
         </div>
-      </Zoom>
-    </div>
-  </Modal>
-)}
-        </div>
-      ),
-    }));
+      ) : null,
+  }));
 
   return {
     columns: [
       { Header: "", accessor: "space", align: "center", width: "0%" },
       { Header: "manager", accessor: "manager", align: "left" },
       // { Header: "title", accessor: "title", align: "left" },
+      { Header: "note", accessor: "note", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
+      { Header: "responsed", accessor: "responsed", align: "center" },
       { Header: "time", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],

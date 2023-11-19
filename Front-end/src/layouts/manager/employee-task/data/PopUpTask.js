@@ -6,22 +6,7 @@ import { Container, Box, Typography, Button, TextField } from '@mui/material';
 import { MenuItem } from '@material-ui/core';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
-import Gallery from 'react-photo-gallery';
 import MDSnackbar from "components/MDSnackbar";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
-
 const StyledContainer = styled(Container)`
   display: 'flex',
   flexDirection: 'column',
@@ -49,6 +34,7 @@ const StyledForm = styled('form')(() => ({
     backgroundColor: '#fff',
     borderRadius: '8px',
     padding: '24px',
+    boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
 }));
 
 const StyledRow = styled(Box)(() => ({
@@ -132,13 +118,10 @@ const StyledImage = styled('img')(() => ({
     maxHeight: '100%',
 }));
 
-const PopUpTask = React.memo(({ task }) => {
-
-    const { handleSubmit, formState: { errors } } = useForm();
+const PopUpTask = React.memo(({ feedbackId }) => {
     const [selectedFeedback, setselectedFeedback] = useState(null);
-
-    // Add this state variable to hold the selected files
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const { handleSubmit } = useForm();
+ 
     const [showModal, setShowModal] = useState(false);
 
     const [dateTime, setDateTime] = useState(new Date().toLocaleString());
@@ -152,74 +135,60 @@ const PopUpTask = React.memo(({ task }) => {
     const handleEmployeeChange = (selectedOption) => {
         setSelectedEmployee(selectedOption);
     };
-    const [employeeResponse, setEmployeeResponse] = useState();
-
+    const [employeesOptions, setEmployeesOptions] = useState([]);
     const [images, setImages] = useState([]);
-    const handleFileChange = (event) => {
-        const newSelectedFiles = Array.from(event.target.files);
-        if (images.length + newSelectedFiles.length > 5) {
-            return;
-        }
-
-        setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
-
-        const newSelectedImages = newSelectedFiles.map((file) => ({
-            src: URL.createObjectURL(file),
-            width: 1,
-            height: 1,
-        }));
-        setImages([...images, ...newSelectedImages]);
-    };
 
     useEffect(() => {
         const fetchFeedback = async () => {
-            try {
-                const response = await fetch(`https://localhost:7157/api/Feedbacks/Id/${task.feedbackId}`);
-                const data = await response.json();
-                setselectedFeedback(data);
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            const response = await fetch(`https://localhost:7157/api/Feedbacks/Id/${feedbackId}`);
+            const data = await response.json();
+            setselectedFeedback(data);
+            console.log(selectedFeedback);
+            setIsDataFetched(true); // Set isDataFetched to true after successful fetch
+            
+          } catch (error) {
+            console.error(error);
+          }
         };
-
-        if (task && task.feedbackId) { // Add null check for task
-            fetchFeedback();
+      
+        if (feedbackId ) { // Only fetch data if feedbackId is truthy and data has not been fetched yet
+          fetchFeedback();
         }
-    }, [task]); // Depend on task instead of task.feedbackId
+      }, [feedbackId]); // Add isDataFetched to the dependency array
 
 
 
-    useEffect(() => {
-        if (selectedFeedback) {
-            fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`)
-                .then(response => response.json())
-                .then(data => setImages(data));
-        }
-    }, [selectedFeedback]);
+  useEffect(() => {
+    if (selectedFeedback) {
+      fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${selectedFeedback.feedbackId}`)
+        .then(response => response.json())
+        .then(data => setImages(data));
+    }
+  }, [selectedFeedback]);
+
+
 
     const onSubmit = async (data) => {
+
         const formData = new FormData();
-        selectedFiles.forEach((file) => {
-            formData.append('fileCollection', file, file.name);
-        });
-        console.log(selectedFiles);
-        if (images.length + selectedFiles.length > 5) {
-            toast.error("Cannot add more than 5 images.");
-            return;
-        }
+
 
         try {
-            const response = await fetch(`https://localhost:7157/api/Task/UpdateTaskResponse?Id=${task.id}&Response=${employeeResponse}`, {
-                method: 'PUT',
-                body: formData
-            });
+            const response = await fetch("https://localhost:7157/CreateTask?"
+                + "feedbackId=" + selectedFeedback
+                + "&employeeId=" + selectedEmployee.value
+                + "&managerId=" + localStorage.getItem("userID")
+                + "&note=" + "siuuu"
+                ,
+                { method: 'POST', body: formData });
             const responseData = await response.json();
             console.log(responseData);
+            console.log(selectedEmployee)
             // Notify when the report is created successfully
             setShowSuccessNotification(true);
             setShowModal(false);
 
-            window.location.reload();
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
@@ -244,13 +213,7 @@ const PopUpTask = React.memo(({ task }) => {
         return () => clearInterval(interval);
     }, []);
 
-    const handleResponseChange = (event) => {
-        if (employeeResponse === "") {
-            setEmployeeResponse(event.target.value.trim());
-        } else {
-            setEmployeeResponse(event.target.value);
-        }
-    };
+
 
     return (
         <StyledContainer sx={{
@@ -260,83 +223,66 @@ const PopUpTask = React.memo(({ task }) => {
             px: { xs: 2, sm: 3, md: 4 }, // Add horizontal padding that increases with the screen size
         }}>
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
-                <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
+                <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Task</Typography>
 
                 <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Title</Typography>
-                    <Typography variant="body1" mb={4} style={{ fontSize: '1.2rem' }}>
-                        {selectedFeedback && selectedFeedback.title}
-                    </Typography>
+                    <Typography variant="h5" fontWeight="medium" mb={1} align="center" style={{ fontSize: '1.5rem' }}>Title</Typography>
+                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+  {selectedFeedback && selectedFeedback.title}
+</Typography>
                 </div>
                 <StyledRow>
-                    <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Campus</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                            {selectedFeedback && selectedFeedback.locationId}
-                        </Typography>
-                    </div>
-                    <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Room</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                            {selectedFeedback && selectedFeedback.locationId}
-                        </Typography>
-                    </div>
-                    <div>
-                        <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Category</Typography>
-                        <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                            {selectedFeedback && selectedFeedback.cate && selectedFeedback.cate.description}
-                        </Typography>
-                    </div>
-                </StyledRow>
-                <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} mt={4} style={{ fontSize: '1.5rem' }}>More Details</Typography>
-                    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
-                        {selectedFeedback && selectedFeedback.description}
-                    </Typography>
-                </div>
-                <Typography variant="h5" fontWeight="medium" mb={1} mt={4} style={{ fontSize: '1.5rem' }}>Response Message</Typography>
-                <TextField
-                    fullWidth
-                    inputProps={{ maxLength: 100 }}
-                    variant="outlined"
-                    name="respondMessage"
-                    required
-                    value={employeeResponse}
-                    onChange={handleResponseChange}
-                />
-                <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Images</Typography>
-                    <input type="file" accept="image/*" multiple onChange={handleFileChange} />
-                    <Button
-                        component="label"
-                        variant="contained"
-                        color='info'
-                        onChange={handleFileChange}
-                        startIcon={<CloudUploadIcon />}>
-                        Upload your images
-                        <VisuallyHiddenInput accept="image/*" type="file" name="file" multiple />
-                    </Button>
-                    <Gallery photos={selectedImages} />
-                </div>
+  <div>
+    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Campus</Typography>
+    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+      {selectedFeedback && selectedFeedback.locationId}
+    </Typography>
+  </div>
+  <div>
+    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Room</Typography>
+    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+      {selectedFeedback && selectedFeedback.locationId}
+    </Typography>
+  </div>
+  <div>
+    <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>Category</Typography>
+    <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+      {selectedFeedback && selectedFeedback.cate && selectedFeedback.cate.description}
+    </Typography>
+  </div>
+</StyledRow>
+<div>
+  <Typography variant="h5" fontWeight="medium" mb={1} style={{ fontSize: '1.5rem' }}>More Details</Typography>
+  <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
+    {selectedFeedback && selectedFeedback.description}
+  </Typography>
+</div>
+                {/* <div>
+                    <Typography variant="h5" fontWeight="medium" mb={1}>Images</Typography>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '2px', overflow: 'auto', maxHeight: '400px' }}>
+                        {images.map((image, index) => (
+                            <Box key={index} sx={{ cursor: 'pointer', width: '120px', height: '120px' }} onClick={() => handleImageClick(image)}>
+                                <img key={index} src={image} alt="Preview" style={{ width: '100%', height: '100%' }} />
+                            </Box>
+                        ))}
+                    </Box>
+                </div> */}
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <StyledButton
-                        type="submit"
-                        variant="contained"
-                        style={{ fontSize: '1.2rem', padding: '10px 20px', marginLeft: '10px' }}
-                    >
-                        Respond Task
-                    </StyledButton>
+                    <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Report</StyledButton>
                 </Box>
-                <br />
             </StyledForm>
-
+            {showModal && (
+                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
+                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
+                </StyledModal>
+            )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
                     icon="check"
                     title="Success"
-                    content="Response sent successfully!"
-                    dateTime={new Date().toLocaleString()}
+                    content="Report sent successfully"
+                    // dateTime={new Date().toLocaleString()}
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
                     close={() => setShowSuccessNotification(false)}
@@ -347,7 +293,7 @@ const PopUpTask = React.memo(({ task }) => {
                     color="error"
                     icon="warning"
                     title="Error"
-                    content="An error occurred while sending the Response!"
+                    content="An error occurred while sending the report."
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}
@@ -355,8 +301,6 @@ const PopUpTask = React.memo(({ task }) => {
             )}
         </StyledContainer>
     );
-},
-
-);
+});
 
 export default PopUpTask;

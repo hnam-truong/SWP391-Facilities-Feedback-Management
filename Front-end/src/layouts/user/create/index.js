@@ -142,6 +142,7 @@ const StyledModal = styled(motion.div)(() => ({
   width: '50%',
   borderRadius: '8px',
   overflow: 'hidden',
+  zIndex: 1000, // Update the z-index value
 }));
 
 const StyledImage = styled('img')(() => ({
@@ -265,12 +266,28 @@ const Create = React.memo(() => {
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-    setSelectedImages(files);
+    if (selectedImages.length + files.length > 5) {
+      setShowErrorNotification(true);
+      setErrorNotificationMessage("Cannot add more than 5 images.");
+      return; // Do not update the state if the limit is exceeded
+    }
+    // If the limit is not exceeded, update the state with the new files
+    setSelectedImages([...selectedImages, ...files]);
   };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = [...selectedImages];
+    updatedImages.splice(index, 1);
+    setSelectedImages(updatedImages);
+  };
+
   const handleImageClick = (image) => {
-    setPreviewUrl(image);
+    const objectUrl = URL.createObjectURL(image);
+    setPreviewUrl(objectUrl);
     setShowModal(true);
   };
+  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDateTime(new Date().toLocaleString());
@@ -393,15 +410,23 @@ const Create = React.memo(() => {
               color='info'
               onChange={handleFileChange}
               startIcon={<CloudUploadIcon />}>
-              Upload your files
+              Upload your images
               <VisuallyHiddenInput type="file" name="file" multiple />
             </Button>
             <Box mt={2} sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gridGap: '16px', overflow: 'auto', maxHeight: '400px' }}>
               {selectedImages.map((selectedImage, index) => {
                 const objectUrl = URL.createObjectURL(selectedImage);
                 return (
-                  <Box key={index} sx={{ cursor: 'pointer' }} onClick={() => handleImageClick(selectedImage)}>
-                    <img src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                  <Box key={index} sx={{ cursor: 'pointer' }}>
+                    <img onClick={() => handleImageClick(selectedImage)} src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                    <Button
+                      onClick={() => handleRemoveImage(index)}
+                      size="small"
+                      variant="contained"
+                      sx={{color: "#fff", backgroundColor: "#ff0000", marginBottom: '2px' }}
+                    >
+                      Remove
+                    </Button>
                   </Box>
                 );
               })}

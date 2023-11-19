@@ -7,8 +7,19 @@ import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
 import MDSnackbar from "components/MDSnackbar";
 import ReactPhotoGallery from 'react-photo-gallery';
-import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -37,7 +48,6 @@ const StyledForm = styled('form')(() => ({
     backgroundColor: '#fff',
     borderRadius: '8px',
     padding: '24px',
-    boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
 }));
 
 const StyledRow = styled(Box)(() => ({
@@ -153,6 +163,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const [showErrorNotification, setShowErrorNotification] = useState(false);
     const [images, setImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
 
 
     useEffect(() => {
@@ -214,10 +225,6 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
         selectedFiles.forEach((file) => {
             formData.append('fileCollection', file, file.name);
         });
-        if (images.length + selectedFiles.length > 5) {
-            toast.error("Cannot add more than 5 images.");
-            return;
-        }
 
         try {
             const response = await fetch("https://localhost:7157/api/Feedbacks/Update?"
@@ -235,9 +242,11 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
             setShowSuccessNotification(true);
             setShowModal(false);
 
+            window.location.reload();
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
+            setErrorNotificationMessage("An error occurred while updating the report.");
         }
     };
     useEffect(() => {
@@ -259,11 +268,8 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const handleFileChange = (event) => {
         const newSelectedFiles = Array.from(event.target.files);
         if (images.length + newSelectedFiles.length > 5) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Your feedback cannot have more than 5 images.',
-            });
+            setShowErrorNotification(true);
+            setErrorNotificationMessage("Cannot add more than 5 images.");
             return;
         }
 
@@ -288,6 +294,13 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
         setSelectedRoom(null);
 
         setRoomDisabled(false);
+    };
+    const handleRemoveImage = (indexToRemove) => {
+        const updatedImages = images.filter((_, index) => index !== indexToRemove);
+        const updatedFiles = selectedFiles.filter((_, index) => index !== indexToRemove);
+
+        setImages(updatedImages);
+        setSelectedFiles(updatedFiles);
     };
 
     return (
@@ -316,7 +329,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                         helperText={formState.errors.Title && 'Title is required'}
                     />
                 </div>
-                <StyledRow>
+                <StyledRow mt={4}>
                     <div>
                         <Typography variant="h6" fontWeight="medium" mb={1}>Campus</Typography>
                         <StyledSelect
@@ -363,7 +376,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                     </div>
                 </StyledRow>
                 <div>
-                    <Typography variant="h6" fontWeight="medium" mb={1}>More Details</Typography>
+                    <Typography variant="h6" fontWeight="medium" mt={4} mb={1}>More Details</Typography>
                     <StyledTextField
                         type="text"
                         name="MoreDetails"
@@ -383,19 +396,64 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                     <Typography variant="h6" fontWeight="medium" mb={1}>
                         Images
                     </Typography>
-                    <input type="file" onChange={handleFileChange} multiple />
-                    <ReactPhotoGallery photos={images} />
+                    <Button
+                        sx={{ mb: '1rem' }}
+                        component="label"
+                        variant="contained"
+                        color='info'
+                        onChange={handleFileChange}
+                        startIcon={<CloudUploadIcon />}>
+                        Upload your images
+                        <VisuallyHiddenInput type="file" name="file" multiple />
+                    </Button>
+                    <ReactPhotoGallery
+                        photos={images}
+                        renderImage={({ index, photo }) => (
+                            <div key={index} style={{ margin: '10px', position: 'relative' }}>
+                                <StyledImage
+                                    src={photo.src}
+                                    alt={`Preview ${index + 1}`}
+                                    style={{
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                        borderRadius: '8px',
+                                        objectFit: 'cover',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => {
+                                        setPreviewUrl(photo.src); // Set the previewUrl when an image is clicked
+                                        setShowModal(true);
+                                    }}
+                                />
+                                <Button
+                                    variant="contained"
+                                    sx={{ color: "#fff", backgroundColor: "#ff0000", marginBottom: '2px' }}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '5px',
+                                        right: '5px',
+                                    }}
+                                    onClick={() => handleRemoveImage(index)}
+                                >
+                                    Remove
+                                </Button>
+                            </div>
+                        )}
+                    />
+
                 </div>
-                <Box sx={{
-                    gridColumn: '1 / -1',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '2px',
-                    marginBottom: '16px',
-                    px: { xs: 2, sm: 3, md: 4 }, // add horizontal padding that increases with the screen size
-                }}>
-                    <StyledButton type="submit" variant="contained">Send Report</StyledButton>
+                <Box
+                    sx={{
+                        gridColumn: '1 / -1',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '2px',
+                        marginBottom: '16px',
+                        px: { xs: 2, sm: 3, md: 4 }, // add horizontal padding that increases with the screen size
+                    }}>
+                    <StyledButton style={{ fontSize: '1.2rem', padding: '10px 20px', marginTop: '2rem' }} type="submit" variant="contained">Send Report</StyledButton>
                 </Box>
+                <br />
             </StyledForm>
             {showModal && (
                 <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
@@ -403,19 +461,20 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                         src={previewUrl}
                         alt="Preview"
                         sx={{
-                            maxWidth: '30%',
-                            maxHeight: '30%',
+                            maxWidth: '100%',
+                            maxHeight: '100%',
                             borderRadius: '8px',
                             objectFit: 'cover', // Add this line to make the image fit within its container
                         }}
-                    />                </StyledModal>
+                    />
+                </StyledModal>
             )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
                     icon="check"
                     title="Success"
-                    content="Report updated successfully"
+                    content="Report is updated successfully"
                     // dateTime={new Date().toLocaleString()}
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
@@ -426,8 +485,9 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 <MDSnackbar
                     color="error"
                     icon="warning"
+                    dateTime=""
                     title="Error"
-                    content="An error occurred while updating the report."
+                    content={errorNotificationMessage}
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}

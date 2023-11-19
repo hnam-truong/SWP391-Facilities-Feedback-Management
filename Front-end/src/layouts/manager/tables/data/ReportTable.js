@@ -13,9 +13,9 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@material-ui/core/Dialog';
 import HelperFunction from "./HelperFunction";
 import Zoom from '@material-ui/core/Zoom';
+
 import { Modal } from 'react-overlays';
 
 export default function data() {
@@ -48,60 +48,6 @@ export default function data() {
     setSelectedFeedback(feedback);
     setShowPopupClose(true);
   };
-
-  const FeedbackModal = ({ show, handleClose, action }) => (
-    <Modal show={show} onHide={handleClose}>
-      <div
-        onClick={handleClose}
-        style={{
-          zIndex: 1000,
-          overflowY: 'auto',
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-       <Zoom
-  in={show}
-  style={{ transitionDelay: show ? '0ms' : '500ms' }}
->
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              backgroundColor: 'white',
-              padding: '20px',
-              borderRadius: '8px',
-              maxWidth: '50%',
-              maxHeight: '80%',
-              overflowY: 'auto'
-            }}
-          >
-            <button
-              onClick={handleClose}
-              style={{
-                fontSize: '1.5em',
-                fontWeight: 'bold',
-                color: '#333',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              &times;
-            </button>
-            <HelperFunction selectedFeedback={selectedFeedback} action={action} />
-          </div>
-        </Zoom>
-      </div>
-    </Modal>
-  );
-
 
   useEffect(() => {
     // Define the URL of your API endpoint to fetch categories
@@ -153,77 +99,58 @@ export default function data() {
     fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
   };
 
-  const handleCancelReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Waiting" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/CancelFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Waiting" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-  };
-
-  const handleCloseReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Closed" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/CloseFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Closed" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-  };
-
-  const handleTaskReport = (feedbackId) => {
-    var option = {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: "Processing" }),
-    };
-    fetch("https://localhost:7157/api/Feedbacks/AcceptFeedback?feedbackId=" + feedbackId + "&response=" + feedbackId, option)
-      .then((response) => { response.text() })
-      .then((data) => {
-        setFeedbacks((prevFeedbacks) =>
-          prevFeedbacks.map((prevFeedback) =>
-            prevFeedback.feedbackId === feedbackId
-              ? { ...prevFeedback, status: "Processing" }
-              : prevFeedback
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error: " + error.message);
-      });
-  };
+  const FeedbackModal = ({ show, handleClose, action }) => (
+    <Modal show={show} onHide={handleClose}>
+      <div
+        onClick={handleClose}
+        style={{
+          zIndex: 1000,
+          overflowY: 'auto',
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Zoom
+          in={show}
+          timeout={500}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              width: '50%',
+              height: '80%',
+              overflowY: 'auto'
+            }}
+          >
+            <button
+              onClick={handleClose}
+              style={{
+                fontSize: '1.5em',
+                fontWeight: 'bold',
+                color: '#333',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              &times;
+            </button>
+            <HelperFunction selectedFeedback={selectedFeedback} action={action} />
+          </div>
+        </Zoom>
+      </div>
+    </Modal>
+  );
 
   const handleNoti = (feedbackId) => {
     fetch(
@@ -420,7 +347,7 @@ export default function data() {
       {
         Header: (
           <span>
-            cate/loc:{" "}
+            cate/loc:{""}
             <Select
               value={cateFilter}
               onChange={handleCateChange}

@@ -9,7 +9,6 @@ import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PropTypes from 'prop-types';
-import { red, grey, green } from '@material-ui/core/colors';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -19,7 +18,6 @@ const StyledContainer = styled(Container)`
   minHeight: '80vh',
   backgroundColor: '#f5f5f5',
   padding: '24px',
-  
   @media (min-width: 768px) {
     padding: '24px',
   }
@@ -106,20 +104,27 @@ const StyledRow2 = styled(Box)(() => ({
     },
 }));
 
+
 const StyledButton = styled(Button)(() => ({
-    // ... other styles ...
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    color: 'white',
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    background: '(45deg, #6BCD9B 30%, #70D6BB 90%)',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
+        background: '(45deg, #6BCD9B 30%, #70D6BB 90%)',
         transform: 'scale(1.05)',
     },
 }));
 
 const StyledRejectButton = styled(Button)(() => ({
-    // ... other styles ...
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
     background: 'linear-gradient(45deg, #dc3545 30%, #c82333 90%)',
-    color: 'white',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
         background: 'linear-gradient(45deg, #c82333 30%, #dc3545 90%)',
         transform: 'scale(1.05)',
@@ -127,24 +132,31 @@ const StyledRejectButton = styled(Button)(() => ({
 }));
 
 const StyledCancelButton = styled(Button)(() => ({
-    // ... other styles ...
-    background: 'linear-gradient(45deg, #6c757d 30%, #5a6268 90%)',
-    color: 'white',
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    backgroundColor: 'black',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        background: 'linear-gradient(45deg, #5a6268 30%, #6c757d 90%)',
+        backgroundColor: 'black',
         transform: 'scale(1.05)',
     },
 }));
 
 const StyledCloseButton = styled(Button)(() => ({
-    // ... other styles ...
-    background: 'linear-gradient(45deg, #28a745 30%, #218838 90%)',
-    color: 'white',
+    width: '100%',
+    borderRadius: '8px',
+    padding: '8px',
+    background: ' linear-gradient(to right, #4BCA81, #239B56)',
+    color: '#fff',
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        background: 'linear-gradient(45deg, #218838 30%, #28a745 90%)',
+        background: ' linear-gradient(to right, #4BCA81, #239B56)',
         transform: 'scale(1.05)',
     },
 }));
+
 const StyledModal = styled(motion.div)(() => ({
     position: 'fixed',
     top: '50%',
@@ -178,7 +190,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
     const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
     const [sucessNotificationMessage, setSucessNotificationMessage] = useState("");
     const [note, setNote] = useState('');
-    const [userResponse, setUserResponse] = useState("");
+    const [userResponse, setUserResponse] = useState(selectedFeedback.response);
 
     const isProcessing = selectedFeedback.status === "Processing";
     const isWaiting = selectedFeedback.status === "Waiting";
@@ -367,6 +379,20 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
             </MDBox>
         );
     };
+
+    const TaskTime = ({ day }) => {
+        // Create a new Date object
+        const date = new Date(day);
+
+        // Format the date as DD/MM/YY
+        const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().substr(-2)}`;
+
+        // Format the time as HH:MM
+        const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+        return `${formattedTime} ${formattedDate}`;
+    };
+
     return (
         <StyledContainer sx={{
             width: '80vw',
@@ -376,8 +402,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
             <StyledForm onSubmit={handleSubmit(onSubmit)}>
                 <Typography variant="h3" fontWeight="bold" mb={4} align="center" style={{ margin: '20px 0', fontSize: '2rem' }}>Feedback Details</Typography>
                 <div>
-                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
-                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><Time day={selectedFeedback.dateTime} /></Typography>
+                    <Typography variant="body1" mb={3} style={{ fontSize: '1.2rem' }}><TaskTime day={selectedFeedback.dateTime} /></Typography>
                 </div>
                 <div>
                     <Typography variant="h5" fontWeight="medium" mb={0} style={{ fontSize: '1.2rem' }}>Title</Typography>
@@ -431,7 +456,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                         <TextField
                             multiline
                             rows={3}
-                            inputProps={{ maxLength: 300 }}
+                            inputProps={{ maxLength: 100 }}
                             required
                             fullWidth
                             id="response"
@@ -477,6 +502,7 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                             .filter(task => task.status !== "Cancelled" && task.status !== "Removed")
                             .map((task) => (
                                 <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
+                                    <Typography style={{ fontSize: '1rem' }}>Created on: <TaskTime day={task.dateTime} /></Typography>
                                     <Typography style={{ fontSize: '1rem' }}>Manager name: {task.manager.username}</Typography>
                                     <Typography style={{ fontSize: '1rem' }}>Employee name: {task.employee.username}</Typography>
                                     <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
@@ -518,6 +544,11 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                 )}
                 <br />
             </StyledForm>
+            {showModal && (
+                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
+                    <StyledImage src={previewUrl} alt="Preview" sx={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '8px' }} />
+                </StyledModal>
+            )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"

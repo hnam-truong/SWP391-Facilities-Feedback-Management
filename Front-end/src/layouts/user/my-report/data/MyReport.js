@@ -3,21 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
-import red from '@material-ui/core/colors/red';
-import blue from '@material-ui/core/colors/blue';
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
 import UpdateReport from "./UpdateReport";
+
 //MUI
 import IconButton from "@mui/material/IconButton";
-import Dialog from '@mui/material/Dialog';
-import Zoom from '@material-ui/core/Zoom';
-import { Modal } from 'react-overlays';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import { Zoom } from "@material-ui/core";
+import { Modal } from "react-overlays";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 import HelperFunction from "layouts/manager/tables/data/HelperFunction";
 export default function data() {
@@ -25,20 +24,19 @@ export default function data() {
   // Add this line to create a new state variable
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showHelperFunction, setShowHelperFunction] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [cateFilter, setCateFilter] = useState("All");
+  const [categories, setCategories] = useState([]);
 
   const handleEditClick = (feedback) => {
     setSelectedFeedback(feedback);
     setShowUpdateReport(true); // show the UpdateReport component
   };
   const [showUpdateReport, setShowUpdateReport] = useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-
 
   useEffect(() => {
     // Define the URL of your API endpoint
-    const apiUrl = "https://localhost:7157/api/Feedbacks/User/" + localStorage.getItem('userID');
+    const apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
 
     // Make a GET request to your API endpoint
     fetch(apiUrl)
@@ -58,9 +56,8 @@ export default function data() {
         return (
           <div style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
 
-            <p style={{ color: '#666' }}>Do you want to delete this feedback?</p>
-            <Button onClick={onClose}>Back</Button>
-            <Button color="error" onClick={() => {
+            <p style={{ color: '#666', marginBottom: "1rem" }}>Do you want to delete this feedback?</p>
+            <Button sx={{ width: "50%" }} color="error" onClick={() => {
               var option = {
                 method: 'DELETE',
                 headers: {
@@ -87,6 +84,7 @@ export default function data() {
             }}>
               Remove
             </Button>
+            <Button sx={{ width: "50%" }} onClick={onClose}>Back</Button>
           </div>
         );
       }
@@ -113,7 +111,7 @@ export default function data() {
     </MDBox>
   );
 
-  const Time = ({ day, expire }) => {
+  const Time = ({ day }) => {
     // Create a new Date object
     const date = new Date(day);
 
@@ -135,8 +133,50 @@ export default function data() {
     );
   };
 
+  const fetchData = (filterType, filterValue) => {
+    let apiUrl;
+
+    if (filterValue === "All") {
+      apiUrl = "https://localhost:7157/api/Feedbacks/AllFeedbacks";
+    } else {
+      apiUrl = `https://localhost:7157/api/Feedbacks/${filterType}?${filterType}=${filterValue}`;
+    }
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => setFeedbacks(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  };
+
+  const handleStatusChange = (event) => {
+    const status = event.target.value;
+    setStatusFilter(status);
+    fetchData(`By${status.charAt(0) + status.slice(1)}`, status);
+  };
+
+  const handleCateChange = (event) => {
+    const catLoc = event.target.value;
+    setCateFilter(catLoc);
+    fetchData(`By${catLoc.charAt(0) + catLoc.slice(1)}`, catLoc);
+  };
+
+  useEffect(() => {
+    // Define the URL of your API endpoint to fetch categories
+    const categoriesUrl = "https://localhost:7157/api/Cate/GetAllCate";
+
+    // Make a GET request to fetch categories
+    fetch(categoriesUrl)
+      .then((response) => response.json())
+      .then((data) => setCategories(data))
+      .catch((error) => console.error("Error fetching categories:", error));
+  }, []);
+
   const feedbackRows = feedbacks
-    .filter(feedback => feedback.status !== "Removed")
+    .filter(feedback =>
+      ((feedback.userId === localStorage.getItem('userID')) && (feedback.status !== "Removed")) &&
+      (statusFilter === "All" || feedback.status === statusFilter) &&
+      (cateFilter === "All" || feedback.cate.description === cateFilter)
+    )
     .sort((a, b) => {
       return new Date(b.dateTime) - new Date(a.dateTime);
     })
@@ -150,7 +190,7 @@ export default function data() {
             </MDTypography>
           </IconButton>
         </div>,
-      info: <Info category={feedback.cate.description} location={feedback.locationId} />,
+      cate: <Info category={feedback.cate.description} location={feedback.locationId} />,
       status: (
         <MDBox ml={-1}>
           {(() => {
@@ -187,10 +227,9 @@ export default function data() {
       action: (
         <MDBox ml={-1}>
           {(() => {
-            switch (feedback.status) {
-              case "Waiting":
-
-                return (
+            return (
+              <MDBox>
+                {feedback.status === "Waiting" && (
                   <MDBox>
                     <a onClick={() => handleEditClick(feedback)}>
                       <IconButton>
@@ -204,83 +243,109 @@ export default function data() {
                         Remove
                       </MDTypography>
                     </IconButton>
-                  {selectedFeedback === feedback && (
-  <Modal show={showUpdateReport} onHide={() => setShowUpdateReport(false)}>
-    <div 
-      onClick={() => setShowUpdateReport(false)} 
-      style={{ 
-        zIndex: 1000,
-        overflowY: 'auto', 
-        position: 'fixed', 
-        top: 0, 
-        right: 0, 
-        bottom: 0, 
-        left: 0, 
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      }}
-    >
-      <Zoom in={showUpdateReport} timeout={2000}>
-        <div 
-          onClick={(e) => e.stopPropagation()} 
-          style={{ 
-            backgroundColor: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            maxWidth: '90%', 
-            maxHeight: '90%', 
-            overflowY: 'auto'
-          }}
-        >
-          <button onClick={() => setShowUpdateReport(false)}>Close</button>
-          <UpdateReport selectedFeedback={selectedFeedback} />
-        </div>
-      </Zoom>
-    </div>
-  </Modal>
-)}
-{selectedFeedback === feedback && (
-  <Modal show={showHelperFunction} onHide={() => setShowHelperFunction(false)}>
-    <div 
-      onClick={() => setShowHelperFunction(false)} 
-      style={{ 
-        zIndex: 1000,
-        overflowY: 'auto', 
-        position: 'fixed', 
-        top: 0, 
-        right: 0, 
-        bottom: 0, 
-        left: 0, 
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center' 
-      }}
-    >
-      <Zoom in={showHelperFunction} timeout={2000}>
-        <div 
-          onClick={(e) => e.stopPropagation()} 
-          style={{ 
-            backgroundColor: 'white', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            maxWidth: '90%', 
-            maxHeight: '90%', 
-            overflowY: 'auto'
-          }}
-        >
-          <button onClick={() => setShowHelperFunction(false)}>Close</button>
-          <HelperFunction selectedFeedback={selectedFeedback} />
-        </div>
-      </Zoom>
-    </div>
-  </Modal>
-)}
                   </MDBox>
-                );
-            }
+                )}
+                {selectedFeedback === feedback && (
+                  <Modal show={showUpdateReport} onHide={() => setShowUpdateReport(false)}>
+                    <div
+                      onClick={() => setShowUpdateReport(false)}
+                      style={{
+                        zIndex: 1000,
+                        overflowY: 'auto',
+                        position: 'fixed',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Zoom in={showUpdateReport} timeout={500}>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            width: '50%',
+                            height: '80%',
+                            overflowY: 'auto'
+                          }}
+                        >
+                          <button
+                            onClick={() => setShowHelperFunction(false)}
+                            style={{
+                              fontSize: '1.5em',
+                              fontWeight: 'bold',
+                              color: '#333',
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            &times;
+                          </button>
+                          <UpdateReport selectedFeedback={selectedFeedback} />
+                        </div>
+                      </Zoom>
+                    </div>
+                  </Modal>
+                )}
+                {selectedFeedback === feedback && (
+                  <Modal show={showHelperFunction} onHide={() => setShowHelperFunction(false)}>
+                    <div
+                      onClick={() => setShowHelperFunction(false)}
+                      style={{
+                        zIndex: 1000,
+                        overflowY: 'auto',
+                        position: 'fixed',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Zoom in={showHelperFunction} timeout={500}>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            width: '50%',
+                            height: '80%',
+                            overflowY: 'auto'
+                          }}
+                        >
+                          <button
+                            onClick={() => setShowHelperFunction(false)}
+                            style={{
+                              fontSize: '1.5em',
+                              fontWeight: 'bold',
+                              color: '#333',
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            &times;
+                          </button>
+                          <HelperFunction selectedFeedback={selectedFeedback} />
+                        </div>
+                      </Zoom>
+                    </div>
+                  </Modal>
+                )}
+              </MDBox>
+            );
+
           })()}
 
         </MDBox>
@@ -292,8 +357,51 @@ export default function data() {
       { Header: "", accessor: "space", align: "center", width: "0%" },
       { Header: "author", accessor: "author", align: "left" },
       { Header: "title", accessor: "title", align: "left" },
-      { Header: "cat/loc", accessor: "info", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
+      {
+        Header: (
+          <span>
+            cate/loc:{""}
+            <Select
+              value={cateFilter}
+              onChange={handleCateChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate.id} value={cate.description}>
+                  {cate.description}
+                </MenuItem>
+              ))}
+            </Select>
+          </span>
+        ),
+        accessor: "cate",
+        align: "left"
+      },
+      {
+        Header: (
+          <span>
+            status:{""}
+            <Select
+              value={statusFilter}
+              onChange={handleStatusChange}
+              displayEmpty
+              inputProps={{ 'aria-label': 'Without label' }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Waiting">Waiting</MenuItem>
+              <MenuItem value="Processing">Processing</MenuItem>
+              <MenuItem value="Responded">Responded</MenuItem>
+              <MenuItem value="Rejected">Rejected</MenuItem>
+              <MenuItem value="Closed">Closed</MenuItem>
+              <MenuItem value="Expired">Expired</MenuItem>
+            </Select>
+          </span>
+        ),
+        accessor: "status",
+        align: "center"
+      },
       { Header: "day/time", accessor: "time", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
