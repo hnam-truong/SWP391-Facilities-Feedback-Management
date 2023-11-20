@@ -169,35 +169,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 return NotFound(ex);
             }
         }
-
-        [NonAction]
-        private string GetContentType(string fileExtension)
-        {
-            switch (fileExtension.ToLower())
-            {
-                case ".png":
-                    return "image/png";
-                case ".jpg":
-                case ".jpeg":
-                    return "image/jpeg";
-                case ".gif":
-                    return "image/gif";
-                case "mp4":
-                    return "video/mp4";
-                case "quicktime":
-                    return "video/quicktime";
-                case "x-ms-wmv":
-                    return "x-ms-wmv";
-                case "x-msvideo":
-                    return "video/x-msvideo";
-                case "x-flv":
-                    return "video/x-flv";
-                case "webm":
-                    return "video/webm";
-                default:
-                    return "application/octet-stream";  // Fallback to binary data
-            }
-        }
+        
         //[Authorize("Manager")]
         [HttpPost("/CreateTask")]
         public async Task<IActionResult> CreateTask(Guid FeedbackId, string EmployeeId, string ManagerId, string Note, [FromForm] IFormFileCollection fileCollection)
@@ -290,11 +262,11 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
         //[Authorize("Task Employee")]
         [HttpPut("UpdateTaskResponse")]
-        public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response, [FromForm] IFormFileCollection fileCollection)
+        public async Task<IActionResult> UpdateTaskResponse(Guid Id, string Response, IFormFileCollection fileCollection)
         {
+            APIResponse response = new APIResponse();
             int passcount = 0;
             int errorcount = 0;
-            APIResponse response = new APIResponse();
             try
             {
                 string FilePath = GetFilePath(Id);
@@ -302,35 +274,32 @@ namespace Group4.FacilitiesReport.API.Controllers
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
+                else
+                {
+                    System.IO.Directory.Delete(FilePath, true);
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
                 foreach (var file in fileCollection)
                 {
                     string fileDir = FilePath + "\\" + file.FileName;
-                    if (System.IO.File.Exists(fileDir))
-                    {
-                        System.IO.Directory.Delete(fileDir);
-                    }
-                    using (FileStream stream = System.IO.File.Create(fileDir))
-                    {
-                        await file.CopyToAsync(stream);
-                        passcount++;
-                    }
+                        using (FileStream stream = System.IO.File.Create(fileDir))
+                        {
+                            await file.CopyToAsync(stream);
+                            passcount++;
+                        }                    
                 }
-                response = await _tasks.UpdateTaskResponse(Id, Response);
-                if (response.ResponseCode == 200)
-                {
-                    response.Result += " " +
-                        passcount + " File(s) uploaded. " +
-                        errorcount + " File(s) fail.";
-                }
-                
-                
             }
             catch (Exception ex)
             {
                 errorcount++;
-                response.ResponseCode = 400;
                 response.ErrorMessage = ex.Message;
             }
+            var task = await _tasks.UpdateTaskResponse(Id, Response);
+            response.ResponseCode = task.ResponseCode;
+            response.ErrorMessage = task.ErrorMessage;
+            response.Result = "Task " + task + " update Successful!\n" +
+                passcount + " File(s) uploaded.\n" +
+                errorcount + " File(s) fail.";
             return Ok(response);
         }
 

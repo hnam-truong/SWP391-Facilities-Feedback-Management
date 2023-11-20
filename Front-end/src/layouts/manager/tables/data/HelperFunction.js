@@ -500,6 +500,9 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                         <Typography variant="h5" fontWeight="medium" mb={1} mt={6} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
                         {selectedFeedback.tasks
                             .filter(task => task.status !== "Cancelled" && task.status !== "Removed")
+                            .sort((a, b) => {
+                                return new Date(b.dateTime) - new Date(a.dateTime);
+                            })
                             .map((task) => (
                                 <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
                                     <Typography style={{ fontSize: '1rem' }}>Created on: <TaskTime day={task.dateTime} /></Typography>

@@ -246,7 +246,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
-            setErrorNotificationMessage("An error occurred while updating the report.");
+            setErrorNotificationMessage("An error occurred while updating the report!");
         }
     };
     useEffect(() => {
@@ -425,7 +425,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                                         setShowModal(true);
                                     }}
                                 />
-                                <Button
+                                {/* <Button
                                     variant="contained"
                                     sx={{ color: "#fff", backgroundColor: "#ff0000", marginBottom: '2px' }}
                                     style={{
@@ -436,7 +436,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                                     onClick={() => handleRemoveImage(index)}
                                 >
                                     Remove
-                                </Button>
+                                </Button> */}
                             </div>
                         )}
                     />

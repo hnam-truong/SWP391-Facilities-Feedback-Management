@@ -45,6 +45,7 @@ export default function data() {
 
     setOpen(true);
   };
+  
   const handleClose = () => {
     setSelectedTask(null); // or however you reset the selected task in your code
     setOpen(false);
@@ -66,6 +67,7 @@ export default function data() {
   };
 
   const taskRows = tasks
+    .filter(task => task.status !== "Cancelled")
     .sort((a, b) => {
       return new Date(b.dateTime) - new Date(a.dateTime);
     })
@@ -83,11 +85,15 @@ export default function data() {
         </MDBox>
       ),
       note: (
-        <MDBox alignItems="center">
-          <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-            {task.note}
-          </MDTypography>
-        </MDBox>
+        <div>
+          <IconButton onClick={() => { handleClickOpen(task) }}>
+            <MDBox alignItems="center">
+              <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+                {task.note}
+              </MDTypography>
+            </MDBox>
+          </IconButton>
+        </div>
       ),
       status: (
         <MDBox ml={-1} className="status-cell">
@@ -112,79 +118,81 @@ export default function data() {
         </MDBox>
       ),
       time: (
-        <MDBox>
-          <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-            <Time day={task.dateTime} />
-          </MDTypography>
-        </MDBox>
+        <>
+          <MDBox>
+            <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+              <Time day={task.dateTime} />
+            </MDTypography>
+          </MDBox>
+          {selectedTask === task && (
+  <Modal show={open} onHide={handleClose}>
+    <div
+      onClick={handleClose}
+      style={{
+        zIndex: 1000,
+        overflowY: "auto",
+        position: "fixed",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Zoom in={open} timeout={500}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "8px",
+            width: "50%",
+            height: "80%",
+            overflowY: "auto",
+          }}
+        >
+          <button
+            onClick={handleClose}
+            style={{
+              fontSize: "1.5em",
+              fontWeight: "bold",
+              color: "#333",
+              backgroundColor: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            &times;
+          </button>
+          <PopUpTask task={selectedTask} status={task.status === "Delivered" ? "Delivered" : undefined} />
+        </div>
+      </Zoom>
+    </div>
+  </Modal>
+)}
+
+        </>
       ),
       action:
-      task.status === "Delivered" ? (
-        <div>
-          <IconButton onClick={() => handleClickOpen(task)}>
-            <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
-              Respond
-            </MDTypography>
-          </IconButton>
-
-          {selectedTask === task && (
-            <Modal show={open} onHide={handleClose}>
-              <div
-                onClick={handleClose}
-                style={{
-                  zIndex: 1000,
-                  overflowY: "auto",
-                  position: "fixed",
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Zoom in={open} timeout={500}>
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    style={{
-                      backgroundColor: "white",
-                      padding: "20px",
-                      borderRadius: "8px",
-                      width: "50%",
-                      height: "80%",
-                      overflowY: "auto",
-                    }}
-                  >
-                    <button
-                      onClick={handleClose}
-                      style={{
-                        fontSize: "1.5em",
-                        fontWeight: "bold",
-                        color: "#333",
-                        backgroundColor: "transparent",
-                        border: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      &times;
-                    </button>
-                    <PopUpTask task={selectedTask} />
-                  </div>
-                </Zoom>
-              </div>
-            </Modal>
-          )}
-        </div>
-      ) : null,
-  }));
+        task.status === "Delivered" ? (
+          <div>
+            <IconButton onClick={() => handleClickOpen(task)}>
+              <MDTypography component="a" variant="caption" color="warning" fontWeight="medium">
+                Respond
+              </MDTypography>
+            </IconButton>
+          </div>
+        ) : null,
+    }));
 
   return {
     columns: [
       { Header: "", accessor: "space", align: "center", width: "0%" },
       { Header: "manager", accessor: "manager", align: "left" },
-      // { Header: "title", accessor: "title", align: "left" },
+      // {Header: "title", accessor: "title", align: "left" },
       { Header: "note", accessor: "note", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "responsed", accessor: "responsed", align: "center" },

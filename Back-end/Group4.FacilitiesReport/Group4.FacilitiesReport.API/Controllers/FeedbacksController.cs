@@ -244,8 +244,38 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
         //[Authorize("Student, Lecturer, Casual Employee")]
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
+        public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId, IFormFileCollection fileCollection)
         {
+            APIResponse response = new APIResponse();
+            int passcount = 0;
+            int errorcount = 0;
+            try
+            {
+                string FilePath = GetFilePath(feedbackId);
+                if (!System.IO.File.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                else
+                {
+                    System.IO.Directory.Delete(FilePath, true);
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                foreach (var file in fileCollection)
+                {
+                    string fileDir = FilePath + "\\" + file.FileName;     
+                        using (FileStream stream = System.IO.File.Create(fileDir))
+                        {
+                            await file.CopyToAsync(stream);
+                            passcount++;
+                        }                    
+                }
+            }
+            catch (Exception ex)
+            {
+                errorcount++;
+                response.ErrorMessage = ex.Message;
+            }
             var feedback = await this._ifeedback.UpdateFeedback(new FeedbackUpdatableObject
             {
                 FeedbackId = feedbackId,
@@ -255,7 +285,12 @@ namespace Group4.FacilitiesReport.API.Controllers
                 CateId = cateId,
                 LocationId = locatoinId,
             });
-            return Ok(feedback);
+            response.ResponseCode = feedback.ResponseCode;
+            response.ErrorMessage = feedback.ErrorMessage;
+            response.Result = "Feedback " + feedbackId + " update Successful!\n" +
+                passcount + " File(s) uploaded.\n" +
+                errorcount + " File(s) fail.";
+            return Ok(response);
         }
         //[Authorize("Student, Lecturer, Casual Employee, Manager")]
         [HttpPut("Notify")]

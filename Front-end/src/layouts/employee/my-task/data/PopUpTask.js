@@ -132,7 +132,7 @@ const StyledImage = styled('img')(() => ({
     maxHeight: '100%',
 }));
 
-const PopUpTask = React.memo(({ task }) => {
+const PopUpTask = React.memo(({ task, status }) => {
 
     const { handleSubmit, formState: { errors } } = useForm();
     const [selectedFeedback, setselectedFeedback] = useState(null);
@@ -294,39 +294,43 @@ const PopUpTask = React.memo(({ task }) => {
                         {selectedFeedback && selectedFeedback.description}
                     </Typography>
                 </div>
-                <Typography variant="h5" fontWeight="medium" mb={1} mt={4} style={{ fontSize: '1.5rem' }}>Response Message</Typography>
-                <TextField
-                    fullWidth
-                    inputProps={{ maxLength: 100 }}
-                    variant="outlined"
-                    name="respondMessage"
-                    required
-                    value={employeeResponse}
-                    onChange={handleResponseChange}
-                />
-                <div>
-                    <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Images</Typography>
-                    <input type="file" accept="image/*" multiple onChange={handleFileChange} />
-                    <Button
-                        component="label"
-                        variant="contained"
-                        color='info'
-                        onChange={handleFileChange}
-                        startIcon={<CloudUploadIcon />}>
-                        Upload your images
-                        <VisuallyHiddenInput accept="image/*" type="file" name="file" multiple />
-                    </Button>
-                    <Gallery photos={selectedImages} />
-                </div>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <StyledButton
-                        type="submit"
-                        variant="contained"
-                        style={{ fontSize: '1.2rem', padding: '10px 20px', marginLeft: '10px' }}
-                    >
-                        Respond Task
-                    </StyledButton>
-                </Box>
+                {(status === "Delivered") && (
+                    <>
+                        <Typography variant="h5" fontWeight="medium" mb={0} mt={4} style={{ fontSize: '1.5rem' }}>Response Message</Typography>
+                        <TextField
+                            fullWidth
+                            inputProps={{ maxLength: 100 }}
+                            variant="outlined"
+                            name="respondMessage"
+                            required
+                            value={employeeResponse}
+                            onChange={handleResponseChange}
+                        />
+                        <div>
+                            <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Images</Typography>
+                            <input type="file" accept="image/*" multiple onChange={handleFileChange} />
+                            <Button
+                                component="label"
+                                variant="contained"
+                                color='info'
+                                onChange={handleFileChange}
+                                startIcon={<CloudUploadIcon />}>
+                                Upload your images
+                                <VisuallyHiddenInput accept="image/*" type="file" name="file" multiple />
+                            </Button>
+                            <Gallery photos={selectedImages} />
+                        </div>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                            <StyledButton
+                                type="submit"
+                                variant="contained"
+                                style={{ fontSize: '1.2rem', padding: '10px 20px', marginLeft: '10px' }}
+                            >
+                                Respond Task
+                            </StyledButton>
+                        </Box>
+                    </>
+                )}
                 <br />
             </StyledForm>
 
