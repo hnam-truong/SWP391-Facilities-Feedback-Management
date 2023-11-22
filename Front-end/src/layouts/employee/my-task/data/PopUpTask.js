@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import Gallery from 'react-photo-gallery';
 import MDSnackbar from "components/MDSnackbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { toast } from 'react-toastify';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',

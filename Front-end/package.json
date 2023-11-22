@@ -33,6 +33,7 @@
     "react-github-btn": "1.4.0",
     "react-google-login": "^5.2.2",
     "react-hook-form": "^7.47.0",
+    "react-images": "^1.2.0-beta.7",
     "react-overlays": "^5.2.1",
     "react-photo-gallery": "^8.0.0",
     "react-router-dom": "6.11.0",

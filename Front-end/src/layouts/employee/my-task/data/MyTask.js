@@ -8,7 +8,7 @@ import { Modal } from 'react-overlays';
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
-
+import { toast } from 'react-toastify';
 
 //MUI
 import IconButton from "@mui/material/IconButton";
