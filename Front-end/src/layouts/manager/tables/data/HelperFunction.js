@@ -194,6 +194,8 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
     const [userResponse, setUserResponse] = useState(selectedFeedback.response);
     const [currentImage, setCurrentImage] = useState(0);
     const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
+    const [currentImage, setCurrentImage] = useState(0);
+    const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
     const isProcessing = selectedFeedback.status === "Processing";
     const isWaiting = selectedFeedback.status === "Waiting";
     const isResponded = selectedFeedback.status === "Responded";
@@ -225,6 +227,21 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
             .then(response => response.json())
             .then(data => setImages(data));
     }, [selectedFeedback.feedbackId]);
+
+    const [imagesTask, setImagesTask] = useState({});
+
+    useEffect(() => {
+        selectedFeedback.tasks.forEach((task) => {
+            fetch(`https://localhost:7157/api/Task/GetFile?Id=${task.id || task.taskId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setImagesTask(prevState => ({
+                        ...prevState,
+                        [task.id || task.taskId]: data
+                    }));
+                });
+        });
+    }, [selectedFeedback.tasks]);
 
     const [imagesTask, setImagesTask] = useState({});
 
