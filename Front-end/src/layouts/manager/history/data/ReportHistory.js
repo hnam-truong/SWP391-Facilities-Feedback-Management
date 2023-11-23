@@ -279,7 +279,7 @@ export default function data() {
         <Time day={feedback.dateTime} />
         {selectedFeedback === feedback && (
           <>
-            <FeedbackModal show={showHelperFunction} handleClose={() => setShowHelperFunction(false)} selectedFeedback={selectedFeedback} />
+            <FeedbackModal show={showHelperFunction} handleClose={() => setShowHelperFunction(false)} selectedFeedback={selectedFeedback} action="Accept"/>
           </>
         )}
       </>,

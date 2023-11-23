@@ -165,7 +165,6 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
 
-
     useEffect(() => {
         const initialCampus = selectedRoom.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
         setSelectedCampus(initialCampus);
@@ -425,7 +424,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                                         setShowModal(true);
                                     }}
                                 />
-                                {/* <Button
+                                <Button
                                     variant="contained"
                                     sx={{ color: "#fff", backgroundColor: "#ff0000", marginBottom: '2px' }}
                                     style={{
@@ -436,7 +435,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                                     onClick={() => handleRemoveImage(index)}
                                 >
                                     Remove
-                                </Button> */}
+                                </Button>
                             </div>
                         )}
                     />

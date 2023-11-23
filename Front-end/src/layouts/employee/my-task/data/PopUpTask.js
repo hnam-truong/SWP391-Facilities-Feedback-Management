@@ -1,14 +1,13 @@
 /* eslint-disable */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import { Container, Box, Typography, Button, TextField } from '@mui/material';
-import { MenuItem } from '@material-ui/core';
 import { styled } from '@mui/material/styles';
 import { motion } from 'framer-motion';
-import Gallery from 'react-photo-gallery';
 import MDSnackbar from "components/MDSnackbar";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Gallery from 'react-photo-gallery';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -138,37 +137,23 @@ const PopUpTask = React.memo(({ task, status }) => {
     const [selectedFeedback, setselectedFeedback] = useState(null);
 
     // Add this state variable to hold the selected files
-    const [selectedFiles, setSelectedFiles] = useState([]);
     const [showModal, setShowModal] = useState(false);
-
-    const [dateTime, setDateTime] = useState(new Date().toLocaleString());
     const [selectedImages, setSelectedImages] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
-
     const [showSuccessNotification, setShowSuccessNotification] = useState(false);
     const [showErrorNotification, setShowErrorNotification] = useState(false);
-
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const handleEmployeeChange = (selectedOption) => {
-        setSelectedEmployee(selectedOption);
-    };
     const [employeeResponse, setEmployeeResponse] = useState();
-
+    const [errorNotificationMessage, setErrorNotificationMessage] = useState("An error occurred while sending the report.");
     const [images, setImages] = useState([]);
+
     const handleFileChange = (event) => {
-        const newSelectedFiles = Array.from(event.target.files);
-        if (images.length + newSelectedFiles.length > 5) {
+        const files = Array.from(event.target.files);
+        if (selectedImages.length + files.length > 5) {
+            setShowErrorNotification(true);
+            setErrorNotificationMessage("Cannot add more than 5 images.");
             return;
         }
-
-        setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
-
-        const newSelectedImages = newSelectedFiles.map((file) => ({
-            src: URL.createObjectURL(file),
-            width: 1,
-            height: 1,
-        }));
-        setImages([...images, ...newSelectedImages]);
+        setSelectedImages([...selectedImages, ...files]);
     };
 
     useEffect(() => {
@@ -199,15 +184,9 @@ const PopUpTask = React.memo(({ task, status }) => {
 
     const onSubmit = async (data) => {
         const formData = new FormData();
-        selectedFiles.forEach((file) => {
+        selectedImages.forEach((file) => {
             formData.append('fileCollection', file, file.name);
         });
-        console.log(selectedFiles);
-        if (images.length + selectedFiles.length > 5) {
-            toast.error("Cannot add more than 5 images.");
-            return;
-        }
-
         try {
             const response = await fetch(`https://localhost:7157/api/Task/UpdateTaskResponse?Id=${task.id}&Response=${employeeResponse}`, {
                 method: 'PUT',
@@ -233,16 +212,18 @@ const PopUpTask = React.memo(({ task, status }) => {
             selectedImages.forEach((url) => URL.revokeObjectURL(url));
         };
     }, [selectedImages]);
+
     const handleImageClick = (image) => {
-        setPreviewUrl(image);
+        const objectUrl = URL.createObjectURL(image);
+        setPreviewUrl(objectUrl);
         setShowModal(true);
     };
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDateTime(new Date().toLocaleString());
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+
+    const handleRemoveImage = (index) => {
+        const updatedImages = [...selectedImages];
+        updatedImages.splice(index, 1);
+        setSelectedImages(updatedImages);
+    };
 
     const handleResponseChange = (event) => {
         if (employeeResponse === "") {
@@ -308,7 +289,6 @@ const PopUpTask = React.memo(({ task, status }) => {
                         />
                         <div>
                             <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Images</Typography>
-                            <input type="file" accept="image/*" multiple onChange={handleFileChange} />
                             <Button
                                 component="label"
                                 variant="contained"
@@ -320,6 +300,33 @@ const PopUpTask = React.memo(({ task, status }) => {
                             </Button>
                             <Gallery photos={selectedImages} />
                         </div>
+                        <div style={{ marginTop: '2rem' }}>
+                            {selectedImages.map((selectedImage, index) => {
+                                const objectUrl = URL.createObjectURL(selectedImage);
+                                return (
+                                    <Box key={index} sx={{ position: 'relative', cursor: 'pointer', display: 'inline-block', marginBottom: '8px' }}>
+                                        <img onClick={() => handleImageClick(selectedImage)} src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                        <Button
+                                            onClick={() => handleRemoveImage(index)}
+                                            size="small"
+                                            variant="contained"
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '0',
+                                                right: '0',
+                                                color: "#fff",
+                                                backgroundColor: "#ff0000",
+                                                padding: '10px',
+                                                borderRadius: '0',
+                                            }}
+                                        >
+                                            Remove
+                                        </Button>
+                                    </Box>
+                                );
+                            })}
+                        </div>
+
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                             <StyledButton
                                 type="submit"
@@ -333,14 +340,27 @@ const PopUpTask = React.memo(({ task, status }) => {
                 )}
                 <br />
             </StyledForm>
-
+            {showModal && (
+                <StyledModal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}>
+                    <StyledImage
+                        src={previewUrl}
+                        alt="Preview"
+                        sx={{
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            borderRadius: '8px',
+                            objectFit: 'cover', // Add this line to make the image fit within its container
+                        }}
+                    />
+                </StyledModal>
+            )}
             {showSuccessNotification && (
                 <MDSnackbar
                     color="success"
                     icon="check"
                     title="Success"
                     content="Response sent successfully!"
-                    dateTime={new Date().toLocaleString()}
+                    dateTime=""
                     open={showSuccessNotification}
                     onClose={() => setShowSuccessNotification(false)}
                     close={() => setShowSuccessNotification(false)}
@@ -351,7 +371,8 @@ const PopUpTask = React.memo(({ task, status }) => {
                     color="error"
                     icon="warning"
                     title="Error"
-                    content="An error occurred while sending the Response!"
+                    content={errorNotificationMessage}
+                    dateTime=""
                     open={showErrorNotification}
                     onClose={() => setShowErrorNotification(false)}
                     close={() => setShowErrorNotification(false)}

@@ -156,7 +156,6 @@ const Create = React.memo(() => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [locationOptions, setLocationOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [dateTime, setDateTime] = useState(new Date().toLocaleString());
   const [selectedImages, setSelectedImages] = useState([]);
@@ -181,8 +180,6 @@ const Create = React.memo(() => {
         const filteredOptions = selectedCampus?.value === 'NVH'
           ? options.filter((location) => location.label.startsWith('NVH'))
           : options.filter((location) => !location.label.startsWith('NVH'));
-
-        setLocationOptions(options);
         setFilteredLocationOptions(filteredOptions);
       } catch (error) {
         console.error(error);

@@ -9,6 +9,7 @@ import MDSnackbar from "components/MDSnackbar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PropTypes from 'prop-types';
+import Gallery from 'react-photo-gallery';
 
 const StyledContainer = styled(Container)`
   display: 'flex',
@@ -191,10 +192,12 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
     const [sucessNotificationMessage, setSucessNotificationMessage] = useState("");
     const [note, setNote] = useState('');
     const [userResponse, setUserResponse] = useState(selectedFeedback.response);
-
+    const [currentImage, setCurrentImage] = useState(0);
+    const [lightboxIsOpen, setLightboxIsOpen] = useState(false);
     const isProcessing = selectedFeedback.status === "Processing";
     const isWaiting = selectedFeedback.status === "Waiting";
     const isResponded = selectedFeedback.status === "Responded";
+    const isClosed = selectedFeedback.status === "Closed";
 
     const handleEmployeeChange = (selectedOption) => {
         setSelectedEmployee(selectedOption);
@@ -222,6 +225,21 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
             .then(response => response.json())
             .then(data => setImages(data));
     }, [selectedFeedback.feedbackId]);
+
+    const [imagesTask, setImagesTask] = useState({});
+
+    useEffect(() => {
+        selectedFeedback.tasks.forEach((task) => {
+            fetch(`https://localhost:7157/api/Task/GetFile?Id=${task.id || task.taskId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setImagesTask(prevState => ({
+                        ...prevState,
+                        [task.id || task.taskId]: data
+                    }));
+                });
+        });
+    }, [selectedFeedback.tasks]);
 
     const onSubmit = async (data) => {
         switch (action) {
@@ -355,6 +373,12 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
 
     const handleImageClick = (image) => {
         setPreviewUrl(image);
+        setShowModal(true);
+    };
+
+    const handleResponseImageClick = (clickedImage) => {
+        // For simplicity, selecting the first image from the array
+        setPreviewUrl(clickedImage.src);
         setShowModal(true);
     };
 
@@ -496,24 +520,42 @@ const HelperFunction = React.memo(({ selectedFeedback, action }) => {
                             value={note}
                             onChange={handleNoteChange}
                         />
-
+                    </div>
+                )}
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded || isClosed) && action === "Accept") && (
+                    <div>
                         <Typography variant="h5" fontWeight="medium" mb={1} mt={6} style={{ fontSize: '1.2rem' }}>Employee Task</Typography>
                         {selectedFeedback.tasks
                             .filter(task => task.status !== "Cancelled" && task.status !== "Removed")
-                            .sort((a, b) => {
-                                return new Date(b.dateTime) - new Date(a.dateTime);
-                            })
-                            .map((task) => (
-                                <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
-                                    <Typography style={{ fontSize: '1rem' }}>Created on: <TaskTime day={task.dateTime} /></Typography>
-                                    <Typography style={{ fontSize: '1rem' }}>Manager name: {task.manager.username}</Typography>
-                                    <Typography style={{ fontSize: '1rem' }}>Employee name: {task.employee.username}</Typography>
-                                    <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
-                                    <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
-                                    <Typography style={{ fontSize: '1rem' }}>Response: {task.responsed}</Typography>
-                                </div>
-                            )
-                            )}
+                            .sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime))
+                            .map((task) => {
+                                const photos = imagesTask[task.id || task.taskId]?.map((image) => ({
+                                    src: image,
+                                    width: 1,
+                                    height: 1,
+                                })) || [];
+
+                                return (
+                                    <div key={task.taskId} style={{ border: '1px solid #000', padding: '10px', marginBottom: '10px' }}>
+                                        <Typography style={{ fontSize: '1rem' }}>Created on: <TaskTime day={task.dateTime} /></Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Manager name: {task.manager.username}</Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Employee name: {task.employee.username}</Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Status: {task.status}</Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Note: {task.note}</Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Response message: {task.responsed}</Typography>
+                                        <Typography style={{ fontSize: '1rem' }}>Response images: </Typography>
+
+                                        <div style={{ width: '100%' }}>
+                                            <Gallery onClick={(event, { photo }) => handleResponseImageClick(photo)} photos={photos} columns={photos.length} />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </div>
+                )}
+
+                {((localStorage.getItem('userRole') === "Manager") && (isWaiting || isProcessing || isResponded) && action === "Accept") && (
+                    <div>
 
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
                             <StyledButton type="submit" variant="contained" style={{ fontSize: '1.2rem', padding: '10px 20px' }}>Send Task</StyledButton>
