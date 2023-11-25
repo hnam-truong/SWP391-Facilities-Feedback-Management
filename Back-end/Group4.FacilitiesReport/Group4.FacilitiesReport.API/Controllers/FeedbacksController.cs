@@ -351,6 +351,26 @@ namespace Group4.FacilitiesReport.API.Controllers
 
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
         }
+        [HttpDelete("DeleteFiles")]
+        public IActionResult DeleteFiles(Guid feedbackId, [FromQuery] List<string> fileNames)
+        {
+            string directoryPath = GetFilePath(feedbackId);
+            if (System.IO.Directory.Exists(directoryPath))
+            {
+                var filesToDelete = System.IO.Directory.GetFiles(directoryPath)
+                    .Where(file => fileNames.Contains(System.IO.Path.GetFileNameWithoutExtension(file))).ToList();
+
+                if (filesToDelete.Count > 0)
+                {
+                    foreach (var file in filesToDelete)
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                    return Ok($"{filesToDelete.Count} file(s) deleted successfully");
+                }
+            }
+            return NotFound("Files not found");
+        }
 
     }
 }

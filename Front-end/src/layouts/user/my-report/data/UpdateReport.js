@@ -164,7 +164,11 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const [images, setImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
+<<<<<<< HEAD
+    const [imagesToDelete, setImagesToDelete] = useState([]);
+=======
 
+>>>>>>> b5273a83577b59fc2812d831fbfd9416a8faffdf
     useEffect(() => {
         const initialCampus = selectedRoom.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
         setSelectedCampus(initialCampus);
@@ -237,9 +241,30 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 { method: 'PUT', body: formData });
             const responseData = await response.json();
             console.log(responseData);
-            // Notify when the report is created successfully
+            // Notify when the report is updated successfully
             setShowSuccessNotification(true);
             setShowModal(false);
+
+            // If there are images to delete, call the delete API
+         
+            if (imagesToDelete.length > 0) {
+                let fileNamesParameters = imagesToDelete.map(name => `fileNames=${name}`).join('&');
+                const deleteUrl = `https://localhost:7157/api/Feedbacks/DeleteFiles?feedbackId=${selectedFeedback.feedbackId}&${fileNamesParameters}`;
+            
+                const deleteResponse = await fetch(deleteUrl, { method: 'DELETE' });
+                if (!deleteResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // const deleteResponseData = await deleteResponse.json();
+                // console.log(deleteResponseData);
+                console.log(imagesToDelete); // Log the imagesToDelete array after the DELETE method is run
+
+                // Clear imagesToDelete
+                setImagesToDelete([]);
+                console.log(imagesToDelete); // Log the imagesToDelete array after it is cleared
+            } else {
+                console.log('No images to delete');
+            }
 
             window.location.reload();
         } catch (error) {
@@ -265,23 +290,31 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
             .catch((error) => console.error("Error fetching data:", error));
     }, [selectedFeedback.feedbackId]);
     const handleFileChange = (event) => {
-        const newSelectedFiles = Array.from(event.target.files);
+        let fileIndex = selectedFiles.length;
+        const newSelectedFiles = Array.from(event.target.files).map(file => {
+            const nameParts = file.name.split('.');
+            const extension = nameParts.pop();
+            const nameWithoutExtension = nameParts.join('.');
+            const newName = `${nameWithoutExtension}-${++fileIndex}.${extension}`;
+            console.log(newName); // Log the new file name
+            return new File([file], newName, { type: file.type });
+        });
+
         if (images.length + newSelectedFiles.length > 5) {
             setShowErrorNotification(true);
             setErrorNotificationMessage("Cannot add more than 5 images.");
             return;
         }
 
-        setSelectedFiles([...selectedFiles, ...newSelectedFiles]);
+        setSelectedFiles(prevSelectedFiles => [...prevSelectedFiles, ...newSelectedFiles]);
 
         const newSelectedImages = newSelectedFiles.map((file) => ({
             src: URL.createObjectURL(file),
             width: 1,
             height: 1,
         }));
-        setImages([...images, ...newSelectedImages]);
+        setImages(prevImages => [...prevImages, ...newSelectedImages]);
     };
-
     useEffect(() => {
         const interval = setInterval(() => {
             setDateTime(new Date().toLocaleString());
@@ -294,14 +327,31 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
 
         setRoomDisabled(false);
     };
-    const handleRemoveImage = (indexToRemove) => {
-        const updatedImages = images.filter((_, index) => index !== indexToRemove);
-        const updatedFiles = selectedFiles.filter((_, index) => index !== indexToRemove);
-
-        setImages(updatedImages);
-        setSelectedFiles(updatedFiles);
+    const handleRemoveImage = (imageUrl, indexToRemove) => {
+        console.log(indexToRemove); // Log the index to remove
+    
+        // Only proceed if the image at indexToRemove exists
+        if (images[indexToRemove]) {
+            // Check if the image URL starts with the base URL of your API
+            if (imageUrl.startsWith('https://localhost:7157/')) {
+                // This is an API image
+                // Split the URL by the '/' character and get the last element of the resulting array
+                const imageNameWithExtension = imageUrl.split('/').pop();
+                // Split the image name by the '.' character and get the first element of the resulting array
+                const imageName = imageNameWithExtension.split('.')[0];
+                console.log(imageName); // Log the image name without the extension
+    
+                // Add the removed image to imagesToDelete
+                setImagesToDelete(prevImages => [...prevImages, imageName]);
+            }
+    
+            const updatedImages = images.filter((_, index) => index !== indexToRemove);
+            const updatedFiles = selectedFiles.filter((_, index) => index !== indexToRemove);
+    
+            setImages(updatedImages);
+            setSelectedFiles(updatedFiles);
+        }
     };
-
     return (
         <StyledContainer sx={{
             width: '100%', // Make the container take up the full width of its parent
@@ -432,8 +482,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                                         top: '5px',
                                         right: '5px',
                                     }}
-                                    onClick={() => handleRemoveImage(index)}
-                                >
+                                    onClick={() => handleRemoveImage(photo.src, index)}                                >
                                     Remove
                                 </Button>
                             </div>
