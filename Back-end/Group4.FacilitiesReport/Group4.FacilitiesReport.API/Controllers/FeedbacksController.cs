@@ -83,7 +83,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 DateTime.ParseExact(beginDate, "dd-MM-yyyy",
                                       System.Globalization.CultureInfo.InvariantCulture),
                 DateTime.ParseExact(endDate, "dd-MM-yyyy",
-                                      System.Globalization.CultureInfo.InvariantCulture));
+                                      System.Globalization.CultureInfo.InvariantCulture).AddDays(1));
             return Ok(count);
         }
         [HttpGet("CountFeedbackClosedToday")] 

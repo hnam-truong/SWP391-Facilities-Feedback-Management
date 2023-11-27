@@ -2057,19 +2057,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\voban\\.nuget\\packages\\": {}
+    "C:\\Users\\ASUS\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "projectUniqueName": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj",
       "projectName": "Group4.FacilitiesReport.Repositories",
-      "projectPath": "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj",
-      "packagesPath": "C:\\Users\\voban\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\obj\\",
+      "projectPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\Group4.FacilitiesReport.Repositories.csproj",
+      "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+      "outputPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Repositories\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\voban\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2083,11 +2083,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
-              "projectPath": "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
+            "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj": {
+              "projectPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.DTO\\Group4.FacilitiesReport.DTO.csproj"
             },
-            "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
-              "projectPath": "C:\\Users\\voban\\Desktop\\CN5\\SWP-PROJECT\\main\\SWP391-Project\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
+            "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj": {
+              "projectPath": "D:\\Project\\Feedback-Facilities\\Back-end\\Group4.FacilitiesReport\\Group4.FacilitiesReport.Interface\\Group4.FacilitiesReport.Interface.csproj"
             }
           }
         }
@@ -2127,7 +2127,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

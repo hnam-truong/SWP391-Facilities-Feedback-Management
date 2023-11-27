@@ -80,7 +80,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-reports",
     component: <UserReport />,
-    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",
@@ -89,7 +89,7 @@ const routes = [
     icon: <Icon fontSize="small">add</Icon>,
     route: "/create",
     component: <Create />,
-    roles: ["Student", "Lecturer", "Casual Employee", "Manager"],
+    roles: ["Student", "Lecturer", "Casual Employee"],
   },
   {
     type: "collapse",

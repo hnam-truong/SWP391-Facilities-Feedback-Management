@@ -28,14 +28,14 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {
             _logger.LogInformation("Begin Count Feedback by Date");
-            return await AllFeedback().Where(f => f.DateTime.Date >= beginDate.Date && f.DateTime.Date <= endDate.Date).CountAsync();
+            return await AllFeedback().Where(f => f.DateTime >= beginDate && f.DateTime <= endDate).CountAsync();
         }
         public async Task<int> CountFeedbackClosedByDate()
 
         {
             _logger.LogInformation("Begin Count Feedback Closed by Date");
-            var today = DateTime.Today;
-            return await AllFeedback().Where(f => f.DateTime.Date == today.Date && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
+            var today = DateTime.Now.Date;
+            return await AllFeedback().Where(f => f.DateTime.Date == today && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
         }
         public async Task<int> CountFeedbackClosed()
         {
@@ -449,7 +449,7 @@ namespace Group4.FacilitiesReport.Repositories
         }
         public async Task<List<FeedbackGraphObject>> RecentUserCreateFeedback()
         {
-            _logger.LogInformation("Begin Recent USer Create Feedback");
+            _logger.LogInformation("Begin Recent User Create Feedback");
             var now = DateTime.Now.Date.AddDays(-6);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i <= 6; i++)

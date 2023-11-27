@@ -205,6 +205,11 @@ const PopUpTask = React.memo(({ task, status }) => {
         }
     };
 
+    useEffect(() => {
+        fetch(`https://localhost:7157/api/Feedbacks/GetFile?feedbackId=${task.feedbackId}`)
+            .then(response => response.json())
+            .then(data => setImages(data));
+    }, [task.feedbackId]);
 
     // Cleanup the object URLs after using them
     useEffect(() => {
@@ -213,9 +218,14 @@ const PopUpTask = React.memo(({ task, status }) => {
         };
     }, [selectedImages]);
 
-    const handleImageClick = (image) => {
+    const handleResponseImageClick = (image) => {
         const objectUrl = URL.createObjectURL(image);
         setPreviewUrl(objectUrl);
+        setShowModal(true);
+    };
+
+    const handleImageClick = (image) => {
+        setPreviewUrl(image);
         setShowModal(true);
     };
 
@@ -270,6 +280,16 @@ const PopUpTask = React.memo(({ task, status }) => {
                     </div>
                 </StyledRow>
                 <div>
+                    <Typography variant="h5" fontWeight="medium" mt={4} mb={1}>Images</Typography>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gridGap: '2px', overflow: 'auto', maxHeight: '400px' }}>
+                        {images.map((image, index) => (
+                            <Box key={index} sx={{ cursor: 'pointer', width: '120px', height: '120px' }} onClick={() => handleImageClick(image)}>
+                                <img key={index} src={image} alt="Preview" style={{ width: '100%', height: '100%' }} />
+                            </Box>
+                        ))}
+                    </Box>
+                </div>
+                <div>
                     <Typography variant="h5" fontWeight="medium" mb={1} mt={4} style={{ fontSize: '1.5rem' }}>More Details</Typography>
                     <Typography variant="body1" style={{ fontSize: '1.2rem' }}>
                         {selectedFeedback && selectedFeedback.description}
@@ -288,7 +308,7 @@ const PopUpTask = React.memo(({ task, status }) => {
                             onChange={handleResponseChange}
                         />
                         <div>
-                            <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Images</Typography>
+                            <Typography variant="h5" fontWeight="medium" mb={1} mt={4}>Response images</Typography>
                             <Button
                                 component="label"
                                 variant="contained"
@@ -305,7 +325,7 @@ const PopUpTask = React.memo(({ task, status }) => {
                                 const objectUrl = URL.createObjectURL(selectedImage);
                                 return (
                                     <Box key={index} sx={{ position: 'relative', cursor: 'pointer', display: 'inline-block', marginBottom: '8px' }}>
-                                        <img onClick={() => handleImageClick(selectedImage)} src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                        <img onClick={() => handleResponseImageClick(selectedImage)} src={objectUrl} alt="Selected" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                                         <Button
                                             onClick={() => handleRemoveImage(index)}
                                             size="small"

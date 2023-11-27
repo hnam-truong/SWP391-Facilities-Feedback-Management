@@ -51,13 +51,15 @@ const StyledForm = styled('form')(() => ({
 }));
 
 const StyledRow = styled(Box)(() => ({
-    display: 'grid',
+    display: 'flex',
     gridTemplateColumns: '1fr 1fr 1fr',
     gridGap: '40px',
     width: '100%',
     '@media (min-width: 768px)': {
         gridTemplateColumns: '1fr 1fr 1fr',
     },
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
 }));
 
 const StyledSelect = styled(Select)(() => ({
@@ -145,20 +147,20 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
 
     const { register, handleSubmit, formState, setValue } = useForm();
     const [selectedCampus, setSelectedCampus] = useState(null);
-    const [selectedRoom, setSelectedRoom] = useState(
+    const [selectedLocation, setSelectedLocation] = useState(
         { label: selectedFeedback.locationId, value: selectedFeedback.locationId }
     );
     const [selectedCategory, setSelectedCategory] = useState(
         { label: selectedFeedback.cate.description, value: selectedFeedback.cateId }
     );
     const [showModal, setShowModal] = useState(false);
-    const [roomOptions, setRoomOptions] = useState([]);
+    const [locationOptions, setLocationOptions] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [dateTime, setDateTime] = useState(new Date().toLocaleString());
     const [selectedImages, setSelectedImages] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
-    const [filteredRoomOptions, setFilteredRoomOptions] = useState([]);
-    const [roomDisabled, setRoomDisabled] = useState(true);
+    const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
+    const [locationDisabled, setLocationDisabled] = useState(true);
     const [showSuccessNotification, setShowSuccessNotification] = useState(false);
     const [showErrorNotification, setShowErrorNotification] = useState(false);
     const [images, setImages] = useState([]);
@@ -167,28 +169,32 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
 <<<<<<< HEAD
     const [imagesToDelete, setImagesToDelete] = useState([]);
 =======
+<<<<<<< HEAD
+    const [imagesToDelete, setImagesToDelete] = useState([]);
+=======
 
 >>>>>>> b5273a83577b59fc2812d831fbfd9416a8faffdf
+>>>>>>> de0d876ede9259f2e569b00123409b5e5933304f
     useEffect(() => {
-        const initialCampus = selectedRoom.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
+        const initialCampus = selectedLocation.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
         setSelectedCampus(initialCampus);
     }, []);
 
     const campusOptions = useMemo(() => [{ value: 'FPTU HCM', label: 'FPTU HCM' }, { value: 'NVH', label: 'NVH' }], []);
 
     useEffect(() => {
-        const fetchRoomOptions = async () => {
+        const fetchLocationOptions = async () => {
             try {
                 const response = await fetch('https://localhost:7157/api/Location/GetAllLocation');
                 const data = await response.json();
-                const options = data.map((room) => ({ value: room.locationId, label: room.locationId }));
+                const options = data.map((location) => ({ value: location.locationId, label: location.locationId }));
 
                 const filteredOptions = selectedCampus?.value === 'NVH'
-                    ? options.filter((room) => room.label.startsWith('NVH'))
-                    : options.filter((room) => !room.label.startsWith('NVH'));
+                    ? options.filter((location) => location.label.startsWith('NVH'))
+                    : options.filter((location) => !location.label.startsWith('NVH'));
 
-                setRoomOptions(options);
-                setFilteredRoomOptions(filteredOptions);
+                setLocationOptions(options);
+                setFilteredLocationOptions(filteredOptions);
             } catch (error) {
                 console.error(error);
             }
@@ -206,7 +212,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
         };
 
         fetchCategoryOptions();
-        fetchRoomOptions();
+        fetchLocationOptions();
     }, [selectedCampus]);
 
 
@@ -215,12 +221,12 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const onSubmit = async (data) => {
         const { Title, MoreDetails } = data;
         const { value: campus = '' } = selectedCampus || {};
-        const { value: room = '' } = selectedRoom || {};
+        const { value: location = '' } = selectedLocation || {};
         const { value: category = '' } = selectedCategory || {};
 
         const formData = new FormData();
         formData.set('Campus', campus);
-        formData.set('Room', room);
+        formData.set('Location', location);
         formData.set('Category', category);
         formData.set('Title', Title);
         formData.set('MoreDetails', MoreDetails);
@@ -236,7 +242,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 + "&title=" + Title
                 + "&description=" + MoreDetails
                 + "&cateId=" + category
-                + "&locatoinId=" + room,
+                + "&locatoinId=" + location,
 
                 { method: 'PUT', body: formData });
             const responseData = await response.json();
@@ -323,9 +329,9 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     }, []);
     const handleCampusChange = (selectedOption) => {
         setSelectedCampus(selectedOption);
-        setSelectedRoom(null);
+        setSelectedLocation(null);
 
-        setRoomDisabled(false);
+        setLocationDisabled(false);
     };
     const handleRemoveImage = (imageUrl, indexToRemove) => {
         console.log(indexToRemove); // Log the index to remove
@@ -368,7 +374,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                     <StyledTextField
                         type="text"
                         name="Title"
-                        defaultValue={selectedFeedback.title.toUpperCase()}
+                        defaultValue={selectedFeedback.title}
                         inputProps={{
                             maxLength: 40,
                             style: { fontSize: '1.2rem', height: '80%' } // Increase the font size
@@ -400,21 +406,21 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                         />
                     </div>
                     <div>
-                        <Typography variant="h6" fontWeight="medium" mb={1}>Room</Typography>
+                        <Typography variant="h6" fontWeight="medium" mb={1}>Location</Typography>
                         <StyledSelect
-                            name="Room"
-                            id="Room"
-                            options={filteredRoomOptions}
-                            value={selectedRoom}
-                            onChange={setSelectedRoom}
+                            name="Location"
+                            id="Location"
+                            options={filteredLocationOptions}
+                            value={selectedLocation}
+                            onChange={setSelectedLocation}
 
                             required
                             isSearchable
                             styles={{
                                 control: (provided) => ({
                                     ...provided,
-                                    borderColor: formState.errors.Room ? '#f44336' : provided.borderColor,
-                                    '&:hover': { borderColor: formState.errors.Room ? '#f44336' : provided.borderColor },
+                                    borderColor: formState.errors.Location ? '#f44336' : provided.borderColor,
+                                    '&:hover': { borderColor: formState.errors.Location ? '#f44336' : provided.borderColor },
                                 }),
                             }}
                         />
