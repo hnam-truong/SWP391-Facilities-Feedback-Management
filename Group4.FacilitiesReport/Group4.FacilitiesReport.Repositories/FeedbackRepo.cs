@@ -202,28 +202,36 @@ namespace Group4.FacilitiesReport.Repositories
             {
                 _logger.LogInformation("Begin Update Feedback");
                 TblFeedback? _feedback = await AllFeedback().SingleOrDefaultAsync(f => f.FeedbackId.Equals(feedback.FeedbackId));
+
                 if (_feedback != null && _feedback.Status == 0)
                 {
-                    _feedback.CateId = feedback.CateId;
-                    _feedback.Title = feedback.Title;
-                    _feedback.Description = feedback.Description;
-                    _feedback.LocationId = feedback.LocationId;
-                    await _context.SaveChangesAsync();
-                    _response.ResponseCode = 200;
-                    _response.Result = feedback.FeedbackId.ToString();
+                    var exists = await _context.TblFeedbacks.AnyAsync(f => f.LocationId == feedback.LocationId && f.CateId == feedback.CateId && f.FeedbackId != feedback.FeedbackId && (f.Status == 0 || f.Status == 1));
+                    if (!exists)
+                    {
+                        _feedback.CateId = feedback.CateId;
+                        _feedback.Title = feedback.Title;
+                        _feedback.Description = feedback.Description;
+                        _feedback.LocationId = feedback.LocationId;
+                        await _context.SaveChangesAsync();
+                        _response.ResponseCode = 200;
+                        _response.Result = feedback.FeedbackId.ToString();
+                    }
+                    else
+                    {
+                        _response.ResponseCode = 4000;
+                        _response.ErrorMessage = "Type Exists";
+                    }
                 }
                 else if (_feedback != null && _feedback.Status != 0)
                 {
                     _response.ResponseCode = 400;
-                    _response.Result = "Invalid Call!";
+                    _response.ErrorMessage = "Invalid Call!";
                 }
                 else
                 {
-                    _response.ResponseCode = 400;
-                    _response.Result = "Data not found!";
-
+                    _response.ResponseCode = 404;
+                    _response.ErrorMessage = "Data not found!";
                 }
-
             }
             catch (Exception ex)
             {
