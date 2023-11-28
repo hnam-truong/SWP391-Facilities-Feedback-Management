@@ -166,15 +166,8 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     const [images, setImages] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [errorNotificationMessage, setErrorNotificationMessage] = useState("");
-<<<<<<< HEAD
     const [imagesToDelete, setImagesToDelete] = useState([]);
-=======
-<<<<<<< HEAD
-    const [imagesToDelete, setImagesToDelete] = useState([]);
-=======
 
->>>>>>> b5273a83577b59fc2812d831fbfd9416a8faffdf
->>>>>>> de0d876ede9259f2e569b00123409b5e5933304f
     useEffect(() => {
         const initialCampus = selectedLocation.label.startsWith('NVH') ? { value: 'NVH', label: 'NVH' } : { value: 'FPTU HCM', label: 'FPTU HCM' };
         setSelectedCampus(initialCampus);
@@ -248,15 +241,13 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
             const responseData = await response.json();
             console.log(responseData);
             // Notify when the report is updated successfully
-            setShowSuccessNotification(true);
-            setShowModal(false);
-
+            
             // If there are images to delete, call the delete API
-         
+
             if (imagesToDelete.length > 0) {
                 let fileNamesParameters = imagesToDelete.map(name => `fileNames=${name}`).join('&');
                 const deleteUrl = `https://localhost:7157/api/Feedbacks/DeleteFiles?feedbackId=${selectedFeedback.feedbackId}&${fileNamesParameters}`;
-            
+
                 const deleteResponse = await fetch(deleteUrl, { method: 'DELETE' });
                 if (!deleteResponse.ok) {
                     throw new Error('Network response was not ok');
@@ -272,7 +263,18 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 console.log('No images to delete');
             }
 
-            window.location.reload();
+            if (responseData.responseCode === 200) {
+                setShowSuccessNotification(true);
+                setShowModal(false);
+                window.location.reload();
+            } else if (responseData.responseCode === 4000){
+                setShowErrorNotification(true);
+                setErrorNotificationMessage("Type of Feedback is already exist in this location");
+            } else {
+                setShowErrorNotification(true);
+                setErrorNotificationMessage("An error occurred while updating the report!");
+            }
+
         } catch (error) {
             console.error(error);
             setShowErrorNotification(true);
@@ -335,7 +337,7 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
     };
     const handleRemoveImage = (imageUrl, indexToRemove) => {
         console.log(indexToRemove); // Log the index to remove
-    
+
         // Only proceed if the image at indexToRemove exists
         if (images[indexToRemove]) {
             // Check if the image URL starts with the base URL of your API
@@ -346,14 +348,14 @@ const UpdateReport = React.memo(({ selectedFeedback }) => {
                 // Split the image name by the '.' character and get the first element of the resulting array
                 const imageName = imageNameWithExtension.split('.')[0];
                 console.log(imageName); // Log the image name without the extension
-    
+
                 // Add the removed image to imagesToDelete
                 setImagesToDelete(prevImages => [...prevImages, imageName]);
             }
-    
+
             const updatedImages = images.filter((_, index) => index !== indexToRemove);
             const updatedFiles = selectedFiles.filter((_, index) => index !== indexToRemove);
-    
+
             setImages(updatedImages);
             setSelectedFiles(updatedFiles);
         }
