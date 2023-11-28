@@ -83,7 +83,7 @@ namespace Group4.FacilitiesReport.API.Controllers
                 DateTime.ParseExact(beginDate, "dd-MM-yyyy",
                                       System.Globalization.CultureInfo.InvariantCulture),
                 DateTime.ParseExact(endDate, "dd-MM-yyyy",
-                                      System.Globalization.CultureInfo.InvariantCulture));
+                                      System.Globalization.CultureInfo.InvariantCulture).AddDays(1));
             return Ok(count);
         }
         [HttpGet("CountFeedbackClosedToday")]
@@ -244,8 +244,38 @@ namespace Group4.FacilitiesReport.API.Controllers
         }
         //[Authorize("Student, Lecturer, Casual Employee")]
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId)
+        public async Task<IActionResult> UpdateFeedback(Guid feedbackId, string userId, string title, string description, string cateId, string locatoinId, IFormFileCollection fileCollection)
         {
+            APIResponse response = new APIResponse();
+            int passcount = 0;
+            int errorcount = 0;
+            try
+            {
+                string FilePath = GetFilePath(feedbackId);
+                if (!System.IO.File.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                else
+                {
+                    System.IO.Directory.Delete(FilePath, true);
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                foreach (var file in fileCollection)
+                {
+                    string fileDir = FilePath + "\\" + file.FileName;
+                    using (FileStream stream = System.IO.File.Create(fileDir))
+                    {
+                        await file.CopyToAsync(stream);
+                        passcount++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                errorcount++;
+                response.ErrorMessage = ex.Message;
+            }
             var feedback = await this._ifeedback.UpdateFeedback(new FeedbackUpdatableObject
             {
                 FeedbackId = feedbackId,
@@ -255,7 +285,14 @@ namespace Group4.FacilitiesReport.API.Controllers
                 CateId = cateId,
                 LocationId = locatoinId,
             });
-            return Ok(feedback);
+            response.ResponseCode = feedback.ResponseCode;
+            response.ErrorMessage = feedback.ErrorMessage;
+            response.Result = "Feedback " + feedbackId + " update Successful!\n" +
+                passcount + " File(s) uploaded.\n" +
+                errorcount + " File(s) fail.";
+
+
+            return Ok(response);
         }
         //[Authorize("Student, Lecturer, Casual Employee, Manager")]
         [HttpPut("Notify")]
@@ -315,6 +352,26 @@ namespace Group4.FacilitiesReport.API.Controllers
         {
 
             return Ok(await _ifeedback.RemoveFeedback(feedbackId));
+        }
+        [HttpDelete("DeleteFiles")]
+        public IActionResult DeleteFiles(Guid feedbackId, [FromQuery] List<string> fileNames)
+        {
+            string directoryPath = GetFilePath(feedbackId);
+            if (System.IO.Directory.Exists(directoryPath))
+            {
+                var filesToDelete = System.IO.Directory.GetFiles(directoryPath)
+                    .Where(file => fileNames.Contains(System.IO.Path.GetFileNameWithoutExtension(file))).ToList();
+
+                if (filesToDelete.Count > 0)
+                {
+                    foreach (var file in filesToDelete)
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                    return Ok($"{filesToDelete.Count} file(s) deleted successfully");
+                }
+            }
+            return NotFound("Files not found");
         }
 
     }

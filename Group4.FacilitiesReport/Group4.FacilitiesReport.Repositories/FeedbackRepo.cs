@@ -28,14 +28,14 @@ namespace Group4.FacilitiesReport.Repositories
         public async Task<int> CountFeedbackByDate(DateTime beginDate, DateTime endDate)
         {
             _logger.LogInformation("Begin Count Feedback by Date");
-            return await AllFeedback().Where(f => f.DateTime.Date >= beginDate.Date && f.DateTime.Date <= endDate.Date).CountAsync();
+            return await AllFeedback().Where(f => f.DateTime >= beginDate && f.DateTime <= endDate).CountAsync();
         }
         public async Task<int> CountFeedbackClosedByDate()
 
         {
             _logger.LogInformation("Begin Count Feedback Closed by Date");
-            var today = DateTime.Today;
-            return await AllFeedback().Where(f => f.DateTime.Date == today.Date && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
+            var today = DateTime.Now.Date;
+            return await AllFeedback().Where(f => f.DateTime.Date == today && f.Status == (int)Enum.Parse(typeof(DTO.Enums.FeedbackStatus), "Closed")).CountAsync();
         }
         public async Task<int> CountFeedbackClosed()
         {
@@ -56,21 +56,21 @@ namespace Group4.FacilitiesReport.Repositories
             }
             else
             {
-                    try
-                    {
-                        this._logger.LogInformation("Create Begins");
-                        TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
-                        await this._context.TblFeedbacks.AddAsync(_feedback);
-                        await this._context.SaveChangesAsync();
-                        _response.ResponseCode = 200;
-                        _response.Result = _feedback.FeedbackId.ToString();
-                    }
-                    catch (Exception ex)
-                    {
-                        _response.ResponseCode = 400;
-                        _response.ErrorMessage = ex.Message;
-                        this._logger.LogError(ex.Message, ex);
-                    }
+                try
+                {
+                    this._logger.LogInformation("Create Begins");
+                    TblFeedback _feedback = _mapper.Map<Feedback, TblFeedback>(feedback);
+                    await this._context.TblFeedbacks.AddAsync(_feedback);
+                    await this._context.SaveChangesAsync();
+                    _response.ResponseCode = 200;
+                    _response.Result = _feedback.FeedbackId.ToString();
+                }
+                catch (Exception ex)
+                {
+                    _response.ResponseCode = 400;
+                    _response.ErrorMessage = ex.Message;
+                    this._logger.LogError(ex.Message, ex);
+                }
             }
 
             return _response;
@@ -195,6 +195,54 @@ namespace Group4.FacilitiesReport.Repositories
 
         }
 
+        //public async Task<APIResponse> UpdateFeedback(FeedbackUpdatableObject feedback)
+        //{
+        //    APIResponse _response = new APIResponse();
+        //    try
+        //    {
+        //        _logger.LogInformation("Begin Update Feedback");
+        //        TblFeedback? _feedback = await AllFeedback().SingleOrDefaultAsync(f => f.FeedbackId.Equals(feedback.FeedbackId));
+
+        //        if (_feedback != null && _feedback.Status == 0)
+        //        {
+        //            _feedback.CateId = feedback.CateId;
+        //            _feedback.Title = feedback.Title;
+        //            _feedback.Description = feedback.Description;
+        //            _feedback.LocationId = feedback.LocationId;
+        //            var exists = await _context.TblFeedbacks.AnyAsync(f => f.LocationId == feedback.LocationId && f.CateId == feedback.CateId && f.FeedbackId != feedback.FeedbackId && (f.Status == 0 || f.Status == 1));
+        //            if (exists == null)
+        //            {
+        //                await _context.SaveChangesAsync();
+        //                _response.ResponseCode = 200;
+        //                _response.Result = feedback.FeedbackId.ToString();
+        //            }
+        //            else
+        //            {
+        //                _response.ResponseCode = 4000;
+        //                _response.Result = "Type Exists";
+        //            }
+        //        }
+        //        else if (_feedback != null && _feedback.Status != 0)
+        //        {
+        //            _response.ResponseCode = 400;
+        //            _response.Result = "Invalid Call!";
+        //        }
+        //        else
+        //        {
+        //            _response.ResponseCode = 400;
+        //            _response.Result = "Data not found!";
+
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _response.ResponseCode = 400;
+        //        _response.ErrorMessage = ex.Message;
+        //        _logger.LogError(ex.Message, ex);
+        //    }
+        //    return _response;
+        //}
         public async Task<APIResponse> UpdateFeedback(FeedbackUpdatableObject feedback)
         {
             APIResponse _response = new APIResponse();
@@ -457,7 +505,7 @@ namespace Group4.FacilitiesReport.Repositories
         }
         public async Task<List<FeedbackGraphObject>> RecentUserCreateFeedback()
         {
-            _logger.LogInformation("Begin Recent USer Create Feedback");
+            _logger.LogInformation("Begin Recent User Create Feedback");
             var now = DateTime.Now.Date.AddDays(-6);
             var list = new List<FeedbackGraphObject>();
             for (int i = 0; i <= 6; i++)

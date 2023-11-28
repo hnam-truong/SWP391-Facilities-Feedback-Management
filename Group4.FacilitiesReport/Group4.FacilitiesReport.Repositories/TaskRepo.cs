@@ -236,7 +236,7 @@ namespace Group4.FacilitiesReport.Repositories
                         var flag = true;
                         foreach (var item in list)
                         {
-                            if (item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded"))
+                            if (item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Responded") && item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Expired") && item.Status != (int)Enum.Parse(typeof(DTO.Enums.TaskStatus), "Cancelled"))
                             {
                                 flag = false;
                             }
